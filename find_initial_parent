@@ -1,0 +1,156 @@
+''' Author : Huy Nguyen
+    Project: provide method and helper method to find all possible parents
+             from 2 given gene_block
+             Also calculate the cost for each of the possible parents based
+             on a given cost function
+    Type   : Genome type is a combination of gene type and a '|' character
+             Gene type is string stype
+    Start  : 01/07/2016
+    End    :
+'''
+
+''' @function   : return number of split event from a genome
+    @para_type  : list (this list comprises of genes, and '|' as split event)
+    @result_type: integer
+'''
+def countSplit(Genome):
+    count= 0
+    for element in Genome:
+        if element == '|':
+            count +=1
+    return count
+''' @function   : return list of genes that are duplicated
+    @para_type  : list (this list comprises of genes, and '|' as split event)
+    @result_type: list of gene 
+'''
+def countDup(Genome):
+    gene_list=[]
+    ''' since the gene that are dupplciated will be next to each other, and in the same gene block.
+        we can save some times by just checking the consecutive and go
+        down the whole genome
+    '''
+    for index in range(1,len(Genome)-1):
+        if Genome[index] == Genome[index-1]:
+            gene_list.append(Genome[index])
+    return gene_list
+
+''' @function   : find the initial part of the Parent
+    @para_type  : 2 list of genes , 2 integer number
+    @result_type: list of gene 
+'''
+def findInitial(Genome1,Genome2,split1,split2):
+    initial =set()
+    # if neither of them has a split (life is real good)
+    if split1 == 0 and split2 == 0:
+        for element in Genome1:
+            initial.add(element)
+        for element in Genome2:
+            initial.add(element)
+    # if both of them have split ( grrrr )
+    if split1 !=0 and split2 !=0:
+        ''' parse the genome1 and genome2 into 2 sets og group of genes
+            that is delimitered by |
+            ex: ab|cd|ef will be same as ef|cd|ab
+            ab|cd|ef will be the same as dc|ba|fe
+        '''
+        # split the 2 gene by |
+        Gene1Blocks = Genome1.split('|')
+        Gene2Blocks = Genome2.split('|')
+        # sorted before add to make sure 'ab' same as 'ba'
+        for element in Gene1Blocks:
+            initial.add(''.join(sorted(element))) 
+        for element in Gene2Blocks:
+            initial.add(''.join(sorted(element)))
+        ''' for cases that return set {'abc','bc','a','ef','f'}
+            I will remove 'bc', 'a' and 'f' because having 'abc','ef' is 
+            representative enough. In addition, the cost of split is the minimum
+            (need to be proved)
+        '''
+        CandidateBlocks=[]
+        # make a copy of our initial set into a list to use index'
+        for element in initial:
+            CandidateBlocks.append(element)
+        # clear our initial set, prepare to add those that are not subsets to it'
+        initial.clear()
+        for index in range(len(CandidateBlocks)):
+            add = True # to add the element or not
+            for i in range(len(CandidateBlocks)): # 'ab' might appear before 'b'
+                if CandidateBlocks[index] in CandidateBlocks[i] and index !=i:
+                    add = False
+                    break
+            if add:
+                initial.add(CandidateBlocks[index])
+    # if one of them has a split (we can assume second one has split
+    # because we can switch from the parameter of our function)
+    if split1 ==0 and split2 !=0:
+        Gene2Blocks = Genome2.split('|')
+        for element in Gene2Blocks:
+            initial.add(''.join(sorted(element)))
+        CandidateBlocks=[]
+        for element in initial:
+            CandidateBlocks.append(element)
+        #check if the element from gene1 is a subset of any element in
+        # element of gene2Blocks
+        for element in Genome1:
+            add = True
+            for geneBlocks in CandidateBlocks:
+                if element in geneBlocks:
+                    add = False
+                    break
+            if add:
+                initial.add(element)
+    return initial
+
+# Testing
+
+print("Here are test cases for finding the initial parent")
+print("There could be many possible parents, the result is just the minimum of such cases")
+print()
+print("Case1: Checking block order does not matter, both split")
+print("Genome 1: ab|ce|fg")
+print("Genome 2: ce|fg|ab")
+Genome1= 'ab|ce|fg'
+Genome2= 'ce|fg|ab'
+split1= countSplit(Genome1)
+split2= countSplit(Genome2)
+print("Result:", findInitial(Genome1,Genome2,split1,split2))
+print()
+print('******************************************************************')
+
+print("Case2: Checking gene order in a gene block does not matter, both split")
+print("Genome 1: ab|ce|fg")
+print("Genome 2: ec|ba|gf")
+Genome1= 'ab|ce|fg'
+Genome2= 'ec|ba|gf'
+split1= countSplit(Genome1)
+split2= countSplit(Genome2)
+print("Result:", findInitial(Genome1,Genome2,split1,split2))
+print()
+print('******************************************************************')
+
+print("Case3: prioritize gene block, both split")
+print("Genome 1: abc|de|f")
+print("Genome 2: a|bc|de|f")
+Genome1= 'abc|de|f'
+Genome2= 'a|bc|de|f'
+split1= countSplit(Genome1)
+split2= countSplit(Genome2)
+print("Result:", findInitial(Genome1,Genome2,split1,split2))
+print()
+print('******************************************************************')
+
+
+print("Case4: no split and split")
+print("Genome 1: abcdefg")
+print("Genome 2: a|b|c|def")
+Genome1= 'abcdefg'
+Genome2= 'a|b|c|def'
+split1= countSplit(Genome1)
+split2= countSplit(Genome2)
+print("Result:", findInitial(Genome1,Genome2,split1,split2))
+print()
+print('******************************************************************')
+    
+
+   
+    
