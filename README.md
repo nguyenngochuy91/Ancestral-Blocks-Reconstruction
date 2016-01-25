@@ -1,6 +1,7 @@
 # Ancestral-BLocks-Reconstruction project
 ## Sypnosis
 This project provide ancestral reconstruction tools dedicated to bacteria genomes.
+
 ## Model Assumption
 * Phylogenetic Tree
   1. Our phylogenetic tree is given, it is binary and rooted.
@@ -14,15 +15,15 @@ This project provide ancestral reconstruction tools dedicated to bacteria genome
      * Duplication : A duplication event is defined as having gene j in a gene block in the source genome, and homologous genes (j′,j″)(j′,j″) in the homologous block in the target genome. The duplication distance is the number of duplication events counted between the source and target genomes. The duplication has to occur in a gene block to be tallied.
   3. Multiple events from parent to children are possible.
   4. Events are treated as independent.
+
 ## Installation
 TODO: Describe the installation process
+
 ## Usage
 TODO: Write usage instructions
-## History
-TODO: Write history
+
 ## Credits
 1. http://bioinformatics.oxfordjournals.org/content/early/2015/04/13/bioinformatics.btv128.full 
-## License
 
 
 
