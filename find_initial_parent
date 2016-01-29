@@ -19,33 +19,64 @@ def countSplit(Genome):
         if element == '|':
             count +=1
     return count
-''' @function   : return list of genes that are duplicated
+
+''' @function   : return list of genes that are duplicated in a block of gene with the
+                  block it appear in
     @para_type  : list (this list comprises of genes, and '|' as split event)
     @result_type: list of gene 
 '''
 def countDup(Genome):
-    gene_list=[]
-    ''' since the gene that are dupplciated will be next to each other, and in the same gene block.
-        we can save some times by just checking the consecutive and go
-        down the whole genome
-    '''
-    for index in range(1,len(Genome)-1):
-        if Genome[index] == Genome[index-1]:
-            gene_list.append(Genome[index])
-    return gene_list
+    # splitting Genome into blocks of gene 
+    gene_list=Genome.split('|')
+    gene_dup=[]
+    # iterate through the list of gene blocks
+    for index in range(0,len(gene_list)-1):
+        # iterate through each gene in a gene block
+        for item in range (0, len(gene_list[index])-1):
+            # iterate from the index next to our gene (need checking) to the end of the gene block
+            for i in range(item, len(gene_list[index])-1):
+                if gene_list[index][item] == gene_list[index][i]:
+                    gene_dup.append(gene_list[index][item])                    
+    return gene_dup
 
-''' @function   : find the initial part of the Parent
+''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
+                  has key is the gene , and value is the either 1 or 2. 1 means it appear in 1 genome,
+                  2 means it appear in both genome
     @para_type  : 2 list of genes , 2 integer number
-    @result_type: list of gene 
+    @result_type: list of gene, dictionary.
 '''
-def findInitial(Genome1,Genome2,split1,split2):
+def findSetInitial(Genome1,Genome2,split1,split2):
+    # set of initial gene and blocks that will be return
     initial =set()
+    # element count is a dictionary
+    elementCount= {}
+    # set of different gene in Genome1
+    Genome1_gene= set()
+    for element in Genome1:
+        if element != '|':
+            Genome1_gene.add(element)
+    # set of different gene in Genome2
+    Genome2_gene= set()
+    for element in Genome2:
+        if element != '|':
+            Genome2_gene.add(element)
+
+    # union the above 2 set to get list of possible gene from 2 Genome
+    union = Genome1_gene.union(Genome2_gene)
+    # intersect the above 2 set to get list of gene that appears in both genome
+    intersect = Genome1_gene.intersection(Genome2_gene)
+    # create a set of element count
+    for gene in union:
+        # add a list (gene,value) (since set does not take dictionary)
+        if gene in intersect:
+            elementCount[gene]=2
+        else:
+            elementCount[gene]=1
+
     # if neither of them has a split (life is real good)
     if split1 == 0 and split2 == 0:
-        for element in Genome1:
-            initial.add(element)
-        for element in Genome2:
-            initial.add(element)
+        initial = union
+
     # if both of them have split ( grrrr )
     if split1 !=0 and split2 !=0:
         ''' parse the genome1 and genome2 into 2 sets og group of genes
@@ -53,7 +84,6 @@ def findInitial(Genome1,Genome2,split1,split2):
             ex: ab|cd|ef will be same as ef|cd|ab
             ab|cd|ef will be the same as dc|ba|fe
         '''
-        # split the 2 gene by |
         Gene1Blocks = Genome1.split('|')
         Gene2Blocks = Genome2.split('|')
         # sorted before add to make sure 'ab' same as 'ba'
@@ -99,13 +129,25 @@ def findInitial(Genome1,Genome2,split1,split2):
                     break
             if add:
                 initial.add(element)
-    return initial
+    return (initial,elementCount)
 
 # Testing
 
 print("Here are test cases for finding the initial parent")
 print("There could be many possible parents, the result is just the minimum of such cases")
 print()
+
+print("Case: Checking for number of time an element appear, no split")
+print("Genome 1: abbcdef")
+print("Genome 2: acdghh")
+Genome1= 'abbcdef'
+Genome2= 'acdghh'
+split1= countSplit(Genome1)
+split2= countSplit(Genome2)
+print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
+print()
+print('******************************************************************')
+
 print("Case1: Checking block order does not matter, both split")
 print("Genome 1: ab|ce|fg")
 print("Genome 2: ce|fg|ab")
@@ -113,7 +155,7 @@ Genome1= 'ab|ce|fg'
 Genome2= 'ce|fg|ab'
 split1= countSplit(Genome1)
 split2= countSplit(Genome2)
-print("Result:", findInitial(Genome1,Genome2,split1,split2))
+print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
 print()
 print('******************************************************************')
 
@@ -124,7 +166,7 @@ Genome1= 'ab|ce|fg'
 Genome2= 'ec|ba|gf'
 split1= countSplit(Genome1)
 split2= countSplit(Genome2)
-print("Result:", findInitial(Genome1,Genome2,split1,split2))
+print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
 print()
 print('******************************************************************')
 
@@ -135,7 +177,7 @@ Genome1= 'abc|de|f'
 Genome2= 'a|bc|de|f'
 split1= countSplit(Genome1)
 split2= countSplit(Genome2)
-print("Result:", findInitial(Genome1,Genome2,split1,split2))
+print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
 print()
 print('******************************************************************')
 
@@ -147,7 +189,19 @@ Genome1= 'abcdefg'
 Genome2= 'a|b|c|def'
 split1= countSplit(Genome1)
 split2= countSplit(Genome2)
-print("Result:", findInitial(Genome1,Genome2,split1,split2))
+print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
+print()
+print('******************************************************************')
+
+print("Case5: duplication")
+print("Genome 1: abb|ccd|e|f|g|k|l")
+print("Genome 2: ecd|l|a|g|b")
+Genome1= 'abb|ccd|e|f|g|k|l'
+Genome2= 'ecd|l|a|g|b'
+split1= countSplit(Genome1)
+split2= countSplit(Genome2)
+print(countDup(Genome1), countDup(Genome2))
+print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
 print()
 print('******************************************************************')
     
