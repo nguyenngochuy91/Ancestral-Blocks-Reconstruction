@@ -1,0 +1,70 @@
+Algorithm to construct possible sets.
+	Goal: return a tuple contains
+Initial set of blocks of genes, or genes. 
+Dictionary that has key is the gene, and value is either 1 or 2
+value 1 means the gene only appear in 1 genome1
+value 2 means the gene appear in 2 genome.
+Parameter: Genome1: string
+	       Genome2: string
+ 	       split1: integer
+                   split2: integer.
+Result: tuple( set,dic)
+findSetInitial(Genome1, Genome2, split1, split2)
+initial =set()
+elementCount ={}
+Genome1_gene= set (genes in Genome1)
+Genome2_gene = set (genes in Genome2)
+union = Genome1_gene  Genome2_gene
+intersection = Genome1_gene  Genome2_gene
+for element in union:
+if element not in intersection
+ elementCount[element] = 1
+else:
+elementCount[element] = 2
+ if split1= split2 =0:
+initial = union
+if split1, split 2 !=0:
+split Genome1 and Genome2 by ‘|’
+for each new block in Genome1, Genome2:
+initial.add(newblock) (ensure gene order not matter by sort the newblock)
+initial = initial.union(union)
+reduce blocks that has gene only appear in 1 gene into one that does not have the gene ( (abcdd) -> (abc) if elementCount[d]=1, and elementCount[a,b,c]=2)
+reduce by subset ( if initial contains (ab),(a), then remove (a))
+if split1=0, split2 !=0, trivial with some modify code
+return (initial, elementCount)
+Claim 1: Any possible parents that has gene is not included in the set before reducing 
+	(set after step iii but before step iv) ) will have higher distances to the 2 genome
+	to parents that has all elements belong to the set.
+Proof: 
+	Assume the contradiction, it means that given 2 genome, and our result set S, 
+there is a possible parent P that consists of at least a gene that does not belong 
+to our set, and this parent has the lowest distance to the 2 genome.
+Define the set of element of P that is not in S , and that is in S 
+but not in P as Different. 
+There are 2 scenarios: 
+This parent has at least 1 gene in set S
+We construct a possible parent P’ that is the same as P, but without the 
+element of P that is not in S. Apparently, the distance of this P’= P - 
+(Different distance).
+Hence, this means that P does not have the lowest distance
+This parent does not have any of the genes in set S. (trivial case)
+			
+Claim 2: The reduction iii will not increase the distances of each element in the set S. (reduction those count <2)
+Proof:
+	Indeed, consider one that can be reduced this way, call it block A.
+	After reduction, we have A’. 
+Any possible parent that generated from set S will either include A or not. 
+
+Generally, assume that a possible parent P include A. I will prove that 
+exchanging A by A’ does not increase the distance. Since we can do the reduction from A to A’. It means that there exists set of gene G that for each gene, the count for it is 1.
+Without loss of generality, we can assume that A is from Genome1. Hence, because the gene in G has count of 1, it means that it does not appear in gene 2.
+Hence, by removing those genes, we simply change the distance of parent P to 
+Genome2 to the distance of parent P to Genome1. Hence, the distance is the same.
+
+Claim 3: The reduction iv will not increase the distances of each element in the set S. 
+Proof:
+	
+	Claim 4: Any possible parents that has gene is not included in the set will have higher 
+distances to the 2 genomes.
+Proof:
+  From Claim 1, 2,3, we have this.
