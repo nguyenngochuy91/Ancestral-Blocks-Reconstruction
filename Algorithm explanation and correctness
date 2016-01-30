@@ -60,11 +60,29 @@ exchanging A by A’ does not increase the distance. Since we can do the reducti
 Without loss of generality, we can assume that A is from Genome1. Hence, because the gene in G has count of 1, it means that it does not appear in gene 2.
 Hence, by removing those genes, we simply change the distance of parent P to 
 Genome2 to the distance of parent P to Genome1. Hence, the distance is the same.
-
 Claim 3: The reduction iv will not increase the distances of each element in the set S. 
 Proof:
+	Indeed, assume that a possible parent P that has a block/gene A from set S
+	that is a subset of block B from set S. There are 2 scenarios:
+P already include B (trivial case): we can just remove A, and the result
+			does not increase the distances
+P does not include B:
+		We know that A could either be separated (split) or not. For both case, 
+when substitute B in place of A, from claim 2, we know that for each gene 
+in B, the count is 2 hence the gene appears in both Genome. Therefore,
+this won’t add to deletion distances.
+If it has duplication of gene , I will prove it still not add the the net 
+distances. 
+Indeed, if B has duplication , it means one of the 2 genome has the 
+duplication  as well. Let’s assume it is from Genome1. Hence, if the 
+parent P does not have a duplication of , it means there is a distance 
+count for the duplication  already toward Genome1 (parent P does not 
+have it). Now, by adding block B that has dupplication of gene . It at 
+most add to the duplication cost only if Genome2 does not have such 
+duplication. Hence, it won’t increase the distance overall.
 	
 	Claim 4: Any possible parents that has gene is not included in the set will have higher 
 distances to the 2 genomes.
 Proof:
-  From Claim 1, 2,3, we have this.
+	From Claim 1, 2,3, we have this.
+
