@@ -30,15 +30,63 @@ def countDup(Genome):
     gene_list=Genome.split('|')
     gene_dup=[]
     # iterate through the list of gene blocks
-    for index in range(0,len(gene_list)-1):
+    for index in range(len(gene_list)):
         # iterate through each gene in a gene block
-        for item in range (0, len(gene_list[index])-1):
+        for item in range (len(gene_list[index])):
             # iterate from the index next to our gene (need checking) to the end of the gene block
-            for i in range(item, len(gene_list[index])-1):
+            for i in range(item+1, len(gene_list[index])):
                 if gene_list[index][item] == gene_list[index][i]:
                     gene_dup.append(gene_list[index][item])                    
     return gene_dup
 
+''' @function   : return list of blocks genes or genes that has no element that is a subset of an
+                  element in the set
+    @para_type  : set of block of genes/ genes.
+    @result_type: list of blocks genes, genes. 
+'''
+def reductionSubset(initial):
+        ''' for cases that return set {'abc','bc','a','ef','f'}
+            I will remove 'bc', 'a' and 'f' because having 'abc','ef' is 
+            representative enough. In addition, the cost of split is the minimum
+            (need to be proved)
+        '''
+        CandidateBlocks=[]
+        # make a copy of our initial set into a list to use index'
+        for element in initial:
+            CandidateBlocks.append(element)
+        # clear our initial set, prepare to add those that are not subsets to it'
+        initial.clear()
+        for index in range(len(CandidateBlocks)):
+            add = True # to add the element or not
+            for i in range(len(CandidateBlocks)): # 'ab' might appear before 'b'
+                if CandidateBlocks[index] in CandidateBlocks[i] and index !=i:
+                    add = False
+                    break
+            if add:
+                initial.add(CandidateBlocks[index])
+        return initial
+    
+''' @function   : return list of blocks genes or genes that for each block of genes, the gene
+                  in the block has count of 2.
+    @para_type  : set of block of genes/ genes.
+    @result_type: list of blocks genes/ genes 
+'''
+def reductionCount(initial, dic):
+    result= set()
+    for element in initial:
+        if len(element) ==1:
+            result.add(element)
+            continue
+        else:
+            copy=''
+            for gene in element:
+                if dic[gene] ==2:
+                    copy +=gene
+            result.add(copy)
+    return result
+            
+                    
+    
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is the either 1 or 2. 1 means it appear in 1 genome,
                   2 means it appear in both genome
@@ -73,11 +121,11 @@ def findSetInitial(Genome1,Genome2,split1,split2):
         else:
             elementCount[gene]=1
 
-    # if neither of them has a split (life is real good)
+    ### if neither of them has a split (life is real good)
     if split1 == 0 and split2 == 0:
         initial = union
 
-    # if both of them have split ( grrrr )
+    ### if both of them have split ( grrrr )
     if split1 !=0 and split2 !=0:
         ''' parse the genome1 and genome2 into 2 sets og group of genes
             that is delimitered by |
@@ -91,120 +139,24 @@ def findSetInitial(Genome1,Genome2,split1,split2):
             initial.add(''.join(sorted(element))) 
         for element in Gene2Blocks:
             initial.add(''.join(sorted(element)))
-        ''' for cases that return set {'abc','bc','a','ef','f'}
-            I will remove 'bc', 'a' and 'f' because having 'abc','ef' is 
-            representative enough. In addition, the cost of split is the minimum
-            (need to be proved)
-        '''
-        CandidateBlocks=[]
-        # make a copy of our initial set into a list to use index'
-        for element in initial:
-            CandidateBlocks.append(element)
-        # clear our initial set, prepare to add those that are not subsets to it'
-        initial.clear()
-        for index in range(len(CandidateBlocks)):
-            add = True # to add the element or not
-            for i in range(len(CandidateBlocks)): # 'ab' might appear before 'b'
-                if CandidateBlocks[index] in CandidateBlocks[i] and index !=i:
-                    add = False
-                    break
-            if add:
-                initial.add(CandidateBlocks[index])
+        # reduce by the count
+        initial = reductionCount(initial, elementCount)
+        # reduce the subset
+        initial = reductionSubset(initial)
     # if one of them has a split (we can assume second one has split
     # because we can switch from the parameter of our function)
     if split1 ==0 and split2 !=0:
         Gene2Blocks = Genome2.split('|')
         for element in Gene2Blocks:
             initial.add(''.join(sorted(element)))
-        CandidateBlocks=[]
-        for element in initial:
-            CandidateBlocks.append(element)
-        #check if the element from gene1 is a subset of any element in
-        # element of gene2Blocks
-        for element in Genome1:
-            add = True
-            for geneBlocks in CandidateBlocks:
-                if element in geneBlocks:
-                    add = False
-                    break
-            if add:
-                initial.add(element)
+        # add element that is in genome1 but not 2
+        initial=initial.union(Genome1_gene)
+        # reduce by the count
+        initial = reductionCount(initial, elementCount)
+        # reduce the subset
+        initial = reductionSubset(initial)
     return (initial,elementCount)
 
-# Testing
-
-print("Here are test cases for finding the initial parent")
-print("There could be many possible parents, the result is just the minimum of such cases")
-print()
-
-print("Case: Checking for number of time an element appear, no split")
-print("Genome 1: abbcdef")
-print("Genome 2: acdghh")
-Genome1= 'abbcdef'
-Genome2= 'acdghh'
-split1= countSplit(Genome1)
-split2= countSplit(Genome2)
-print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
-print()
-print('******************************************************************')
-
-print("Case1: Checking block order does not matter, both split")
-print("Genome 1: ab|ce|fg")
-print("Genome 2: ce|fg|ab")
-Genome1= 'ab|ce|fg'
-Genome2= 'ce|fg|ab'
-split1= countSplit(Genome1)
-split2= countSplit(Genome2)
-print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
-print()
-print('******************************************************************')
-
-print("Case2: Checking gene order in a gene block does not matter, both split")
-print("Genome 1: ab|ce|fg")
-print("Genome 2: ec|ba|gf")
-Genome1= 'ab|ce|fg'
-Genome2= 'ec|ba|gf'
-split1= countSplit(Genome1)
-split2= countSplit(Genome2)
-print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
-print()
-print('******************************************************************')
-
-print("Case3: prioritize gene block, both split")
-print("Genome 1: abc|de|f")
-print("Genome 2: a|bc|de|f")
-Genome1= 'abc|de|f'
-Genome2= 'a|bc|de|f'
-split1= countSplit(Genome1)
-split2= countSplit(Genome2)
-print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
-print()
-print('******************************************************************')
-
-
-print("Case4: no split and split")
-print("Genome 1: abcdefg")
-print("Genome 2: a|b|c|def")
-Genome1= 'abcdefg'
-Genome2= 'a|b|c|def'
-split1= countSplit(Genome1)
-split2= countSplit(Genome2)
-print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
-print()
-print('******************************************************************')
-
-print("Case5: duplication")
-print("Genome 1: abb|ccd|e|f|g|k|l")
-print("Genome 2: ecd|l|a|g|b")
-Genome1= 'abb|ccd|e|f|g|k|l'
-Genome2= 'ecd|l|a|g|b'
-split1= countSplit(Genome1)
-split2= countSplit(Genome2)
-print(countDup(Genome1), countDup(Genome2))
-print("Result:", findSetInitial(Genome1,Genome2,split1,split2))
-print()
-print('******************************************************************')
-    
 
    
     
