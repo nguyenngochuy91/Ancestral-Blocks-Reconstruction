@@ -170,3 +170,14 @@ def findSetInitial_Genome(Genome1,Genome2,split1,split2):
         # reduce the subset
         initial = reductionSubset(initial)
     return (initial,elementCount)
+    
+''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
+                  has key is the gene , and value is the either 1 or 2. 1 means it appear in 1 genome,
+                  2 means it appear in both genome
+    @para_type  : 1 list of genes , 1 tuple of (set,dictionary), 1 split.
+    @result_type: tuple of (list of gene, dictionary)
+'''
+def findSetInitial_Set(Genome,myTuple,split1):
+    GenomeDic={}
+    Genome_gene= setOfGene(Genome)
+    
