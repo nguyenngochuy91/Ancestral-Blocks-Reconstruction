@@ -39,6 +39,29 @@ def countDup(Genome):
                     gene_dup.append(gene_list[index][item])                    
     return gene_dup
 
+''' @function   : return set of gene in a Genome
+    @para_type  : list (this list comprises of genes, and '|' as split event)
+    @result_type: set of gene
+'''
+def setOfGene(Genome):
+    Genome_gene= set()
+    for gene in Genome:
+        if gene != '|':
+            Genome_gene.add(gene)
+    return Genome_gene
+
+''' @function   : return set of geneblocks/gene in a Genome, given that Genome has split event
+    @para_type  : list (this list comprises of genes, and '|' as split event)
+    @result_type: set of gene blocks( at least exist 1 gene block)
+'''
+def setOfBlocks(Genome):
+    GeneBlocks = Genome.split('|')
+    initial = set()
+    # sorted before add to make sure 'ab' same as 'ba'
+    for element in GeneBlocks:
+        initial.add(''.join(sorted(element)))
+    return initial
+
 ''' @function   : return list of blocks genes or genes that has no element that is a subset of an
                   element in the set
     @para_type  : set of block of genes/ genes.
@@ -93,21 +116,15 @@ def reductionCount(initial, dic):
     @para_type  : 2 list of genes , 2 integer number
     @result_type: list of gene, dictionary.
 '''
-def findSetInitial(Genome1,Genome2,split1,split2):
+def findSetInitial_Genome(Genome1,Genome2,split1,split2):
     # set of initial gene and blocks that will be return
     initial =set()
     # element count is a dictionary
     elementCount= {}
     # set of different gene in Genome1
-    Genome1_gene= set()
-    for element in Genome1:
-        if element != '|':
-            Genome1_gene.add(element)
+    Genome1_gene= setOfGene(Genome1)
     # set of different gene in Genome2
-    Genome2_gene= set()
-    for element in Genome2:
-        if element != '|':
-            Genome2_gene.add(element)
+    Genome2_gene= setOfGene(Genome2)
 
     # union the above 2 set to get list of possible gene from 2 Genome
     union = Genome1_gene.union(Genome2_gene)
@@ -132,23 +149,20 @@ def findSetInitial(Genome1,Genome2,split1,split2):
             ex: ab|cd|ef will be same as ef|cd|ab
             ab|cd|ef will be the same as dc|ba|fe
         '''
-        Gene1Blocks = Genome1.split('|')
-        Gene2Blocks = Genome2.split('|')
-        # sorted before add to make sure 'ab' same as 'ba'
-        for element in Gene1Blocks:
-            initial.add(''.join(sorted(element))) 
-        for element in Gene2Blocks:
-            initial.add(''.join(sorted(element)))
+        # add the set of gene blocks from genome1
+        initial.update(setOfBlocks(Genome1))
+        # add the set of gene blocks from genome2
+        initial.update(setOfBlocks(Genome2))
         # reduce by the count
         initial = reductionCount(initial, elementCount)
         # reduce the subset
         initial = reductionSubset(initial)
+        
     # if one of them has a split (we can assume second one has split
     # because we can switch from the parameter of our function)
     if split1 ==0 and split2 !=0:
-        Gene2Blocks = Genome2.split('|')
-        for element in Gene2Blocks:
-            initial.add(''.join(sorted(element)))
+        # add the set of gene blocks from genome2
+        initial.update(setOfBlocks(Genome2))
         # add element that is in genome1 but not 2
         initial=initial.union(Genome1_gene)
         # reduce by the count
@@ -156,7 +170,3 @@ def findSetInitial(Genome1,Genome2,split1,split2):
         # reduce the subset
         initial = reductionSubset(initial)
     return (initial,elementCount)
-
-
-   
-    
