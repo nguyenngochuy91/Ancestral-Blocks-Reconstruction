@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ''' Author : Huy Nguyen
     Project: provide method and helper method to find all possible parents
              from 2 given gene_block
@@ -8,6 +9,11 @@
     Start  : 01/07/2016
     End    :
 '''
+
+#######################################################################################
+# Helper functions to count dupplication, split, parse Genome to create
+# set of genes, set of blocks of gene
+#######################################################################################
 
 ''' @function   : return number of split event from a genome
     @para_type  : list (this list comprises of genes, and '|' as split event)
@@ -62,10 +68,14 @@ def setOfBlocks(Genome):
         initial.add(''.join(sorted(element)))
     return initial
 
+#######################################################################################
+# Helper functions to do the reduction
+#######################################################################################
+
 ''' @function   : return list of blocks genes or genes that has no element that is a subset of an
                   element in the set
     @para_type  : set of block of genes/ genes.
-    @result_type: list of blocks genes, genes. 
+    @result_type: list of blocks genes, genes.
 '''
 def reductionSubset(initial):
         ''' for cases that return set {'abc','bc','a','ef','f'}
@@ -107,16 +117,57 @@ def reductionCount(initial, dic):
                     copy +=gene
             result.add(copy)
     return result
+
+#######################################################################################
+# Helper functions to take care of transition state of a gene count
+# depends on the second parameter (either the target is a genome, or a set)
+#######################################################################################
             
-                    
+    
+''' @function   : transition function for dictionary count, if the second parameter is a Genome
+                  Define A is the count of a specific gene from the dictionary of the set parameter.
+                  Define B is the count of the same gene from the genome
+                  Define C is the count of the same gene in the predicted initial set of parent
+                  A = 2 , B = 1 -> C = 2
+                  A = 2 , B = 0 -> C = 1
+                  
+                  A = 1 , B = 1 -> C = 2
+                  A = 1 , B = 0 -> C = 0
+                  
+                  A = 0 , B = 1 -> C = 0,1 (this will depends on the frequency of the gene)
+                  A = 0 , B = 0 -> C = 0
+    @para_type  : 2 integers, 1 float
+    @result_type: integer
+'''
+def transition(gene_setCount,gene_GenomeCount,gene_frequency):
+    if gene_setCount == 2:
+        if gene_GenomeCount == 1:
+            return 2
+        else:
+            return 1
+    elif gene_setCount == 1:
+        if gene_GenomeCount == 1:
+            return 2
+        else:
+            return 0
+    else
+
+#######################################################################################
+# Main functions to find initial set of genes/ genes block
+# 3 functions to deal with 3 type of parameter (Genome,Genome), (Set,Genome), (Set,Set)
+#######################################################################################
     
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
-                  has key is the gene , and value is the either 1 or 2. 1 means it appear in 1 genome,
-                  2 means it appear in both genome
+                  has key is the gene , and value is of type list. The list has 2 index. Index 0
+                  is of value 1 or 2 : 1 means it appear in 1 genome, 2 means it appear in both genome.
+                  Index 1 is the numer of time the gene appear (this is not different at Genome level,
+                  but for set it will be incremented for better correctness)
+                  Also return the number of genome it runs through,
+                  which is 2
     @para_type  : 2 list of genes , 2 integer number
-    @result_type: list of gene, dictionary.
+    @result_type: tuple og (list of gene, dictionary,integer)
 '''
-def findSetInitial_Genome(Genome1,Genome2,split1,split2):
+def findSetInitial_GenomevsGenome(Genome1,Genome2,split1,split2):
     # set of initial gene and blocks that will be return
     initial =set()
     # element count is a dictionary
@@ -169,15 +220,25 @@ def findSetInitial_Genome(Genome1,Genome2,split1,split2):
         initial = reductionCount(initial, elementCount)
         # reduce the subset
         initial = reductionSubset(initial)
-    return (initial,elementCount)
-    
+    return (initial,elementCount,2)
+
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
-                  has key is the gene , and value is the either 1 or 2. 1 means it appear in 1 genome,
-                  2 means it appear in both genome
+                  has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
+                  (either my set, or the genome), 2 means it appear in the set and the genome.
+                  0 means no appearance.
     @para_type  : 1 list of genes , 1 tuple of (set,dictionary), 1 split.
-    @result_type: tuple of (list of gene, dictionary)
+    @result_type: tuple of (list of gene, dictionary,Genome count)
 '''
-def findSetInitial_Set(Genome,myTuple,split1):
+def findSetInitial_Set(myTuple,Genome,split):
     GenomeDic={}
     Genome_gene= setOfGene(Genome)
+    Genome_dic={}
+    for gene in Genome_gene:
+        Genome_dic[gene]=1
+    # extract info from myTuple
+    initial= myTuple[0]
+    elementCount = myTuple[1]
+    count= myTuple[2]+1 # increment the count by 1
     
+    
+        
