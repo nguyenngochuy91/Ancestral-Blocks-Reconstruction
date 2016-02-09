@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\title{Transitional function}
+\author{huyn }
+\date{February 2016}
+
+\begin{document}
+In order to build sets of ancestral gene/ genes blocks, I try to traverse the \
+phylogenetic tree from leaf to the root by following methods:
+\begin{enumerate}
+\item Consider each non-leaf node at each level (bottom-up tree traversal).
+\item All non-leaf nodes a given level are considered before moving on to the next higher level.
+\end{enumerate}
+
+
+I categorize internal into 3 different kind: 
+\begin{enumerate}
+\item The one that its 2 children are leaf nodes.
+\item The one that has 1 of its children as a leaf nodes.
+\item The one that none of its children is leaf node. 
+\end{enumerate}
+
+
+Because of this, to decide the initial set of genes/ blocks of genes, I provide 
+3 functions with different parameters:
+\begin{enumerate}
+\item GenomevsGenome(Genome1,Genome2)
+\item SetvsGenome(myTuple,Genome)
+\item SetvsSet(myTuple1,myTuple2)
+\end{enumerate}
+
+
+Goal:
+	The main point here is to determine whether I should include a gene in the 
+higher level internal node. In order to do this, I need to have a count from 
+each of its children, and build a transitional function. In this paper, I will 
+present my transitional function, and reason why I choose it (hopefully 
+with solid proof).
+
+
+Assumption:
+	Consider a gene g in our reference operon. 
+
+\maketitle
+
+\section{Introduction}
+
+\end{document}
