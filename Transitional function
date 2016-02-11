@@ -1,48 +1,100 @@
 \documentclass{article}
+\usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
-\title{Transitional function}
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+\graphicspath{ {figure/} }
+\title{Transitional function Rationale}
 \author{huyn }
 \date{February 2016}
 
 \begin{document}
-In order to build sets of ancestral gene/ genes blocks, I try to traverse the \
-phylogenetic tree from leaf to the root by following methods:
+\maketitle
+
+\section{Introduction:}
+In order to build ancestral gene blocks x from given children A and B, I construct set of gene / gene blocks that x has to include. Define this set as S(x). For each internal node x, define set Leaf(x)=\big\{leaf node A \big\| A can reach x using the above traversal method\big\}
+In order to build sets of ancestral gene/genes blocks, I try to traverse the phylogenetic tree from leaf to the root by following methods:
+
 \begin{enumerate}
-\item Consider each non-leaf node at each level (bottom-up tree traversal).
-\item All non-leaf nodes a given level are considered before moving on to the next higher level.
+    \item Consider each non-leaf node at each level (bottom-up tree traversal).
+    \item All non-leaf nodes a given level are considered before moving on to the next higher level.
 \end{enumerate}
 
-
-I categorize internal into 3 different kind: 
+I categorize internal nodes of the tree into 3 different kind: 
 \begin{enumerate}
-\item The one that its 2 children are leaf nodes.
-\item The one that has 1 of its children as a leaf nodes.
-\item The one that none of its children is leaf node. 
+    \item The one that its 2 children are leaf nodes. Define these internal nodes as double leaf (dl)
+    \item The one that has 1 of its children as a leaf nodes. Define these internal nodes as half leaf (hl)
+    \item The one that none of its children is leaf node. Define these internal nodes as no leaf (nl)
 \end{enumerate}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{internal_node_example}
+    \caption{a tree example: x is dl, y is hl, z is nl}
+    \label{fig:internal_node_example1}
+\end{figure}
 
-Because of this, to decide the initial set of genes/ blocks of genes, I provide 
-3 functions with different parameters:
+\section{Data Structure:}
+The data structure for each internal nodes is a tupple that contains following information:
 \begin{enumerate}
-\item GenomevsGenome(Genome1,Genome2)
-\item SetvsGenome(myTuple,Genome)
-\item SetvsSet(myTuple1,myTuple2)
+    \item Set(x) at index 0.
+    \item Dictionary that has:
+        \begin{itemize}
+            \item key: gene g.
+            \item value: list of length 2 that contains
+            \begin{itemize}
+                \item index 0: count of gene g in x.
+                \item index 1: number of nodes in Leaf(x) that contains x
+            \end{itemize}
+        \end{itemize}
+    \item Size of Leaf(x)
 \end{enumerate}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{data_structure_example}
+    \caption{x is a tuple (\big\{ab,de,g\},\big\{a:[2,2],b:[2,2],c:[1,1],d:[2:2],e:[2,2],f:[1,1:],g[2:2]\},2)}
+    \label{fig:internal_node_example1}
+\end{figure}
 
-Goal:
-	The main point here is to determine whether I should include a gene in the 
-higher level internal node. In order to do this, I need to have a count from 
+
+Because of this, to decide the initial set of genes/ blocks of genes, I provide 3 functions with different parameters:
+\begin{enumerate}
+    \item GenomevsGenome(Genome1,Genome2)
+    \item SetvsGenome(myTuple,Genome)
+    \item SetvsSet(myTuple1,myTuple2)
+\end{enumerate}
+
+ 
+
+\section{Goal:}
+	The main point here is to determine whether I should include a gene g in the 
+higher level internal node. In order to do this, I need to have a count of gene g from 
 each of its children, and build a transitional function. In this paper, I will 
-present my transitional function, and reason why I choose it (hopefully 
+present my transitional function, and rationale why I choose it (hopefully 
 with solid proof).
 
 
-Assumption:
-	Consider a gene g in our reference operon. 
+\section{Assumption:}
+. Consider gene g in our reference operon:
+\begin{enumerate}
+    \item Each leaf node has count(g) of value either 0 or 1.
+    \item Each internal node has count(g) of value either 0, 1, or 2.
+    \item S(x) includes g if and only if count(g) in x is 2.
+    
+\end{enumerate}
 
-\maketitle
 
-\section{Introduction}
+
+
 
 \end{document}
