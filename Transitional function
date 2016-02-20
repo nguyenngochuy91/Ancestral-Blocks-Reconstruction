@@ -3,7 +3,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{float}
-
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{geometry}
  \geometry{
  a4paper,
@@ -14,20 +15,23 @@
 
 \graphicspath{ {figure/} }
 \title{Transitional function Rationale}
-\author{huyn }
+\author{Huy Nguyen }
 \date{February 2016}
 
 \begin{document}
 \maketitle
 
+
 \section{Introduction:}
-In order to build ancestral gene blocks x from given children A and B, I construct set of gene / gene blocks that x has to include. Define this set as S(x). For each internal node x, define set Leaf(x)=\big\{leaf node A \big\| A can reach x using the above traversal method\big\}
+
 In order to build sets of ancestral gene/genes blocks, I try to traverse the phylogenetic tree from leaf to the root by following methods:
 
 \begin{enumerate}
     \item Consider each non-leaf node at each level (bottom-up tree traversal).
     \item All non-leaf nodes a given level are considered before moving on to the next higher level.
 \end{enumerate}
+
+To build ancestral gene blocks x from given children A and B, I construct set of gene / gene blocks that x has to include. Define this set as S(x). For each internal node x, define set Leaf(x)=\big\{leaf node A \big\| A can reach x using the above traversal method\big\}
 
 I categorize internal nodes of the tree into 3 different kind: 
 \begin{enumerate}
@@ -53,7 +57,7 @@ The data structure for each internal nodes is a tupple that contains following i
             \item value: list of length 2 that contains
             \begin{itemize}
                 \item index 0: count of gene g in x.
-                \item index 1: number of nodes in Leaf(x) that contains x
+                \item index 1: number of leaf nodes in Leaf(x) that contains gene g.
             \end{itemize}
         \end{itemize}
     \item Size of Leaf(x)
@@ -67,7 +71,7 @@ The data structure for each internal nodes is a tupple that contains following i
 \end{figure}
 
 
-Because of this, to decide the initial set of genes/ blocks of genes, I provide 3 functions with different parameters:
+Because of this, to decide the ancestral set of genes/ blocks of genes, I provide 3 functions with different parameters:
 \begin{enumerate}
     \item GenomevsGenome(Genome1,Genome2)
     \item SetvsGenome(myTuple,Genome)
@@ -85,16 +89,106 @@ with solid proof).
 
 
 \section{Assumption:}
-. Consider gene g in our reference operon:
+For any children A,B and its closest common ancestor x. Consider gene g in our reference operon:
 \begin{enumerate}
     \item Each leaf node has count(g) of value either 0 or 1.
     \item Each internal node has count(g) of value either 0, 1, or 2.
     \item S(x) includes g if and only if count(g) in x is 2.
-    
+        \begin{itemize}
+            \item If count(g) = 0, then apparently S(x) should not include g
+            % maybe need to re evaluate later
+            \item If count(g) = 1, either include g in S(x) or not does not change 
+        \end{itemize}
+    \item count(g) in x depends on the count(g) in A and B. However, in some special cases, it also depends on the frequency it appears in all Leaf(x). Define $FREQ_g(x)$ as frequency of gene g in Leaf(x). There are 3 scenarios:
+    \begin{enumerate}
+        \item if frequency is less than .5 then count(g) is 0
+        \item if frequency is greater or equal to .5, but less than .67 (2/3), then count(g) is 1
+        \item if frequency is greater or equal to .67, then count(g) is 2
+    \end{enumerate}
 \end{enumerate}
 
 
 
+\section{Transitional Function:}
 
+\subsection{GenomevsGenome:}
+Given children Genome A and Genome B, define their closest common ancestor as x. Consider gene g in our reference operon:
+\begin{itemize}
+    \item $\mathnormal{A.count(g) = \textnormal{0} , B.count(g) = \textnormal{0}   \rightarrow x.count(g) = \textnormal{0}.} $
+    \item $\mathnormal{A.count(g) = \textnormal{0} , B.count(g) = \textnormal{1}   \rightarrow x.count(g) = \textnormal{1}.} $
+    \item $\mathnormal{A.count(g) = \textnormal{1} , B.count(g) = \textnormal{0}   \rightarrow x.count(g) = \textnormal{1}.} $
+    \item $\mathnormal{A.count(g) = \textnormal{1} , B.count(g) = \textnormal{1}   \rightarrow x.count(g) = \textnormal{2}.} $
+\end{itemize}
+
+\subsection{SetvsGenome:}
+Given children set A and genome B, define their closest common ancestor as x. Consider gene g in our reference operon, define FREQ is the frequency of gene g in the set leaf(x).
+\begin{itemize}
+    % when A.count(g) = 0
+    \item $\mathnormal{A.count(g) = \textnormal{0} , B.count(g) = \textnormal{0}   \rightarrow x.count(g) = \textnormal{0}.} $
+    \item $\mathnormal{A.count(g) = \textnormal{0} , B.count(g) = \textnormal{1}   \rightarrow x.count(g) = } $ 
+    $\begin{cases} 
+        0, & \mbox{if } FREQ_g(x)\mbox{ $<$ .5 } \\ 
+        1, & \mbox{if .5  $\leq$ } FREQ_g(x)\mbox{ $<$ .67} 
+    \end{cases}$
+    
+    % when A.count(g) = 1
+    \item $\mathnormal{A.count(g) = \textnormal{1} , B.count(g) = \textnormal{0}   \rightarrow x.count(g) = \textnormal{0}.} $
+    \item $\mathnormal{A.count(g) = \textnormal{1} , B.count(g) = \textnormal{1}   \rightarrow x.count(g) = } $ 
+    $\begin{cases} 
+        1, & \mbox{if .5  $\leq$ } FREQ_g(x)\mbox{ $<$ .67} \\ 
+        2, & \mbox{if .67 $\leq$ } FREQ_g(x)
+    \end{cases}$
+    
+    % when A.count(g) = 2
+    \item $\mathnormal{A.count(g) = \textnormal{2} , B.count(g) = \textnormal{0}   \rightarrow x.count(g) = } $
+        $\begin{cases} 
+        1, & \mbox{if .5  $\leq$ } FREQ_g(x)\mbox{ $<$ .67} \\ 
+        2, & \mbox{if .67 $\leq$ } FREQ_g(x)
+    \end{cases}$
+    \item $\mathnormal{A.count(g) = \textnormal{2} , B.count(g) = \textnormal{1}   \rightarrow x.count(g) = \textnormal{2}.} $ 
+
+    
+\end{itemize}
+
+\subsection{SetvsSet:}
+Given children set A and set B, define their closest common ancestor as x. Consider gene g in our reference operon, define FREQ is the frequency of gene g in the set leaf(x). Because the matrix will be symmetrical, hence, we only consider the one half of it
+\begin{itemize}
+    % when A.count(g) = 0
+    \item $\mathnormal{A.count(g) = \textnormal{0} , B.count(g) = \textnormal{0}   \rightarrow x.count(g) = \textnormal{0}.} $
+        \item $\mathnormal{A.count(g) = \textnormal{0} , B.count(g) = \textnormal{1}   \rightarrow x.count(g) = } $
+    $\begin{cases} 
+        0, & \mbox{if } FREQ_g(x)\mbox{ $<$ .5 } \\ 
+        1, & \mbox{if .5  $\leq$ } FREQ_g(x)\mbox{ $<$ .67}
+    \end{cases}$
+    \item $\mathnormal{A.count(g) = \textnormal{0} , B.count(g) = \textnormal{2}   \rightarrow x.count(g) = } $ 
+    $\begin{cases} 
+        0, & \mbox{if } FREQ_g(x)\mbox{ $<$ .5 } \\ 
+        1, & \mbox{if .5  $\leq$ } FREQ_g(x)\mbox{ $<$ .67} \\
+        2, & \mbox{if .67 $\leq$ } FREQ_g(x)
+    \end{cases}$
+    
+    % when A.count(g) = 1
+    \item $\mathnormal{A.count(g) = \textnormal{1} , B.count(g) = \textnormal{1}   \rightarrow x.count(g) = } $ 
+    $\begin{cases} 
+        1, & \mbox{if .5  $\leq$ } FREQ_g(x)\mbox{ $<$ .67} \\ 
+        2, & \mbox{if .67 $\leq$ } FREQ_g(x)
+    \end{cases}$
+        \item $\mathnormal{A.count(g) = \textnormal{1} , B.count(g) = \textnormal{2}   \rightarrow x.count(g) = } $ 
+    $\begin{cases} 
+        1, & \mbox{if .5  $\leq$ } FREQ_g(x)\mbox{ $<$ .67} \\ 
+        2, & \mbox{if .67 $\leq$ } FREQ_g(x)
+    \end{cases}$
+    
+    % when A.count(g) = 2
+    \item $\mathnormal{A.count(g) = \textnormal{2} , B.count(g) = \textnormal{2}   \rightarrow x.count(g) = \textnormal{2}.} $ 
+
+\end{itemize} 
+
+\subsection{Property of the result}
+Here are the list of properties of our ancestral gene/ gene blocks x from any children A, B:
+\begin{enumerate}
+    \item For any genes g include in S(x), $FREQ_g(x) \geq\ .67$ 
+    \item For any genes g that does not appear in S(x), $FREQ_g(x) < .67$ 
+\end{enumerate}
 
 \end{document}
