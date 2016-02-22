@@ -234,8 +234,8 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   (either my set, or the genome), 2 means it appear in the set and the genome.
                   0 means no appearance.
-    @para_type  : 1 list of genes , 1 tuple of (set,dictionary), 1 split.
-    @result_type: tuple of (list of gene, dictionary,Genome count)
+    @para_type  : 1 list of genes , 1 tuple of (set,dictionary,Genome count), 1 split.
+    @result_type: tuple of (set, dictionary,Genome count)
 '''
 def findSetInitial_SG(myTuple,Genome,split):
     ### working on the Genome info
@@ -277,15 +277,15 @@ def findSetInitial_SG(myTuple,Genome,split):
             # update the elementCount
             elementCount[key][0]=newValue
     # case where the Genome.count(g) is 0:
-        for key in elementCount:
-            if key not in Genome_dic:
-                # calculate the frequency
-                frequency = elementCount[key][1]/ count
-                # use the transitional function helper to update the key value, count of gene in
-                # Genome is 0 
-                newValue = transitionSG(elementCount[key][0],0,frequency)
-                # update the elementCount
-                elementCount[key][0]=newValue
+    for key in elementCount:
+        if key not in Genome_dic:
+            # calculate the frequency
+            frequency = elementCount[key][1]/ count
+            # use the transitional function helper to update the key value, count of gene in
+            # Genome is 0
+            newValue = transitionSG(elementCount[key][0],0,frequency)
+            # update the elementCount
+            elementCount[key][0]=newValue
 
     ### create the initial Set for the new Tuple:
                 
@@ -297,7 +297,75 @@ def findSetInitial_SG(myTuple,Genome,split):
     # union the above 2, then do reductionSubset
     resultInitial = initial.union(Genome_geneBlocks)
     resultInitial = reductionSubset(resultInitial)
-    return (resultInitial,elementCount,count)
 
+''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
+                  has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
+                  , 2 means it appear in the set and the genome. 
+    @para_type  : 2 tuples of (set,dictionary,Genome count).
+    @result_type: tuple of (set, dictionary,Genome count)
+'''
+def findSetInitial_SS(myTuple1,myTuple2):
+    ### extract info from myTuple1    
+    # the gene/ gene block set
+    initial1= myTuple1[0]
+    # the gene Count dictionary
+    elementCount1 = myTuple1[1]
+
+    ### extract info from myTuple2
+        # the gene/ gene block set
+    initial1= myTuple2[0]
+    # the gene Count dictionary
+    elementCount2 = myTuple2[1]
+
+    ### count of Genome
+    count = myTuple1[2] + myTuple2[2]
+    ### editting the element count Dic for the new Tuple:
+
+    # create new elementCountdic:
+    elementCount ={}
+    # case where the initial2.count(g) exist (elemntCount2[key][1] != 0)
+    # create new key for the new gene from Genome, if existing, just update
+    for key in elementCount2:
+        if key not in elementCount1:
+            # this means that for the Set, its leaf has none of gene g.
+            # calculate frequency:
+            frequency = elementCount2[key][1]/count
+            # use transition function to derive new value for the count of Set(x)
+            newValue = transitionSS(elementCount2[key][0],0,frequency)
+            # update the elementCount:
+            elementCount[key]=[newValue,elementCount2[key][1]]
+        else:
+            # increment the number of leaf for the parent node by the sum
+            numberOfLeaf = elementCount1[key][1] +elementCount2[key][1]
+            # calculate the frequency
+            frequency = numberOfLeaf/ count
+            # use the transitional function helper to update the key value, count of gene in
+            # Genome is 1 
+            newValue = transitionSS(elementCount1[key][0],elementCount2[key][0],frequency)
+            # update the elementCount
+            elementCount[key]=[newValue,numberOfLeaf]
+    # case where the Genome.count(g) is 0:
+    for key in elementCount1:
+        if key not in elementCount2:
+            # calculate the frequency
+            frequency = elementCount1[key][1]/ count
+            # use the transitional function helper to update the key value, count of gene in
+            # Genome is 0
+            newValue = transitionSS(elementCount1[key][0],0,frequency)
+            # update the elementCount
+            elementCount[key]=[newValue,elementCount1[key][1]]
+
+    ### create the initial Set for the new Tuple:
+                
+    # edit the initialSet from the Set (reducecount)
+    initial1 = reductionCount(initial1,elementCount)
+    initial2 = reductionCount(initial2,elementCount)
+    # union both of them
+    initial = initial1.union(initial2)
+    # edit the GenomeBlocks
+    initial = initial.reductionSubset(initial)
+
+    return (inital, elementCount, count)
+    
 
     
