@@ -92,9 +92,19 @@ def reductionSubset(initial):
         for index in range(len(CandidateBlocks)):
             add = True # to add the element or not
             for i in range(len(CandidateBlocks)): # 'ab' might appear before 'b'
-                if CandidateBlocks[index] in CandidateBlocks[i] and index !=i:
-                    add = False
-                    break
+                # for the case where the element is only a letter
+                if index !=i:
+                    if CandidateBlocks[index] in CandidateBlocks[i]:
+                        add = False
+                        break
+                # for cases like 'jk' and 'jhk'
+                    subcount = 0
+                    for gene in CandidateBlocks[index]:
+                        if gene in CandidateBlocks[i]:
+                            subcount +=1
+                    if subcount == len(CandidateBlocks[index]):
+                        add = False
+                        break
             if add:
                 initial.add(CandidateBlocks[index])
         return initial
@@ -298,6 +308,7 @@ def findSetInitial_SG(myTuple,Genome,split):
     resultInitial = initial.union(Genome_geneBlocks)
     resultInitial = reductionSubset(resultInitial)
 
+    return (resultInitial, elementCount, count)
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   , 2 means it appear in the set and the genome. 
@@ -313,7 +324,7 @@ def findSetInitial_SS(myTuple1,myTuple2):
 
     ### extract info from myTuple2
         # the gene/ gene block set
-    initial1= myTuple2[0]
+    initial2= myTuple2[0]
     # the gene Count dictionary
     elementCount2 = myTuple2[1]
 
@@ -363,9 +374,9 @@ def findSetInitial_SS(myTuple1,myTuple2):
     # union both of them
     initial = initial1.union(initial2)
     # edit the GenomeBlocks
-    initial = initial.reductionSubset(initial)
+    initial = reductionSubset(initial)
 
-    return (inital, elementCount, count)
+    return (initial, elementCount, count)
     
 
-    
+
