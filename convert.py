@@ -25,7 +25,7 @@ class readable_dir(argparse.Action):
            try:
                os.mkdir(prospective_dir)
            except OSError:
-               print argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir))
+               print (argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir)))
         if os.access(prospective_dir, os.R_OK):
             setattr(namespace,self.dest,prospective_dir)
         else:
@@ -46,11 +46,11 @@ def chk_output_directory_path(OutputDirectory,sessionID):
            #os.mkdir(OutputDirectory + "_" + str(sessionID))
            return True
         except OSError:
-           print "Unable to create directory:", OutputDirectory
+           print ("Unable to create directory:", OutputDirectory)
            sys.exit()
 
 # convert the file into dictionary with useful info    
-def toString(file):
+def toDict(file):
     infile = open(file,'r')
     mapping =''
     dic_map ={}
@@ -81,9 +81,24 @@ def toString(file):
             for item in genes_string:
                 info= item.split(',') #['dppA', '402362', '400796', '+1']
                 position=(int(info[1]),int(info[2]))
+                position=(min(position),max(position))
                 main_dic[genome][info[3]][position]=dic_map[info[0]]
     return main_dic
 
+# from dic, create string
+def toString(dic):
+    wholestring=''
+    for genome in dic:
+        string= genome + ':' # the string to be written
+        substring = ''
+        for key in dic[genome]:
+            if len(dic[genome][key])==0:
+                continue
+            else:
+                
+        string += '\n'
+        
+        
 if __name__ == "__main__":
 
     start = time.time()
@@ -96,5 +111,6 @@ if __name__ == "__main__":
         res = traverseAll(args.OperonDataDirectory)
         for r in res:
             root,f = os.path.split(r)
+            
             outfile = open(outputsession+'/'+f,'w')
             
