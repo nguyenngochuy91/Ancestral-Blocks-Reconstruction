@@ -18,6 +18,18 @@ def traverseAll(path):
             res.append(root+f)
     return res
 
+class readable_dir(argparse.Action):
+    def __call__(self,parser, namespace, values, option_string=None):
+        prospective_dir=values
+        if not os.path.isdir(prospective_dir):
+           try:
+               os.mkdir(prospective_dir)
+           except OSError:
+               print argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir))
+        if os.access(prospective_dir, os.R_OK):
+            setattr(namespace,self.dest,prospective_dir)
+        else:
+            raise argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir))
 
 def get_arguments():
     parser = argparse.ArgumentParser()
@@ -36,20 +48,17 @@ def chk_output_directory_path(OutputDirectory,sessionID):
         except OSError:
            print "Unable to create directory:", OutputDirectory
            sys.exit()
-# given a dic of info of genome genes (info has position and strand), provide an string of input
-# with gap as '|'
 
-def toString(gene_list):
-    
-def convert(file):
+# convert the file into dictionary with useful info    
+def toString(file):
     infile = open(file,'r')
     mapping =''
-    body=''
     dic_map ={}
+    main_dic={}
     dic_distance={}
-    dic_distance['+1']={}
+    # create 3 main key
     for line in infile.readlines():
-        if line[0] == '(':
+        if line[0] != 'N':
             mapping = line.split('\t')[:-1] # 
             for item in mapping:
                 item_split = item.split(',')
@@ -57,15 +66,23 @@ def convert(file):
                 value = item_split[1]
                 dic_map[key]=value # {'astA': 'a'}
         else:
-            string =''
+
             genome = line.split(':')[0] # (line.split(':')= ['NC_002696', '(astA,634700,635744,1)\t(astD,635730,637149,1)\t(astB,637145,638426,1)\t(astC,638435,639614,1)\t']
+            main_dic[genome]={}
+            # 3 distance sub dictionary
+            main_dic[genome]['+1']={}
+            main_dic[genome]['-1']={}
+            main_dic[genome]['1']={}
             genes_string = line.split(':')[1]
             # to deal with each genes, they are in tuple, where first is the name of the gene, follow by the position, and the strand it is on
             # should consider 2 type of strand (so i can put a gap correctly
             genes_string = genes_string .split('\t')[:-1] # ['(astA,634700,635744,1)', '(astD,635730,637149,1)', '(astB,637145,638426,1)', '(astC,638435,639614,1)']
             genes_string = list(set(genes_string))
-            
-            
+            for item in genes_string:
+                info= item.split(',') #['dppA', '402362', '400796', '+1']
+                position=(int(info[1]),int(info[2]))
+                main_dic[genome][info[3]][position]=dic_map[info[0]]
+    return main_dic
 
 if __name__ == "__main__":
 
