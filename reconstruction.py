@@ -27,7 +27,9 @@ def parsing(file):
                         gene_blocks= item[1].split('\n')[0]
                         genomes[name]=gene_blocks
         return (mapping,genomes)
-parsing('./new_result/astCADBE')
+result=parsing('./new_result/astCADBE')
+genomes=result[1]
+mapping=result[0]
 tree= Tree('muscle.ph')
 # print (tree)
 count =0
@@ -46,8 +48,10 @@ for node in tree.iter_descendants("postorder"):
                         node.add_feature('node_type', 'SG')
                 if leaf == 0:                        
                         node.add_feature('node_type' , 'GG')
-                if leaf == 2:                        
+                if leaf == 2:
                         node.add_feature('node_type' , 'SS')
+        else:
+                node.add_feature('gene_block',)   
 
 # this serve to find which node has which children
 for node in tree.iter_descendants("postorder"):
