@@ -3,7 +3,7 @@
     Program : Given the operon directory, for each operons file, get the info about the gene in each genomes, map it
               into alphabet letter , get the gap, map gap to '|' and write to ouputfile.
     Start   : 05/04/2016
-    End     : /2016
+    End     : 05/05/2016
 '''
 
 import os
@@ -52,6 +52,7 @@ def chk_output_directory_path(OutputDirectory,sessionID):
 # convert the file into dictionary with useful info    
 def toDict(file):
     infile = open(file,'r')
+    map_code=''
     mapping =''
     dic_map ={}
     main_dic={}
@@ -59,6 +60,7 @@ def toDict(file):
     # create 3 main key
     for line in infile.readlines():
         if line[0] != 'N':
+            map_code = line
             mapping = line.split('\t')[:-1] # 
             for item in mapping:
                 item_split = item.split(',')
@@ -83,21 +85,40 @@ def toDict(file):
                 position=(int(info[1]),int(info[2]))
                 position=(min(position),max(position))
                 main_dic[genome][info[3]][position]=dic_map[info[0]]
-    return main_dic
+    return (main_dic,map_code)
 
 # from dic, create string
-def toString(dic):
+def toString(dic,map_code):
     wholestring=''
+    wholestring+=map_code
     for genome in dic:
         string= genome + ':' # the string to be written
         substring = ''
+        flag = False # check if it has a gene block
         for key in dic[genome]:
             if len(dic[genome][key])==0:
                 continue
             else:
+                myList=[]
+                for position in dic[genome][key]:
+                    myList.append(position)
+                myList.sort()
+                substring += dic[genome][key][myList[0]]
+                for index in range(len(myList)-1):
+                    dif = abs(myList[index+1][0] - myList[index][1]) 
+                    if dif >500:
+                        substring += '|'
+                    else:
+                        flag = True   
+                    substring += dic[genome][key][myList[index+1]]
+                substring += '|' # changing strand
+        if flag:
+            string += substring[:-1] # only add if there is a gene block
                 
         string += '\n'
-        
+        wholestring += string
+    return wholestring
+
         
 if __name__ == "__main__":
 
@@ -111,6 +132,9 @@ if __name__ == "__main__":
         res = traverseAll(args.OperonDataDirectory)
         for r in res:
             root,f = os.path.split(r)
-            
+            result= toDict(r)
+            wholestring = toString(result[0],result[1])
             outfile = open(outputsession+'/'+f,'w')
-            
+            outfile.write(wholestring)
+            outfile.close()
+    print (time.time() - start)
