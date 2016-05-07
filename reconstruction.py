@@ -105,7 +105,9 @@ def reconstruct(file):
             for children in node.get_children():
                 string += children.name+'\t'
             info += string +'\n'
-    print (info)
+    out= open('./structure.txt','w')
+    out.write(info)
+    out.close()
     # use findParent function to find geneblock
     for node in tree.iter_descendants("postorder"):
         if not node.is_leaf():
@@ -162,6 +164,11 @@ if __name__ == "__main__":
         for r in res:
             root,f = os.path.split(r)
             tree = reconstruct(r)
+            #if f == 'rplKAJL-rpoBC':
+            #    for node in tree.iter_descendants("postorder"):
+            #        if node.name == 'Node25' or node.name == 'Node28' or node.name =='Node29':
+            #            print node.name,node.initial,node.elementCount,node.count
+                        
             tree.write(format=2, outfile=outputsession+'/'+f,features=['name','initial','gene_block'])
     print (time.time() - start)
 
