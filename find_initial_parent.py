@@ -7,7 +7,7 @@
     Type   : Genome type is a combination of gene type and a '|' character
              Gene type is string stype
     Start  : 01/07/2016
-    End    :
+    End    : 02/07/2016
 '''
 
 #######################################################################################
@@ -206,18 +206,24 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
             elementCount[gene]=[2,2]
         else:
             elementCount[gene]=[1,1]
-
+    initial.update(setOfBlocks(Genome1))
+    initial.update(setOfBlocks(Genome2))
+    # reduce by the count
+    initial = reductionCount(initial, elementCount)
+    # reduce the subset
+    initial = reductionSubset(initial)
+    '''
     ### if neither of them has a split (life is real good)
     if split1 == 0 and split2 == 0:
         initial = union
 
     ### if both of them have split ( grrrr )
     if split1 !=0 and split2 !=0:
-        ''' parse the genome1 and genome2 into 2 sets og group of genes
-            that is delimitered by |
-            ex: ab|cd|ef will be same as ef|cd|ab
-            ab|cd|ef will be the same as dc|ba|fe
-        '''
+        # parse the genome1 and genome2 into 2 sets og group of genes
+        # that is delimitered by |
+        # ex: ab|cd|ef will be same as ef|cd|ab
+        # ab|cd|ef will be the same as dc|ba|fe
+        
         # add the set of gene blocks from genome1
         initial.update(setOfBlocks(Genome1))
         # add the set of gene blocks from genome2
@@ -238,6 +244,8 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
         initial = reductionCount(initial, elementCount)
         # reduce the subset
         initial = reductionSubset(initial)
+    '''
+    
     return (initial,elementCount,2)
 
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
@@ -377,6 +385,3 @@ def findSetInitial_SS(myTuple1,myTuple2):
     initial = reductionSubset(initial)
 
     return (initial, elementCount, count)
-    
-
-
