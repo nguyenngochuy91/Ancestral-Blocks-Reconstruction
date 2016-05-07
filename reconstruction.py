@@ -4,62 +4,164 @@
     Start   : 05/04/2016
     End     : 05/05/2016
 '''
-
+import os
+import argparse
+import time
+import uuid
 from findParent import *
 from ete3 import *
+# traverse and get the file
+def traverseAll(path):
+    res=[]
+    for root,dirs,files in os.walk(path):
+        for f in files:
+            res.append(root+f)
+    return res
+
+class readable_dir(argparse.Action):
+    def __call__(self,parser, namespace, values, option_string=None):
+        prospective_dir=values
+        if not os.path.isdir(prospective_dir):
+           try:
+               os.mkdir(prospective_dir)
+           except OSError:
+               print (argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir)))
+        if os.access(prospective_dir, os.R_OK):
+            setattr(namespace,self.dest,prospective_dir)
+        else:
+            raise argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir))
+
+def get_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--InputDataDirectory","-i",action=readable_dir,help="This directory should contain files with gene name, start, stop, strand direction information for each genome.")
+    parser.add_argument("--OutputDirectory","-o", help="Output of this program will be stored in the path supplied here. It will make a new directory if path given is valid or it will raise an error")
+    args = parser.parse_args()
+    return args
+
+
+def chk_output_directory_path(OutputDirectory,sessionID):
+    if not os.path.exists(OutputDirectory + "_" + str(sessionID)):
+        try:
+           #os.mkdir(OutputDirectory + "_" + str(sessionID))
+           return True
+        except OSError:
+           print ("Unable to create directory:", OutputDirectory)
+           sys.exit()
 
 # function to parse each file in the directory and try to assign the genes block for each genome
 # this return a tuple, in this tuple contains mapping gene to alphabet, and the genomes and its gene blocks
 def parsing(file):
-        mapping ={}
-        genomes={}
-        myfile = open(file,'r')
-        for line in myfile.readlines():
-                if line[0]!='N':
-                        mylist= line.split('\t')[:-1]
-                        for item in mylist:
-                                tupple= item.split(',')
-                                mapping[tupple[1]]=tupple[0]
-                        # print (mapping)
-                else:
-                        item = line.split(':')
-                        name = item[0]
-                        gene_blocks= item[1].split('\n')[0]
-                        genomes[name]=gene_blocks
-        return (mapping,genomes)
-result=parsing('./new_result/astCADBE')
-genomes=result[1]
-mapping=result[0]
-tree= Tree('muscle.ph')
-# print (tree)
-count =0
-for node in tree.iter_descendants("postorder"):
-	if node.name == '':
-		count +=1
-		node.name = 'Node'+ str(count)
-		# include new feature to create gene block
-		node.add_feature('gene_block','')
-		leaf = 0
-		for children in node.get_children():
-                        if children.is_leaf():
-                                leaf+=1
-                # create feature to know whether to apply which function
-                if leaf == 1:                        
-                        node.add_feature('node_type', 'SG')
-                if leaf == 0:                        
-                        node.add_feature('node_type' , 'GG')
-                if leaf == 2:
-                        node.add_feature('node_type' , 'SS')
+    mapping ={}
+    genomes={}
+    myfile = open(file,'r')
+    for line in myfile.readlines():
+        if line[0]!='N':
+            mylist= line.split('\t')[:-1]
+            for item in mylist:
+                tupple= item.split(',')
+                mapping[tupple[1]]=tupple[0]
+                # print (mapping)
         else:
-                node.add_feature('gene_block',)   
+            item = line.split(':')
+            name = item[0]
+            gene_blocks= item[1].split('\n')[0]
+            genomes[name]=gene_blocks
+    return (mapping,genomes)
+    
 
-# this serve to find which node has which children
-for node in tree.iter_descendants("postorder"):
-	if not node.is_leaf():
-		string = str(node.name)+':'
-		for children in node.get_children():
-			string += children.name+'\t'
-		print (string)
-print (tree.write(features=['gene_block','node_type']))
-                            
+def reconstruct(file):
+    tree= Tree('muscle.ph')
+    result=parsing(file)
+    genomes=result[1]
+    mapping=result[0]
+    # traverse the first time to assign name, and the node_type
+    count =0
+    for node in tree.iter_descendants("postorder"):
+        if node.name == '':
+            count +=1
+            node.name = 'Node'+ str(count)
+            leaf = 0
+            for children in node.get_children():
+                if children.is_leaf():
+                    leaf+=1
+                # create feature to apply which function of 3 functions
+                if leaf == 1:                        
+                    node.add_features(node_type= 'SG')
+                if leaf == 0:                        
+                    node.add_features(node_type= 'SS')
+                if leaf == 2:
+                    node.add_features(node_type= 'GG')
+        else:
+            mylist= node.name.split('_')
+            name = mylist[2]+'_'+mylist[3]
+            # print(genomes[name])
+            node.add_features(gene_block=genomes[name])   
+    
+    # this serve to find which node has which children
+    info = ''
+    for node in tree.iter_descendants("postorder"):
+        if not node.is_leaf():
+            string = str(node.name)+':'
+            for children in node.get_children():
+                string += children.name+'\t'
+            info += string +'\n'
+    print (info)
+    # use findParent function to find geneblock
+    for node in tree.iter_descendants("postorder"):
+        if not node.is_leaf():
+            if node.node_type == 'GG':
+                # get the info from the 2 genomes
+                genome_list=[]
+                for children in node.get_children():
+                    genome_list.append(children.gene_block)
+                split1= countSplit(genome_list[0])
+                split2=countSplit(genome_list[1])
+                # run the GG function
+                mytuple= findSetInitial_GG(genome_list[0],genome_list[1],split1,
+                                           split2)
+                               
+            if node.node_type == 'SG':            
+                for children in node.get_children():
+                    if children.is_leaf():
+                        genome=children.gene_block # get the genome info
+                    else: # it is a set, extract the info into a tuple
+                        initial_tuple = (children.initial,children.elementCount,
+                                   children.count)
+                split1= countSplit(genome)
+                # run the SG function
+                mytuple=findSetInitial_SG(initial_tuple,genome,split1)
+                
+            if node.node_type == 'SS': 
+                genome_list=[]
+                for children in node.get_children():
+                    # append the whole node first to the genome_list
+                    genome_list.append(children)
+                tuple1=(genome_list[0].initial,genome_list[0].elementCount,
+                                   genome_list[0].count)
+                tuple2=(genome_list[1].initial,genome_list[1].elementCount,
+                                   genome_list[1].count)
+                # run the SS function
+                mytuple=findSetInitial_SS(tuple1,tuple2)
+            # at the end, from mytuple, insert the info into the internal node
+            node.add_features(initial=mytuple[0],elementCount=mytuple[1],
+                                  count = mytuple[2])
+    return tree
+            # print (node.name,node.initial,node.elementCount)
+    # print (tree.write(features=['name','initial','gene_block']))
+        
+if __name__ == "__main__":
+
+    start = time.time()
+    args = get_arguments()
+    sessionID = uuid.uuid1()
+    condition = chk_output_directory_path(args.OutputDirectory,sessionID)
+    if condition:
+        outputsession = args.OutputDirectory
+        os.mkdir(outputsession)
+        res = traverseAll(args.InputDataDirectory)
+        for r in res:
+            root,f = os.path.split(r)
+            tree = reconstruct(r)
+            tree.write(format=2, outfile=outputsession+'/'+f,features=['name','initial','gene_block'])
+    print (time.time() - start)
 
