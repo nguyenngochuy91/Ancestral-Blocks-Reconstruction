@@ -147,7 +147,12 @@ def reconstruct(file):
             # at the end, from mytuple, insert the info into the internal node
             node.add_features(initial=mytuple[0],elementCount=mytuple[1],
                                   count = mytuple[2])
-    return tree
+    # set mapping back to a string
+    myString= ''
+    for key in mapping:
+        myString+=mapping[key]+','+key+'\t'
+    myString+='\n'
+    return (tree,myString)
             # print (node.name,node.initial,node.elementCount)
     # print (tree.write(features=['name','initial','gene_block']))
         
@@ -163,12 +168,16 @@ if __name__ == "__main__":
         res = traverseAll(args.InputDataDirectory)
         for r in res:
             root,f = os.path.split(r)
-            tree = reconstruct(r)
+            myTuple=reconstruct(r)
+            tree = myTuple[0]
+            mapping = myTuple[1]
             #if f == 'rplKAJL-rpoBC':
             #    for node in tree.iter_descendants("postorder"):
             #        if node.name == 'Node25' or node.name == 'Node28' or node.name =='Node29':
             #            print node.name,node.initial,node.elementCount,node.count
-                        
+            outfile=open(outputsession+'/'+f+'_mapping','w')
+            outfile.write(mapping)      
+            outfile.close()
             tree.write(format=2, outfile=outputsession+'/'+f,features=['name','initial','gene_block'])
     print (time.time() - start)
 
