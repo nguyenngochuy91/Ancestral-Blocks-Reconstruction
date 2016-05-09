@@ -242,6 +242,15 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
         initial = reductionCount(initial, elementCount)
         # reduce the subset
         initial = reductionSubset(initial)
+    if split1 != 0 and split2 ==0:
+        # add the set of gene blocks from genome2
+        initial.update(setOfBlocks(Genome1))
+        # add element that is in genome1 but not 2
+        initial=initial.union(Genome2_gene)
+        # reduce by the count
+        initial = reductionCount(initial, elementCount)
+        # reduce the subset
+        initial = reductionSubset(initial)
     return (initial,elementCount,2)
 
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
@@ -385,5 +394,4 @@ def findSetInitial_SS(myTuple1,myTuple2):
 
     return (initial, elementCount, count)
     
-
 
