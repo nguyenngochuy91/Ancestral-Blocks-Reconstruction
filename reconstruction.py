@@ -33,8 +33,9 @@ class readable_dir(argparse.Action):
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--InputDataDirectory","-i",action=readable_dir,help="This directory should contain files with gene name, start, stop, strand direction information for each genome.")
+    parser.add_argument("--InputDataDirectory","-i",action=readable_dir,help="This contain the translation result in term of alphabet")
     parser.add_argument("--OutputDirectory","-o", help="Output of this program will be stored in the path supplied here. It will make a new directory if path given is valid or it will raise an error")
+    parser.add_argument("--TreeFile","-t", help="Tree file name")
     args = parser.parse_args()
     return args
 
@@ -69,8 +70,8 @@ def parsing(file):
     return (mapping,genomes)
     
 
-def reconstruct(file):
-    tree= Tree('muscle.ph')
+def reconstruct(file,tree):
+    tree= Tree(tree)
     result=parsing(file)
     genomes=result[1]
     mapping=result[0]
@@ -162,13 +163,14 @@ if __name__ == "__main__":
     args = get_arguments()
     sessionID = uuid.uuid1()
     condition = chk_output_directory_path(args.OutputDirectory,sessionID)
+    treeFile=args.TreeFile
     if condition:
         outputsession = args.OutputDirectory
         os.mkdir(outputsession)
         res = traverseAll(args.InputDataDirectory)
         for r in res:
             root,f = os.path.split(r)
-            myTuple=reconstruct(r)
+            myTuple=reconstruct(r,treeFile)
             tree = myTuple[0]
             mapping = myTuple[1]
             #if f == 'rplKAJL-rpoBC':
