@@ -75,36 +75,42 @@ def setOfBlocks(Genome):
     @para_type  : set of block of genes/ genes.
     @result_type: list of blocks genes, genes.
 '''
-def reductionSubset(initial):
+def reductionSubset(initial,elementCount):
         ''' for cases that return set {'abc','bc','a','ef','f'}
             I will remove 'bc', 'a' and 'f' because having 'abc','ef' is 
             representative enough. In addition, the cost of split is the minimum
             (need to be proved)
         '''
-        CandidateBlocks=[]
-        # make a copy of our initial set into a list to use index'
-        for element in initial:
-            CandidateBlocks.append(element)
-        # clear our initial set, prepare to add those that are not subsets to it'
+        # findout all the letter that appear in the 
+        dic={}
+        for item in initial:
+            dic[item]={}
+            dic[item]['add']=True
+            for alphabet in elementCount:
+                dic[item][alphabet]=0
+            for letter in item:
+                dic[item][letter]+=1
+        # check for subset
+
+        for item in dic:
+            for candidate in dic:
+                flag =True 
+                if candidate != item:
+                    for key in dic[candidate]:
+                        if key == "add":
+                            continue
+                        if dic[item][key]  > dic[candidate][key]:
+                            flag = False
+           
+                            break
+                        
+                    if flag: # means that all count of letter in item less or 
+                            # equal to the candidate => subset
+                        dic[item]['add']=False
         initial.clear()
-        for index in range(len(CandidateBlocks)):
-            add = True # to add the element or not
-            for i in range(len(CandidateBlocks)): # 'ab' might appear before 'b'
-                # for the case where the element is only a letter
-                if index !=i:
-                    if CandidateBlocks[index] in CandidateBlocks[i]:
-                        add = False
-                        break
-                # for cases like 'jk' and 'jhk'
-                    subcount = 0
-                    for gene in CandidateBlocks[index]:
-                        if gene in CandidateBlocks[i]:
-                            subcount +=1
-                    if subcount == len(CandidateBlocks[index]):
-                        add = False
-                        break
-            if add:
-                initial.add(CandidateBlocks[index])
+        for item in dic:
+            if dic[item]['add']:
+                initial.add(item)
         return initial
     
 ''' @function   : return list of blocks genes or genes that for each block of genes, the gene
@@ -190,13 +196,16 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
     elementCount= {}
     # set of different gene in Genome1
     Genome1_gene= setOfGene(Genome1)
+    #print('Genome1_gene',Genome1_gene)
     # set of different gene in Genome2
     Genome2_gene= setOfGene(Genome2)
+    #print('Genome2_gene',Genome2_gene)
 
     # union the above 2 set to get list of possible gene from 2 Genome
     union = Genome1_gene.union(Genome2_gene)
     # intersect the above 2 set to get list of gene that appears in both genome
     intersect = Genome1_gene.intersection(Genome2_gene)
+    #print('intersect',intersect)
     # create a set of element count
     for gene in union:
         # add a list (gene,value) (since set does not take dictionary)
@@ -209,8 +218,9 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
     if split1 == 0 and split2 == 0:
         # string 
         string =''
-        mylist= list(union)
+        mylist= list(intersect)
         mylist.sort()
+        # for case there is duplication 
         for gene in mylist:
             string+=gene
         initial.add(string)
@@ -229,7 +239,7 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
         # reduce by the count
         initial = reductionCount(initial, elementCount)
         # reduce the subset
-        initial = reductionSubset(initial)
+        initial = reductionSubset(initial,elementCount)
         
     # if one of them has a split (we can assume second one has split
     # because we can switch from the parameter of our function)
@@ -241,7 +251,7 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
         # reduce by the count
         initial = reductionCount(initial, elementCount)
         # reduce the subset
-        initial = reductionSubset(initial)
+        initial = reductionSubset(initial,elementCount)
     if split1 != 0 and split2 ==0:
         # add the set of gene blocks from genome2
         initial.update(setOfBlocks(Genome1))
@@ -250,7 +260,7 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
         # reduce by the count
         initial = reductionCount(initial, elementCount)
         # reduce the subset
-        initial = reductionSubset(initial)
+        initial = reductionSubset(initial,elementCount)
     return (initial,elementCount,2)
 
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
@@ -265,8 +275,10 @@ def findSetInitial_SG(myTuple,Genome,split):
     # get the gene set from the Genome.
     GenomeDic={}
     Genome_gene= setOfGene(Genome)
+    
     # get the geneblock set from the Genome
     Genome_geneBlocks = setOfBlocks(Genome)
+    #print('Genome_geneBlocks',Genome_geneBlocks)
     # create dictionary for the genome Gene
     Genome_dic={}
     for gene in Genome_gene:
@@ -275,6 +287,7 @@ def findSetInitial_SG(myTuple,Genome,split):
     ### extract info from myTuple
     # the gene/ gene block set
     initial= myTuple[0]
+    #print('initial',initial)
     # the gene Count dictionary
     elementCount = myTuple[1]
     # increment the size of Leaf(x)
@@ -311,16 +324,18 @@ def findSetInitial_SG(myTuple,Genome,split):
             elementCount[key][0]=newValue
 
     ### create the initial Set for the new Tuple:
-                
+    
     # edit the initialSet from the Set (reducecount)
     initial = reductionCount(initial,elementCount)
+    print('initial',initial)
     # edit the GenomeBlocks
     Genome_geneBlocks = reductionCount(Genome_geneBlocks,elementCount)
-    
+    print('Genome_geneBlocks',Genome_geneBlocks)
     # union the above 2, then do reductionSubset
     resultInitial = initial.union(Genome_geneBlocks)
-    resultInitial = reductionSubset(resultInitial)
-
+    print('resultInitial',resultInitial)
+    resultInitial = reductionSubset(resultInitial,elementCount)
+    print('resultInitial',resultInitial)
     return (resultInitial, elementCount, count)
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
@@ -389,7 +404,7 @@ def findSetInitial_SS(myTuple1,myTuple2):
     initial = initial1.union(initial2)
     #print initial
     # edit the GenomeBlocks
-    initial = reductionSubset(initial)
+    initial = reductionSubset(initial,elementCount)
     #print initial
 
     return (initial, elementCount, count)
