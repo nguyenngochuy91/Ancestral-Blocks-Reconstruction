@@ -17,10 +17,36 @@ This project provide ancestral reconstruction tools dedicated to bacteria genome
   4. Events are treated as independent.
 
 ## Installation
-TODO: Describe the installation process
+User can either use github interface Download or type the following command in command line:
+```bash
+git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
+```
+User has to install python, and ete3 (would recommend use anaconda package). The instruction can be followed from this site:
+http://etetoolkit.org/download/
 
 ## Usage
-TODO: Write usage instructions
+Here is the step by step usage:
+* Step 1: Parse each operon file in the result dic, and convert it into appropriate form:
+  1. For each gene in an operon file, map it into an alphabet letter
+  2. For each genomes, use the start, stop position and strand to find neighbor gene pairs, only display those genomes info that actually have at least orthoblocks
+  3. Use the command line below and the output will be stored in directory new_result
+```bash
+./convert.py  -n result_dic/ -o new_result/ 
+```
+* Step 2: Using each operon file from new result, and the tree input (this tree was built using muscle alignment of the 33 taxa on the rpOb gene marker), then provide ancestral reconstruction that minimize edit distance between any parent and its 2 closest children:
+1. Use the command line below and the output will be stored in directory reconstruction
+```bash
+./reconstruction.py -i new_result/ -t muscle.ph -o reconstruction/ 
+```
+* Step 3: Provide a visualization of the ancestral reconstruction process using ete3 package, it also provide a grouping theme depends on the class of the taxa
+1. Use the command line below for each operon that you like, here I use a highly conserved operon rplKAJL-rpoBC:
+```bash
+./show_tree.py -o reconstruction/rplKAJL-rpoBC -g group.txt 
+```
+2. Use the command line below for each operon that you like, here I use not so conserved operon caiTABCDE:
+```bash
+./show_tree.py -o reconstruction/caiTABCDE -g group.txt 
+```
 
 ## Credits
 1. http://bioinformatics.oxfordjournals.org/content/early/2015/04/13/bioinformatics.btv128.full 
