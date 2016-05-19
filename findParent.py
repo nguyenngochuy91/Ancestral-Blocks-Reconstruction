@@ -327,15 +327,15 @@ def findSetInitial_SG(myTuple,Genome,split):
     
     # edit the initialSet from the Set (reducecount)
     initial = reductionCount(initial,elementCount)
-    print('initial',initial)
+    # print('initial',initial)
     # edit the GenomeBlocks
     Genome_geneBlocks = reductionCount(Genome_geneBlocks,elementCount)
-    print('Genome_geneBlocks',Genome_geneBlocks)
+    # print('Genome_geneBlocks',Genome_geneBlocks)
     # union the above 2, then do reductionSubset
     resultInitial = initial.union(Genome_geneBlocks)
-    print('resultInitial',resultInitial)
+    # print('resultInitial',resultInitial)
     resultInitial = reductionSubset(resultInitial,elementCount)
-    print('resultInitial',resultInitial)
+    # print('resultInitial',resultInitial)
     return (resultInitial, elementCount, count)
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
