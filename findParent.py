@@ -32,15 +32,19 @@ def countSplit(Genome):
 def countDup(Genome):
     # splitting Genome into blocks of gene 
     gene_list=Genome.split('|')
-    gene_dup=[]
+    gene_dup={}
     # iterate through the list of gene blocks
-    for index in range(len(gene_list)):
+    for item in gene_list:
+        # initiate a list of duplication gene for the dic
+        my_dup =set()
         # iterate through each gene in a gene block
-        for item in range (len(gene_list[index])):
+        for index in range (len(item)):
             # iterate from the index next to our gene (need checking) to the end of the gene block
-            for i in range(item+1, len(gene_list[index])):
-                if gene_list[index][item] == gene_list[index][i]:
-                    gene_dup.append(gene_list[index][item])                    
+            for i in range(index+1, len(item)):
+                if item[index] == item[i]:
+                    my_dup.add(item[index])    
+        if len(my_dup) > 0:
+            gene_dup[''.join(sorted(item))]= my_dup
     return gene_dup
 
 ''' @function   : return set of gene in a Genome
@@ -142,7 +146,7 @@ def reductionCount(initial, dic):
 def frequency(gene_frequency):
     if gene_frequency < .25:
         return 0
-    elif gene_frequency < .5:
+    elif gene_frequency <= .5:
         return 1
     else:
         return 2
@@ -216,13 +220,22 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
 
     ### if neither of them has a split (life is real good)
     if split1 == 0 and split2 == 0:
-        # string 
+
         string =''
         mylist= list(intersect)
         mylist.sort()
         # for case there is duplication 
+        Genome1_dup_dic = countDup(Genome1)
+        Genome2_dup_dic = countDup(Genome2)
+        dup_list=[] #only has element if dup happens in both genome
+        for key in Genome1_dup_dic:
+            if key in Genome2_dup_dic:
+                for gene in Genome2_dup_dic[key]:
+                    dup_list.append(gene)
         for gene in mylist:
             string+=gene
+            if gene in dup_list: # need to have dup, include dup of the gene
+                string+=gene
         initial.add(string)
 
     ### if both of them have split ( grrrr )
