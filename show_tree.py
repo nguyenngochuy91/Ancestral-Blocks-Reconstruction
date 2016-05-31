@@ -29,11 +29,6 @@ def parse(file):
     return color_dic
 
 
-def my_layout(node): 
-    node.img_style["size"] = 0
-
-    
-
 if __name__ == "__main__":
     start = time.time()
     args = get_arguments()
@@ -63,12 +58,13 @@ if __name__ == "__main__":
             color = color_dic[short]
             node.add_features(node_color=color)
             node.add_face(TextFace(node.name), column =0, position ="aligned")
-            # node.dist = distance 
-        nstyle = NodeStyle()
-        nstyle["fgcolor"] = color
-        nstyle["vt_line_color"]=color
-        nstyle["hz_line_color"]=color
-        node.set_style(nstyle)
+            # node.dist = distance
+        if node.node_color != 'mixed':
+            nstyle = NodeStyle()
+            nstyle["fgcolor"] = color
+            # nstyle["vt_line_color"]=color
+            # nstyle["hz_line_color"]=color
+            node.set_style(nstyle)
 
     # render the image
     tree_style = TreeStyle()
@@ -79,7 +75,7 @@ if __name__ == "__main__":
     tree_style.guiding_lines_type = 1
 
     # tree.render(args.Image+'.pdf',dpi=300,tree_style=tree_style)
-    tree.show(tree_style=tree_style,layout=my_layout)
+    tree.show(tree_style=tree_style)
 
 
 
