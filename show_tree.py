@@ -42,6 +42,8 @@ if __name__ == "__main__":
             node.add_face(initial, column=0, position = "branch-top")
         else:
             name = node.name.split('_')
+            # modify name to be normal, and append the gene block info to it
+            node.name = name[0]+' '+ name[1]+':' + node.gene_block
             # get accesion number
             short = name[2]+'_'+name[3]
             # get the color
@@ -55,5 +57,6 @@ if __name__ == "__main__":
             nstyle["hz_line_color"]=color
             node.set_style(nstyle)
     tree.show()
+
 
 
