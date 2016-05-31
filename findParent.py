@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#from __future__ import division (if using python2, uncomment this line
 ''' Author : Huy Nguyen
     Project: provide method and helper method to find all possible parents
              from 2 given gene_block
