@@ -169,7 +169,10 @@ if __name__ == "__main__":
         os.mkdir(outputsession)
         res = traverseAll(args.InputDataDirectory)
         for r in res:
+            # check for DS.Store
             root,f = os.path.split(r)
+            if "DS_Store" in f:
+                continue
             myTuple=reconstruct(r,treeFile)
             tree = myTuple[0]
             mapping = myTuple[1]
@@ -182,4 +185,3 @@ if __name__ == "__main__":
             outfile.close()
             tree.write(format=2, outfile=outputsession+'/'+f,features=['name','initial','gene_block'])
     print (time.time() - start)
-
