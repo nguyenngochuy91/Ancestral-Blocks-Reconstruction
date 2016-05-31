@@ -25,6 +25,10 @@ User has to install python, and ete3 (would recommend use anaconda package). The
 http://etetoolkit.org/download/
 
 ## Usage
+
+Cautious:
+There are several different between running python2 or python3 (such as divide function
+). My program is written in python3, if you want to run it correctly in python2, please uncooment the second line in the program "findparent.py".
 Here is the step by step usage:
 * Step 1: Parse each operon file in the result dic, and convert it into appropriate form:
   1. For each gene in an operon file, map it into an alphabet letter
