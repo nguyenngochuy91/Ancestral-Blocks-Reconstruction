@@ -29,34 +29,59 @@ def parse(file):
     return color_dic
 
 
+def my_layout(node): 
+    node.img_style["size"] = 0
+
+    
+
 if __name__ == "__main__":
     start = time.time()
     args = get_arguments()
     tree= Tree(args.Operon)
     # using the color dic to color group
     color_dic = parse(args.Group)
+    far,distance = tree.get_farthest_leaf()
     for node in tree.iter_descendants("postorder"):
         if not node.is_leaf():
             # create face contain initial set info
             initial = TextFace(node.initial)
             node.add_face(initial, column=0, position = "branch-top")
+            child1,child2 = node.get_children()
+            color1 = child1.node_color
+            color2 = child2.node_color
+            if color1 == color2 and color1 !='mixed':
+                node.add_features(node_color=color1)
+            else:
+                node.add_features(node_color='mixed')
         else:
             name = node.name.split('_')
             # modify name to be normal, and append the gene block info to it
-            node.name = name[0]+' '+ name[1]+':' + node.gene_block
+            node.name = name[0]+' '+ name[1]+':' +'   '+ node.gene_block
             # get accesion number
             short = name[2]+'_'+name[3]
             # get the color
-            for key in color_dic:
-                if short in key:
-                    color = color_dic[key]
-                    break
-            nstyle = NodeStyle()
-            nstyle["fgcolor"] = color
-            nstyle["vt_line_color"]=color
-            nstyle["hz_line_color"]=color
-            node.set_style(nstyle)
-    tree.show()
+            color = color_dic[short]
+            node.add_features(node_color=color)
+            node.add_face(TextFace(node.name), column =0, position ="aligned")
+            # node.dist = distance 
+        nstyle = NodeStyle()
+        nstyle["fgcolor"] = color
+        nstyle["vt_line_color"]=color
+        nstyle["hz_line_color"]=color
+        node.set_style(nstyle)
+
+    # render the image
+    tree_style = TreeStyle()
+    tree_style.show_leaf_name = False
+    tree_style.min_leaf_separation = 5
+    tree_style.extra_branch_line_type = 0
+    tree_style.draw_guiding_lines=True
+    tree_style.guiding_lines_type = 1
+
+    # tree.render(args.Image+'.pdf',dpi=300,tree_style=tree_style)
+    tree.show(tree_style=tree_style,layout=my_layout)
+
+
 
 
 
