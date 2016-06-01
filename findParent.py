@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#from __future__ import division (if using python2, uncomment this line
+from __future__ import division
 ''' Author : Huy Nguyen
     Project: provide method and helper method to find all possible parents
              from 2 given gene_block
@@ -135,6 +135,21 @@ def reductionCount(initial, dic):
         if len(copy) >0:
             result.add(copy)
     return result
+    
+''' @function   : return list of blocks genes or genes that for each block of genes, the gene
+                  in the block does not have duplication
+    @para_type  : set of block of genes/ genes.
+    @result_type: list of blocks genes/ genes 
+'''
+def reductionDup(initial):
+    result= set()
+    for geneblock in initial:
+        copy=set()
+        for gene in geneblock:
+            copy.add(gene)
+        result.add(''.join(sorted(list(copy))))
+    return result
+
 
 #######################################################################################
 # Helper functions to take care of transition state of a gene count
@@ -166,7 +181,7 @@ def transitionSG(count1,count2,gene_frequency):
         return frequency(gene_frequency)
 
 ''' @function   : Given counts of specific gene g, return the count in their closest common
-                  ancestor. this is for set vs set
+                  ancestor. this is for ssortedet vs set
     @para_type  : 2 integers, 1 float
     @result_type: integer
 '''
@@ -324,7 +339,7 @@ def findSetInitial_SG(myTuple,Genome,split):
             # use the transitional function helper to update the key value, count of gene in
             # Genome is 1 
             newValue = transitionSG(elementCount[key][0],1,frequency)
-            # update the elementCount
+            # update the elementCountfrom __future__ import division
             elementCount[key][0]=newValue
     # case where the Genome.count(g) is 0:
     for key in elementCount:
@@ -348,8 +363,11 @@ def findSetInitial_SG(myTuple,Genome,split):
     # union the above 2, then do reductionSubset
     resultInitial = initial.union(Genome_geneBlocks)
     # print('resultInitial',resultInitial)
+    resultInitial=reductionDup(resultInitial)
     resultInitial = reductionSubset(resultInitial,elementCount)
     # print('resultInitial',resultInitial)
+
+
     return (resultInitial, elementCount, count)
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
@@ -418,9 +436,10 @@ def findSetInitial_SS(myTuple1,myTuple2):
     initial = initial1.union(initial2)
     #print initial
     # edit the GenomeBlocks
+    initial=reductionDup(initial)
     initial = reductionSubset(initial,elementCount)
     #print initial
 
+    
     return (initial, elementCount, count)
     
-
