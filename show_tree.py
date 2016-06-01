@@ -11,8 +11,9 @@ import os
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--Operon","-o", help="Operon file name")
+    parser.add_argument("--Operon","-i", help="Operon file name")
     parser.add_argument("--Group","-g", help="Color Grouping")
+    parser.add_argument("--Image","-o", help="Output Image")
     args = parser.parse_args()
     return args
     
@@ -65,16 +66,15 @@ if __name__ == "__main__":
             # nstyle["vt_line_color"]=color
             # nstyle["hz_line_color"]=color
             node.set_style(nstyle)
-
-    # render the image
+    # modify tree style for better visualization
     tree_style = TreeStyle()
     tree_style.show_leaf_name = False
     tree_style.min_leaf_separation = 5
     tree_style.extra_branch_line_type = 0
     tree_style.draw_guiding_lines=True
     tree_style.guiding_lines_type = 1
-
-    # tree.render(args.Image+'.pdf',dpi=300,tree_style=tree_style)
+    # render the image
+    tree.render(args.Image+'.png',dpi=300,tree_style=tree_style)
     tree.show(tree_style=tree_style)
 
 
