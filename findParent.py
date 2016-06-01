@@ -275,17 +275,24 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
     if split1 == 0 and split2 !=0:
         # add the set of gene blocks from genome2
         initial.update(setOfBlocks(Genome2))
+        print initial
+        new_set= set()
+        new_set.add(Genome1)
         # add element that is in genome1 but not 2
-        initial=initial.union(Genome1_gene)
+        initial=initial.union(new_set)
+        print initial
         # reduce by the count
         initial = reductionCount(initial, elementCount)
+        print initial
         # reduce the subset
         initial = reductionSubset(initial,elementCount)
     if split1 != 0 and split2 ==0:
         # add the set of gene blocks from genome2
         initial.update(setOfBlocks(Genome1))
         # add element that is in genome1 but not 2
-        initial=initial.union(Genome2_gene)
+        new_set= set()
+        new_set.add(Genome2)
+        initial=initial.union(new_set)
         # reduce by the count
         initial = reductionCount(initial, elementCount)
         # reduce the subset
