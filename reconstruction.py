@@ -80,7 +80,7 @@ def reconstruct(file,tree):
     for node in tree.iter_descendants("postorder"):
         if node.name == '':
             count +=1
-            node.name = 'Node'+ str(count)
+            node.name = 'Node'+ ' ' + str(count)
             leaf = 0
             for children in node.get_children():
                 if children.is_leaf():
@@ -120,8 +120,12 @@ def reconstruct(file,tree):
                 split1= countSplit(genome_list[0])
                 split2=countSplit(genome_list[1])
                 # run the GG function
-                mytuple= findSetInitial_GG(genome_list[0],genome_list[1],split1,
-                                           split2)
+                if split1 == 0:
+                    mytuple= findSetInitial_GG(genome_list[0],genome_list[1],split1,
+                                               split2)
+                else:
+                    mytuple= findSetInitial_GG(genome_list[1],genome_list[0],split2,
+                                               split1)
                                
             if node.node_type == 'SG':            
                 for children in node.get_children():
@@ -129,7 +133,7 @@ def reconstruct(file,tree):
                         genome=children.gene_block # get the genome info
                     else: # it is a set, extract the info into a tuple
                         initial_tuple = (children.initial,children.elementCount,
-                                   children.count)
+                                   children.count,children.duplication)
                 split1= countSplit(genome)
                 # run the SG function
                 mytuple=findSetInitial_SG(initial_tuple,genome,split1)
@@ -140,14 +144,14 @@ def reconstruct(file,tree):
                     # append the whole node first to the genome_list
                     genome_list.append(children)
                 tuple1=(genome_list[0].initial,genome_list[0].elementCount,
-                                   genome_list[0].count)
+                                   genome_list[0].count,genome_list[0].duplication)
                 tuple2=(genome_list[1].initial,genome_list[1].elementCount,
-                                   genome_list[1].count)
+                                   genome_list[1].count,genome_list[1].duplication)
                 # run the SS function
                 mytuple=findSetInitial_SS(tuple1,tuple2)
             # at the end, from mytuple, insert the info into the internal node
             node.add_features(initial=mytuple[0],elementCount=mytuple[1],
-                                  count = mytuple[2])
+                                  count = mytuple[2],duplication=  mytuple[3])
     # set mapping back to a string
     myString= ''
     for key in mapping:
@@ -178,7 +182,7 @@ if __name__ == "__main__":
             mapping = myTuple[1]
             #if f == 'rplKAJL-rpoBC':
             #    for node in tree.iter_descendants("postorder"):
-            #        if node.name == 'Node25' or node.name == 'Node28' or node.name =='Node29':
+            #        if node.name == 'Node8' or node.name == 'Node15' or node.name =='Node18':
             #            print node.name,node.initial,node.elementCount,node.count
             outfile=open(outputsession+'/'+f+'_mapping','w')
             outfile.write(mapping)      
