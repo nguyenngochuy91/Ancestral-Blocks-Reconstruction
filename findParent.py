@@ -33,19 +33,15 @@ def countSplit(Genome):
 def countDup(Genome):
     # splitting Genome into blocks of gene 
     gene_list=Genome.split('|')
-    gene_dup={}
+    gene_dup=set()
     # iterate through the list of gene blocks
     for item in gene_list:
-        # initiate a list of duplication gene for the dic
-        my_dup =set()
         # iterate through each gene in a gene block
         for index in range (len(item)):
             # iterate from the index next to our gene (need checking) to the end of the gene block
             for i in range(index+1, len(item)):
                 if item[index] == item[i]:
-                    my_dup.add(item[index])    
-        if len(my_dup) > 0:
-            gene_dup[''.join(sorted(item))]= my_dup
+                    gene_dup.add(item[index])
     return gene_dup
 
 ''' @function   : return set of gene in a Genome
@@ -70,6 +66,7 @@ def setOfBlocks(Genome):
     for element in GeneBlocks:
         initial.add(''.join(sorted(element)))
     return initial
+
 
 #######################################################################################
 # Helper functions to do the reduction
@@ -121,7 +118,7 @@ def reductionSubset(initial,elementCount):
 ''' @function   : return list of blocks genes or genes that for each block of genes, the gene
                   in the block has count of 2.
     @para_type  : set of block of genes/ genes.
-    @result_type: list of blocks genes/ genes 
+    @result_type: set of blocks genes/ genes 
 '''
 def reductionCount(initial, dic):
     result= set()
@@ -136,18 +133,28 @@ def reductionCount(initial, dic):
             result.add(copy)
     return result
     
-''' @function   : return list of blocks genes or genes that for each block of genes, the gene
-                  in the block does not have duplication
+''' @function   : return list of blocks genes or genes that for each block of genes, 
+                  and depends on the duplication dic to indicate whether to have the
+                  or not
     @para_type  : set of block of genes/ genes.
-    @result_type: list of blocks genes/ genes 
+    @result_type: set of blocks genes/ genes 
 '''
-def reductionDup(initial):
+def reductionDup(initial,duplication):
     result= set()
-    for geneblock in initial:
-        copy=set()
-        for gene in geneblock:
-            copy.add(gene)
-        result.add(''.join(sorted(list(copy))))
+    for element in initial:
+        # create a copy for each element starting as empty
+        copy =''
+        for index in range(len(element)):
+            if index ==0:
+                copy += element[index]
+            else:
+                if element[index] == element[index-1]: #check if the next is dup:
+                    if duplication[element[index]][0]==2:
+                        copy += element[index]
+                else:
+                    copy += element[index]
+        if len(copy) >0:
+            result.add(copy)
     return result
 
 
@@ -181,7 +188,7 @@ def transitionSG(count1,count2,gene_frequency):
         return frequency(gene_frequency)
 
 ''' @function   : Given counts of specific gene g, return the count in their closest common
-                  ancestor. this is for ssortedet vs set
+                  ancestor. this is for set vs set
     @para_type  : 2 integers, 1 float
     @result_type: integer
 '''
@@ -193,7 +200,82 @@ def transitionSS(count1,count2,gene_frequency):
         return 2
     else:
         return frequency(gene_frequency)
+        
+#######################################################################################
+# Helper functions to update element dictionary and duplication dictionary
+# depends on the second parameter (either the target is a genome, or a set)
+#######################################################################################
+        
+''' @function   : Given dictionary from a tuple, and a genome. Return the new
+                   update dictionary
+    @para_type  : dictionary, dictionary/set
+    @result_type: dictionary
+'''   
+def update_dictionary_SG(tuple_dic,genome_dic,count):
+    for key in genome_dic:
+        if key not in tuple_dic:
+            # this means that for the Set, none of its leave have the gene until this Genome
+            tuple_dic[key]=[0,1]
+        else:
+            # increment the number of leaf that has this gene (key) by one
+            # in elemtCount dictionary
+            tuple_dic[key][1] += 1
+            # calculate the frequency
+            frequency = tuple_dic[key][1]/ count
+            # use the transitional function helper to update the key value, count of gene in
+            # Genome is 1 
+            newValue = transitionSG(tuple_dic[key][0],1,frequency)
+            # update the elementCountfrom __future__ import division
+            tuple_dic[key][0]=newValue
+    # case where the Genome.count(g) is 0:
+    for key in tuple_dic:
+        if key not in genome_dic:
+            # calculate the frequency
+            frequency = tuple_dic[key][1]/ count
+            # use the transitional function helper to update the key value, count of gene in
+            # Genome is 0
+            newValue = transitionSG(tuple_dic[key][0],0,frequency)
+            # update the elementCount
+            tuple_dic[key][0]=newValue
+    return (tuple_dic)
     
+''' @function   : Given dictionary from a tuple, and another tuple. Return the new
+                   update dictionary
+    @para_type  : dictionary, dictionary/set
+    @result_type: dictionary
+'''   
+def update_dictionary_GG(tuple1_dic,tuple2_dic,count):
+    result_dic={}
+    for key in tuple2_dic:
+        if key not in tuple1_dic:
+            # this means that for the Set, its leaf has none of gene g.
+            # calculate frequency:
+            frequency = tuple2_dic[key][1]/count
+            # use transition function to derive new value for the count of Set(x)
+            newValue = transitionSS(tuple2_dic[key][0],0,frequency)
+            # update the elementCount:
+            result_dic[key]=[newValue,tuple2_dic[key][1]]
+        else:
+            # increment the number of leaf for the parent node by the sum
+            numberOfLeaf = tuple1_dic[key][1] +tuple2_dic[key][1]
+            # calculate the frequency
+            frequency = numberOfLeaf/ count
+            # use the transitional function helper to update the key value, count of gene in
+            # Genome is 1 
+            newValue = transitionSS(tuple1_dic[key][0],tuple2_dic[key][0],frequency)
+            # update the elementCount
+            result_dic[key]=[newValue,numberOfLeaf]
+    # case where the Genome.count(g) is 0:
+    for key in tuple1_dic:
+        if key not in tuple2_dic:
+            # calculate the frequency
+            frequency = tuple1_dic[key][1]/ count
+            # use the transitional function helper to update the key value, count of gene in
+            # Genome is 0
+            newValue = transitionSS(tuple1_dic[key][0],0,frequency)
+            # update the elementCount
+            result_dic[key]=[newValue,tuple1_dic[key][1]]
+    return result_dic
 #######################################################################################
 # Main functions to find initial set of genes/ genes block
 # 3 functions to deal with 3 type of parameter (Genome,Genome), (Set,Genome), (Set,Set)
@@ -207,13 +289,15 @@ def transitionSS(count1,count2,gene_frequency):
                   Also return the number of genome it runs through,
                   which is 2
     @para_type  : 2 list of genes , 2 integer number
-    @result_type: tuple og (list of gene, dictionary,integer)
+    @result_type: tuple og (list of gene, dictionary,integer,dictionary)
 '''
 def findSetInitial_GG(Genome1,Genome2,split1,split2):
     # set of initial gene and blocks that will be return
     initial =set()
     # element count is a dictionary
     elementCount= {}
+    # duplication is a dictionary 
+    duplication ={}
     # set of different gene in Genome1
     Genome1_gene= setOfGene(Genome1)
     #print('Genome1_gene',Genome1_gene)
@@ -233,7 +317,18 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
             elementCount[gene]=[2,2]
         else:
             elementCount[gene]=[1,1]
-
+    # dealing with duplication
+    # for case there is duplication      
+    Genome1_dup_dic = countDup(Genome1)
+    Genome2_dup_dic = countDup(Genome2)
+    union_dup = Genome1_dup_dic.union(Genome2_dup_dic)
+    intersect_dup = Genome1_dup_dic.intersection(Genome2_dup_dic)
+    # pulling info into the duplication dic
+    for gene in union_dup:
+        if gene in intersect_dup:
+            duplication[gene]=[2,2]
+        else:
+            duplication[gene]=[1,1]
     ### if neither of them has a split (life is real good)
     if split1 == 0 and split2 == 0:
 
@@ -241,19 +336,13 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
         mylist= list(intersect)
         mylist.sort()
         # for case there is duplication 
-        Genome1_dup_dic = countDup(Genome1)
-        Genome2_dup_dic = countDup(Genome2)
-        dup_list=[] #only has element if dup happens in both genome
-        for key in Genome1_dup_dic:
-            if key in Genome2_dup_dic:
-                for gene in Genome2_dup_dic[key]:
-                    dup_list.append(gene)
         for gene in mylist:
             string+=gene
-            if gene in dup_list: # need to have dup, include dup of the gene
-                string+=gene
+            if gene in duplication: # check if gene is duplicated at least one)
+                if duplication[gene][0]==2: # only if dup is in 2 genome
+                    string +=gene
         initial.add(string)
-
+        
     ### if both of them have split ( grrrr )
     if split1 !=0 and split2 !=0:
         ''' parse the genome1 and genome2 into 2 sets og group of genes
@@ -265,51 +354,37 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
         initial.update(setOfBlocks(Genome1))
         # add the set of gene blocks from genome2
         initial.update(setOfBlocks(Genome2))
-        # reduce by the count
-        initial = reductionCount(initial, elementCount)
-        # reduce the subset
-        initial = reductionSubset(initial,elementCount)
         
-    # if one of them has a split (we can assume second one has split
+    # if one of them has a split (we can assume second one has splitenome count
     # because we can switch from the parameter of our function)
     if split1 == 0 and split2 !=0:
         # add the set of gene blocks from genome2
         initial.update(setOfBlocks(Genome2))
-        print initial
+        # print initial
         new_set= set()
         new_set.add(Genome1)
         # add element that is in genome1 but not 2
         initial=initial.union(new_set)
-        print initial
-        # reduce by the count
-        initial = reductionCount(initial, elementCount)
-        print initial
-        # reduce the subset
-        initial = reductionSubset(initial,elementCount)
-    if split1 != 0 and split2 ==0:
-        # add the set of gene blocks from genome2
-        initial.update(setOfBlocks(Genome1))
-        # add element that is in genome1 but not 2
-        new_set= set()
-        new_set.add(Genome2)
-        initial=initial.union(new_set)
-        # reduce by the count
-        initial = reductionCount(initial, elementCount)
-        # reduce the subset
-        initial = reductionSubset(initial,elementCount)
-    return (initial,elementCount,2)
+        # print initial
+
+    initial = reductionCount(initial, elementCount)
+    if len(duplication)!=0: # only do the reduction Dup if exist duplication 
+        initial = reductionDup(initial,duplication)
+    # print initial
+    initial = reductionSubset(initial,elementCount)
+    # print initial
+    return (initial,elementCount,2,duplication)
 
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   (either my set, or the genome), 2 means it appear in the set and the genome.
                   0 means no appearance.
     @para_type  : 1 list of genes , 1 tuple of (set,dictionary,Genome count), 1 split.
-    @result_type: tuple of (set, dictionary,Genome count)
+    @result_type: tuple of (set, dictionary,integer,dictionary))
 '''
 def findSetInitial_SG(myTuple,Genome,split):
     ### working on the Genome info
-    # get the gene set from the Genome.
-    GenomeDic={}
+    # get the gene set from the Genome
     Genome_gene= setOfGene(Genome)
     
     # get the geneblock set from the Genome
@@ -325,40 +400,13 @@ def findSetInitial_SG(myTuple,Genome,split):
     initial= myTuple[0]
     #print('initial',initial)
     # the gene Count dictionary
-    elementCount = myTuple[1]
     # increment the size of Leaf(x)
     count= myTuple[2]+1 # increment the count by 1
 
     ### editting the element count Dic for the new Tuple:
 
-    # case where the Genome.count(g) is 1:
-    # create new key for the new gene from Genome, if existing, just update
-    for key in Genome_dic:
-        if key not in elementCount:
-            # this means that for the Set, none of its leave have the gene until this Genome
-            elementCount[key]=[0,1]
-        else:
-            # increment the number of leaf that has this gene (key) by one
-            # in elemtCount dictionary
-            elementCount[key][1] += 1
-            # calculate the frequency
-            frequency = elementCount[key][1]/ count
-            # use the transitional function helper to update the key value, count of gene in
-            # Genome is 1 
-            newValue = transitionSG(elementCount[key][0],1,frequency)
-            # update the elementCountfrom __future__ import division
-            elementCount[key][0]=newValue
-    # case where the Genome.count(g) is 0:
-    for key in elementCount:
-        if key not in Genome_dic:
-            # calculate the frequency
-            frequency = elementCount[key][1]/ count
-            # use the transitional function helper to update the key value, count of gene in
-            # Genome is 0
-            newValue = transitionSG(elementCount[key][0],0,frequency)
-            # update the elementCount
-            elementCount[key][0]=newValue
-
+    elementCount= update_dictionary_SG(myTuple[1],Genome_dic,count)
+    
     ### create the initial Set for the new Tuple:
     
     # edit the initialSet from the Set (reducecount)
@@ -368,19 +416,27 @@ def findSetInitial_SG(myTuple,Genome,split):
     Genome_geneBlocks = reductionCount(Genome_geneBlocks,elementCount)
     # print('Genome_geneBlocks',Genome_geneBlocks)
     # union the above 2, then do reductionSubset
-    resultInitial = initial.union(Genome_geneBlocks)
-    # print('resultInitial',resultInitial)
-    resultInitial=reductionDup(resultInitial)
-    resultInitial = reductionSubset(resultInitial,elementCount)
-    # print('resultInitial',resultInitial)
+    initial = initial.union(Genome_geneBlocks)
 
+    ### deal with duplication
+    # pull duplication dic from the tuple
+    duplication = myTuple[3]
+    Genome_dup_dic = countDup(Genome)
+    ### editting the duplication Dic for the new Tuple:
+    
+    duplication= update_dictionary_SG(duplication,Genome_dup_dic,count)
+    
+    if len(duplication)!=0: # only do the reduction Dup if exist duplication 
+        initial = reductionDup(initial,duplication)
+    ### final step, reduce subset
+    initial = reductionSubset(initial,elementCount)
 
-    return (resultInitial, elementCount, count)
+    return (initial, elementCount, count,duplication)
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   , 2 means it appear in the set and the genome. 
     @para_type  : 2 tuples of (set,dictionary,Genome count).
-    @result_type: tuple of (set, dictionary,Genome count)
+    @result_type: tuple of (set, dictionary,integer,dictionary))
 '''
 def findSetInitial_SS(myTuple1,myTuple2):
     ### extract info from myTuple1    
@@ -399,40 +455,8 @@ def findSetInitial_SS(myTuple1,myTuple2):
     count = myTuple1[2] + myTuple2[2]
     ### editting the element count Dic for the new Tuple:
 
-    # create new elementCountdic:
-    elementCount ={}
-    # case where the initial2.count(g) exist (elemntCount2[key][1] != 0)
-    # create new key for the new gene from Genome, if existing, just update
-    for key in elementCount2:
-        if key not in elementCount1:
-            # this means that for the Set, its leaf has none of gene g.
-            # calculate frequency:
-            frequency = elementCount2[key][1]/count
-            # use transition function to derive new value for the count of Set(x)
-            newValue = transitionSS(elementCount2[key][0],0,frequency)
-            # update the elementCount:
-            elementCount[key]=[newValue,elementCount2[key][1]]
-        else:
-            # increment the number of leaf for the parent node by the sum
-            numberOfLeaf = elementCount1[key][1] +elementCount2[key][1]
-            # calculate the frequency
-            frequency = numberOfLeaf/ count
-            # use the transitional function helper to update the key value, count of gene in
-            # Genome is 1 
-            newValue = transitionSS(elementCount1[key][0],elementCount2[key][0],frequency)
-            # update the elementCount
-            elementCount[key]=[newValue,numberOfLeaf]
-    # case where the Genome.count(g) is 0:
-    for key in elementCount1:
-        if key not in elementCount2:
-            # calculate the frequency
-            frequency = elementCount1[key][1]/ count
-            # use the transitional function helper to update the key value, count of gene in
-            # Genome is 0
-            newValue = transitionSS(elementCount1[key][0],0,frequency)
-            # update the elementCount
-            elementCount[key]=[newValue,elementCount1[key][1]]
-
+    # create new elementCount dic:
+    elementCount = update_dictionary_GG(elementCount1,elementCount2,count)
     ### create the initial Set for the new Tuple:
                 
     # edit the initialSet from the Set (reducecount)
@@ -441,12 +465,18 @@ def findSetInitial_SS(myTuple1,myTuple2):
     initial2 = reductionCount(initial2,elementCount)
     # union both of them
     initial = initial1.union(initial2)
-    #print initial
-    # edit the GenomeBlocks
-    initial=reductionDup(initial)
+
+    ### deal with duplication
+    # pull duplication dic from the tuple
+    duplication1 = myTuple1[3]
+    duplication2 = myTuple2[3]
+    # create new duplication dic:
+    duplication = update_dictionary_GG(duplication1,duplication2,count)
+    if len(duplication)!=0: # only do the reduction Dup if exist duplication 
+        initial = reductionDup(initial,duplication)
     initial = reductionSubset(initial,elementCount)
     #print initial
 
     
-    return (initial, elementCount, count)
+    return (initial, elementCount, count,duplication)
     
