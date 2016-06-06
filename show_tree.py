@@ -74,10 +74,5 @@ if __name__ == "__main__":
     tree_style.draw_guiding_lines=True
     tree_style.guiding_lines_type = 1
     # render the image
-    tree.render(args.Image+'.png',dpi=300,tree_style=tree_style)
+    # tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
     tree.show(tree_style=tree_style)
-
-
-
-
-
