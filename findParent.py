@@ -91,11 +91,43 @@ def del_distance(initial1,initial2,initial):
     count += (len(initial_gene-initial1_gene)+len(initial1_gene-initial_gene)+
     len(initial_gene-initial2_gene)+len(initial2_gene-initial_gene))
     return count
-#def dup_distance(initial1,initial2,initial):
 
+def dup_distance(initial1,initial2,initial):
+    count =0
     
-#def split_distance(Genome1,Genome2,initial):
+    initial_gene = set()
+    for block in initial:
+        gene_set= countDup(block)
+        initial_gene= initial_gene.union(gene_set)
+        
+    initial1_gene = set()   
+    if type(initial1) is str: # if it comes from leaf node
+        for block in setOfBlocks(initial1):
+            dup_gene = countDup(block)
+            initial1_gene= initial1_gene.union(dup_gene)
+    else: # if it is already in blocks
+        for block in initial1:
+            dup_gene = countDup(block)
+            initial1_gene= initial1_gene.union(dup_gene)
+        
+    initial2_gene = set()   
+    if type(initial2) is str: # if it comes from leaf node
+        for block in setOfBlocks(initial2):
+            dup_gene = countDup(block)
+            initial2_gene= initial2_gene.union(dup_gene)
+    else: # if it is already in blocks
+        for block in initial2:
+            dup_gene = countDup(block)
+            initial2_gene= initial2_gene.union(dup_gene)
+        
+    count += (len(initial_gene-initial1_gene)+len(initial1_gene-initial_gene)+
+    len(initial_gene-initial2_gene)+len(initial2_gene-initial_gene))
+    return count
     
+def split_distance(initial1,initial2,initial):  
+    count = 0
+    count += abs(len(initial)-len(initial1))+abs(len(initial)-len(initial2))
+    return count
 #######################################################################################
 # Helper functions to do the reduction
 #######################################################################################
@@ -331,7 +363,9 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
     #print('Genome1_gene',Genome1_gene)
     # set of different gene in Genome2
     Genome2_gene= setOfGene(Genome2)
-    #print('Genome2_gene',Genome2_gene)
+    #blocks of Genome1,Genome2
+    Genome1_block= setOfBlocks(Genome1)
+    Genome2_block= setOfBlocks(Genome2)
 
     # union the above 2 set to get list of possible gene from 2 Genome
     union = Genome1_gene.union(Genome2_gene)
@@ -379,15 +413,15 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
             ab|cd|ef will be the same as dc|ba|fe
         '''
         # add the set of gene blocks from genome1
-        initial.update(setOfBlocks(Genome1))
+        initial.update(Genome1_block)
         # add the set of gene blocks from genome2
-        initial.update(setOfBlocks(Genome2))
+        initial.update(Genome2_block)
         
     # if one of them has a split (we can assume second one has splitenome count
     # because we can switch from the parameter of our function)
     if split1 == 0 and split2 !=0:
         # add the set of gene blocks from genome2
-        initial.update(setOfBlocks(Genome2))
+        initial.update(Genome2_block)
         # print initial
         new_set= set()
         new_set.add(Genome1)
@@ -406,12 +440,20 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
     deletion = del_distance(Genome1,Genome2,initial)    
     deletion_cost=[deletion,deletion]
     # duplication
-    '''if len(duplication)!=0:
-        dup = dup_distance(Genome1_gene,Genome2_gene,initial)
+    if len(duplication)!=0:
+        dup = dup_distance(Genome1,Genome2,initial)
     else:
         dup = 0
-    duplication_cost=[dup,dup]'''
-    return (initial,elementCount,2,duplication,deletion_cost)
+    duplication_cost=[dup,dup]
+    #split
+    # reducebyCount for Genome1_blcok
+    Genome1_block= reductionCount(Genome1_block,elementCount)
+    Genome2_block= reductionCount(Genome2_block,elementCount)
+    split = split_distance(Genome1_block,Genome2_block,initial)
+    split_cost= [split,split]
+    
+    return (initial,elementCount,2,duplication,deletion_cost,duplication_cost,split_cost)
+    
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   (either my set, or the genome), 2 means it appear in the set and the genome.
@@ -447,13 +489,13 @@ def findSetInitial_SG(myTuple,Genome,split):
     ### create the initial Set for the new Tuple:
     
     # edit the initialSet from the Set (reducecount)
-    initial = reductionCount(initial1,elementCount)
+    initial1 = reductionCount(initial1,elementCount)
     # print('initial',initial)
     # edit the GenomeBlocks
     Genome_geneBlocks = reductionCount(Genome_geneBlocks,elementCount)
     # print('Genome_geneBlocks',Genome_geneBlocks)
     # union the above 2, then do reductionSubset
-    initial = initial.union(Genome_geneBlocks)
+    initial = initial1.union(Genome_geneBlocks)
 
     ### deal with duplication
     # pull duplication dic from the tuple
@@ -468,17 +510,26 @@ def findSetInitial_SG(myTuple,Genome,split):
     ### final step, reduce subset
     initial = reductionSubset(initial,elementCount)
     
+    ### calculate edit distances 
+    #deletion
     deletion = del_distance(initial1,Genome,initial)
     accumulate_del = myTuple[4][1] # pull the accumulation del cost
     deletion_cost =[deletion,accumulate_del+deletion]
-    
-    '''if len(duplication)!=0:
+    #duplication
+    if len(duplication)!=0:
         dup = dup_distance(initial1,Genome_geneBlocks,initial)
     else:
         dup =0
     accumulate_dup = myTuple[5][1]
-    duplication_cost=[dup,accumulate_dup+dup]'''
-    return (initial, elementCount, count,duplication,deletion_cost)
+    duplication_cost=[dup,accumulate_dup+dup]
+    #split
+    Genome1_block = reductionCount(Genome_geneBlocks,elementCount)
+    split = split_distance(initial1,Genome1_block,initial)
+    accumulate_split = myTuple[6][1]
+    split_cost = [split,accumulate_split+split]
+    
+    return (initial, elementCount, count,duplication,deletion_cost,duplication_cost,split_cost)
+    
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   , 2 means it appear in the set and the genome. 
@@ -522,18 +573,28 @@ def findSetInitial_SS(myTuple1,myTuple2):
     if len(duplication)!=0: # only do the reduction Dup if exist duplication 
         initial = reductionDup(initial,duplication)
     initial = reductionSubset(initial,elementCount)
-    #print initial
 
+    
+    ### calculate edit distances
+    #deletion
     deletion = del_distance(initial1,initial2,initial)
     accumulate1_del = myTuple1[4][1] # pull the accumulation del cost
     accumulate2_del = myTuple2[4][1]
     deletion_cost =[deletion,accumulate1_del+accumulate2_del+deletion]
-    '''if len(duplication)!=0:
+    
+    #dup
+    if len(duplication)!=0:
         dup = dup_distance(initial1,initial2,initial)
     else:
         dup =0
     accumulate1_dup = myTuple1[5][1]
     accumulate2_dup = myTuple2[5][1]
-    duplication_cost=[dup,accumulate1_dup+accumulate2_dup+dup]'''
-    return (initial, elementCount, count,duplication,deletion_cost)
+    duplication_cost=[dup,accumulate1_dup+accumulate2_dup+dup]
+    
+    #split
+    split = split_distance(initial1,initial2,initial)    
+    accumulate1_split = myTuple1[6][1]
+    accumulate2_split = myTuple2[6][1]
+    split_cost = [split,split+accumulate1_split+accumulate2_split]
+    return (initial, elementCount, count,duplication,deletion_cost,duplication_cost,split_cost)
     
