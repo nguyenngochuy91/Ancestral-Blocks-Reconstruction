@@ -134,7 +134,7 @@ def reconstruct(myfile,tree):
                     else: # it is a set, extract the info into a tuple
                         initial_tuple = (children.initial,children.elementCount,
                                    children.count,children.dup,children.deletion,
-                                   )
+                                   children.duplication)
                 split1= countSplit(genome)
                 # run the SG function
                 mytuple=findSetInitial_SG(initial_tuple,genome,split1)
@@ -146,16 +146,16 @@ def reconstruct(myfile,tree):
                     genome_list.append(children)
                 tuple1=(genome_list[0].initial,genome_list[0].elementCount,
                                    genome_list[0].count,genome_list[0].dup,
-                                   genome_list[0].deletion)
+                                   genome_list[0].deletion,genome_list[0].duplication)
                 tuple2=(genome_list[1].initial,genome_list[1].elementCount,
                                    genome_list[1].count,genome_list[1].dup,
-                                   genome_list[1].deletion)
+                                   genome_list[1].deletion,genome_list[1].duplication)
                 # run the SS function
                 mytuple=findSetInitial_SS(tuple1,tuple2)
             # at the end, from mytuple, insert the info into the internal node
             node.add_features(initial=mytuple[0],elementCount=mytuple[1],
                                   count = mytuple[2],dup=  mytuple[3],
-                                  deletion = mytuple[4])
+                                  deletion = mytuple[4], duplication=mytuple[5] )
     # set mapping back to a string
     myString= ''
     for key in mapping:
@@ -191,5 +191,6 @@ if __name__ == "__main__":
             outfile=open(outputsession+'/'+f+'_mapping','w')
             outfile.write(mapping)      
             outfile.close()
-            tree.write(format=2, outfile=outputsession+'/'+f,features=['name','initial','gene_block','deletion'])
+            tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
+            'initial','gene_block','deletion','duplication'])
     print (time.time() - start)
