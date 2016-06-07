@@ -72,7 +72,7 @@ if __name__ == "__main__":
     for child in tree.get_children():
         children.append(child)
     deletion_cost1 = (children[0].deletion).split('|')[1]
-    deletion_cost2 = (children[1].deletion).split('|')[1]
+    deletion_cost2 = (children[1].deletion).split('|')[1] 
     duplication_cost1 = (children[0].duplication).split('|')[1]
     duplication_cost2 = (children[1].duplication).split('|')[1]
     split_cost1 = (children[0].split).split('|')[1]
