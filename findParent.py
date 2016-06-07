@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 from __future__ import division
 ''' Author : Huy Nguyen
-    Project: provide method and helper method to find all possible parents
-             from 2 given gene_block
+    Project: provide method and helper method to find minaml possible parents
+             from 2 given gene_block. As well as provide he edit distance
     Type   : Genome type is a combination of gene type and a '|' character
              Gene type is string stype
     Start  : 01/07/2016
@@ -67,7 +67,35 @@ def setOfBlocks(Genome):
         initial.add(''.join(sorted(element)))
     return initial
 
+#######################################################################################
+# Helper functions to calculate the edit distance
+#######################################################################################
+def del_distance(initial1,initial2,initial):
+    count =0
+    
+    initial_gene = set()
+    for block in initial:
+        gene_set= setOfGene(block)
+        initial_gene= initial_gene.union(gene_set)
+    initial1_gene = set()
+    
+    for block in initial1:
+        gene_set= setOfGene(block)
+        initial1_gene= initial1_gene.union(gene_set)
+    initial2_gene = set()
+    
+    for block in initial2:
+        gene_set= setOfGene(block)
+        initial2_gene= initial2_gene.union(gene_set)
+        
+    count += (len(initial_gene-initial1_gene)+len(initial1_gene-initial_gene)+
+    len(initial_gene-initial2_gene)+len(initial2_gene-initial_gene))
+    return count
+#def dup_distance(initial1,initial2,initial):
 
+    
+#def split_distance(Genome1,Genome2,initial):
+    
 #######################################################################################
 # Helper functions to do the reduction
 #######################################################################################
@@ -370,11 +398,20 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
     initial = reductionCount(initial, elementCount)
     if len(duplication)!=0: # only do the reduction Dup if exist duplication 
         initial = reductionDup(initial,duplication)
-    # print initial
-    initial = reductionSubset(initial,elementCount)
-    # print initial
-    return (initial,elementCount,2,duplication)
 
+    initial = reductionSubset(initial,elementCount)
+
+    # find the local cost, and accumulating cost by storing in 2 index list.
+    # deletion    
+    deletion = del_distance(Genome1,Genome2,initial)    
+    deletion_cost=[deletion,deletion]
+    # duplication
+    '''if len(duplication)!=0:
+        dup = dup_distance(Genome1_gene,Genome2_gene,initial)
+    else:
+        dup = 0
+    duplication_cost=[dup,dup]'''
+    return (initial,elementCount,2,duplication,deletion_cost)
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   (either my set, or the genome), 2 means it appear in the set and the genome.
@@ -397,7 +434,7 @@ def findSetInitial_SG(myTuple,Genome,split):
 
     ### extract info from myTuple
     # the gene/ gene block set
-    initial= myTuple[0]
+    initial1= myTuple[0]
     #print('initial',initial)
     # the gene Count dictionary
     # increment the size of Leaf(x)
@@ -410,7 +447,7 @@ def findSetInitial_SG(myTuple,Genome,split):
     ### create the initial Set for the new Tuple:
     
     # edit the initialSet from the Set (reducecount)
-    initial = reductionCount(initial,elementCount)
+    initial = reductionCount(initial1,elementCount)
     # print('initial',initial)
     # edit the GenomeBlocks
     Genome_geneBlocks = reductionCount(Genome_geneBlocks,elementCount)
@@ -430,8 +467,18 @@ def findSetInitial_SG(myTuple,Genome,split):
         initial = reductionDup(initial,duplication)
     ### final step, reduce subset
     initial = reductionSubset(initial,elementCount)
-
-    return (initial, elementCount, count,duplication)
+    
+    deletion = del_distance(initial1,Genome,initial)
+    accumulate_del = myTuple[4][1] # pull the accumulation del cost
+    deletion_cost =[deletion,accumulate_del+deletion]
+    
+    '''if len(duplication)!=0:
+        dup = dup_distance(initial1,Genome_geneBlocks,initial)
+    else:
+        dup =0
+    accumulate_dup = myTuple[5][1]
+    duplication_cost=[dup,accumulate_dup+dup]'''
+    return (initial, elementCount, count,duplication,deletion_cost)
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   , 2 means it appear in the set and the genome. 
@@ -477,6 +524,16 @@ def findSetInitial_SS(myTuple1,myTuple2):
     initial = reductionSubset(initial,elementCount)
     #print initial
 
-    
-    return (initial, elementCount, count,duplication)
+    deletion = del_distance(initial1,initial2,initial)
+    accumulate1_del = myTuple1[4][1] # pull the accumulation del cost
+    accumulate2_del = myTuple2[4][1]
+    deletion_cost =[deletion,accumulate1_del+accumulate2_del+deletion]
+    '''if len(duplication)!=0:
+        dup = dup_distance(initial1,initial2,initial)
+    else:
+        dup =0
+    accumulate1_dup = myTuple1[5][1]
+    accumulate2_dup = myTuple2[5][1]
+    duplication_cost=[dup,accumulate1_dup+accumulate2_dup+dup]'''
+    return (initial, elementCount, count,duplication,deletion_cost)
     
