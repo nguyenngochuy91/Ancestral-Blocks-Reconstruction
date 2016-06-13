@@ -495,13 +495,13 @@ def findSetInitial_SG(myTuple,Genome,split):
     ### create the initial Set for the new Tuple:
     
     # edit the initialSet from the Set (reducecount)
-    initial1 = reductionCount(initial1,elementCount)
+    initial_1 = reductionCount(initial1,elementCount)
     # print('initial',initial)
     # edit the GenomeBlocks
-    Genome_geneBlocks = reductionCount(Genome_geneBlocks,elementCount)
+    Genome1_block = reductionCount(Genome_geneBlocks,elementCount)
     # print('Genome_geneBlocks',Genome_geneBlocks)
     # union the above 2, then do reductionSubset
-    initial = initial1.union(Genome_geneBlocks)
+    initial = initial_1.union(Genome1_block)
 
     ### deal with duplication
     # pull duplication dic from the tuple
@@ -529,8 +529,7 @@ def findSetInitial_SG(myTuple,Genome,split):
     accumulate_dup = myTuple[5][1]
     duplication_cost=[dup,accumulate_dup+dup]
     #split
-    Genome1_block = reductionCount(Genome_geneBlocks,elementCount)
-    split = split_distance(initial1,Genome1_block,initial)
+    split = split_distance(initial_1,Genome1_block,initial)
     accumulate_split = myTuple[6][1]
     split_cost = [split,accumulate_split+split]
     
@@ -564,11 +563,11 @@ def findSetInitial_SS(myTuple1,myTuple2):
     ### create the initial Set for the new Tuple:
                 
     # edit the initialSet from the Set (reducecount)
-    initial1 = reductionCount(initial1,elementCount)
+    initial_1 = reductionCount(initial1,elementCount)
     #print initial1
-    initial2 = reductionCount(initial2,elementCount)
+    initial_2 = reductionCount(initial2,elementCount)
     # union both of them
-    initial = initial1.union(initial2)
+    initial = initial_1.union(initial_2)
 
     ### deal with duplication
     # pull duplication dic from the tuple
@@ -584,6 +583,7 @@ def findSetInitial_SS(myTuple1,myTuple2):
     ### calculate edit distances
     #deletion
     deletion = del_distance(initial1,initial2,initial)
+
     accumulate1_del = myTuple1[4][1] # pull the accumulation del cost
     accumulate2_del = myTuple2[4][1]
     deletion_cost =[deletion,accumulate1_del+accumulate2_del+deletion]
@@ -598,7 +598,7 @@ def findSetInitial_SS(myTuple1,myTuple2):
     duplication_cost=[dup,accumulate1_dup+accumulate2_dup+dup]
     
     #split
-    split = split_distance(initial1,initial2,initial)    
+    split = split_distance(initial_1,initial_2,initial)    
     accumulate1_split = myTuple1[6][1]
     accumulate2_split = myTuple2[6][1]
     split_cost = [split,split+accumulate1_split+accumulate2_split]
