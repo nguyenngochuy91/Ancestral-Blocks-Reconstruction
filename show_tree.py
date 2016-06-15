@@ -88,9 +88,9 @@ if __name__ == "__main__":
     tree_style.extra_branch_line_type = 0
     tree_style.draw_guiding_lines=True
     tree_style.guiding_lines_type = 1
-    tree_style.title.add_face(TextFace("Deletion cost: "+str(deletion_total)+
-                                '   '+"Duplication cost: "+str(duplication_total)
-                                +'   '+"Split cost: "+ str(split_total),fsize =20), column=0)
+    tree_style.title.add_face(TextFace("Deletion count: "+str(deletion_total)+
+                                '   '+"Duplication count: "+str(duplication_total)
+                                +'   '+"Split count: "+ str(split_total),fsize =20), column=0)
                                                     
     # render the image
     # tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
