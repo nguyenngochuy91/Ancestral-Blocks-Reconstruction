@@ -430,7 +430,7 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
         initial.update(Genome2_block)
         # print initial
         new_set= set()
-        new_set.add(Genome1)
+        new_set.add(''.join(sorted(list(Genome1))))
         # add element that is in genome1 but not 2
         initial=initial.union(new_set)
         # print initial
