@@ -10,6 +10,11 @@ import time
 import uuid
 from findParent import *
 from ete3 import *
+
+
+###############################################################################
+## Helper function to parse arguments, check directoring, ...
+###############################################################################
 # traverse and get the file
 def traverseAll(path):
     res=[]
@@ -68,8 +73,14 @@ def parsing(file):
             gene_blocks= item[1].split('\n')[0]
             genomes[name]=gene_blocks
     return (mapping,genomes)
-    
-
+###############################################################################
+## Reconstruct method
+###############################################################################
+'''@function: Reconstruct the newick tree file with gene block info for inner 
+              node.
+   @input   : tree in nwk format,and a mapping between alphabet and gene name
+   @output  : tree in nwk format,gene g and a string of the info
+'''
 def reconstruct(myfile,tree):
     tree= Tree(tree)
     result=parsing(myfile)
@@ -77,7 +88,7 @@ def reconstruct(myfile,tree):
     mapping=result[0]
     # traverse the first time to assign name, and the node_type
     count =0
-    for node in tree.iter_descendants("postorder"):
+    for node in tree.traverse('postorder'):
         if node.name == '':
             count +=1
             node.name = 'Node'+ ' ' + str(count)
@@ -97,20 +108,9 @@ def reconstruct(myfile,tree):
             name = mylist[2]+'_'+mylist[3]
             # print(genomes[name])
             node.add_features(gene_block=genomes[name])   
-    
-    # this serve to find which node has which children
-    info = ''
-    for node in tree.iter_descendants("postorder"):
-        if not node.is_leaf():
-            string = str(node.name)+':'
-            for children in node.get_children():
-                string += children.name+'\t'
-            info += string +'\n'
-    out= open('./structure.txt','w')
-    out.write(info)
-    out.close()
+     
     # use findParent function to find geneblock
-    for node in tree.iter_descendants("postorder"):
+    for node in tree.traverse('postorder'):
         if not node.is_leaf():
             if node.node_type == 'GG':
                 # get the info from the 2 genomes
@@ -159,6 +159,7 @@ def reconstruct(myfile,tree):
                                   count = mytuple[2],dup=  mytuple[3],
                                   deletion = mytuple[4], duplication=mytuple[5],
                                   split = mytuple[6])
+                                       
     # set mapping back to a string
     myString= ''
     for key in mapping:
@@ -167,7 +168,16 @@ def reconstruct(myfile,tree):
     return (tree,myString)
             # print (node.name,node.initial,node.elementCount)
     # print (tree.write(features=['name','initial','gene_block']))
-        
+    
+###############################################################################
+## Main function 
+###############################################################################
+'''@function: Go through each operon file in the target directory,
+              write out newick treefile with reconstrution info, and a 
+              mapping file for gane name and alphabet.
+   @input   : tree in nwk format,and a mapping between alphabet and gene name
+   @output  : tree in nwk format,gene g and a string of the info
+''' 
 if __name__ == "__main__":
 
     start = time.time()
@@ -194,6 +204,6 @@ if __name__ == "__main__":
             outfile=open(outputsession+'/'+f+'_mapping','w')
             outfile.write(mapping)      
             outfile.close()
-            tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
+            tree.write(format=2, outfile=outputsession+'/'+f,features=['name','count',
             'initial','gene_block','deletion','duplication','split'])
     print (time.time() - start)
