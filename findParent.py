@@ -15,8 +15,8 @@ from __future__ import division
 #######################################################################################
 
 ''' @function   : return number of split event from a genome
-    @para_type  : list (this list comprises of genes, and '|' as split event)
-    @result_type: integer
+    @input      : list (this list comprises of genes, and '|' as split event)
+    @output     : integer
 '''
 def countSplit(Genome):
     count= 0
@@ -27,8 +27,8 @@ def countSplit(Genome):
 
 ''' @function   : return list of genes that are duplicated in a block of gene with the
                   block it appear in
-    @para_type  : list (this list comprises of genes, and '|' as split event)
-    @result_type: list of gene 
+    @input      : list (this list comprises of genes, and '|' as split event)
+    @output     : list of gene 
 '''
 def countDup(Genome):
     # splitting Genome into blocks of gene 
@@ -45,8 +45,8 @@ def countDup(Genome):
     return gene_dup
 
 ''' @function   : return set of gene in a Genome
-    @para_type  : list (this list comprises of genes, and '|' as split event)
-    @result_type: set of gene
+    @input      : list (this list comprises of genes, and '|' as split event)
+    @output     : set of gene
 '''
 def setOfGene(Genome):
     Genome_gene= set()
@@ -56,8 +56,8 @@ def setOfGene(Genome):
     return Genome_gene
 
 ''' @function   : return set of geneblocks/gene in a Genome, given that Genome has split event
-    @para_type  : list (this list comprises of genes, and '|' as split event)
-    @result_type: set of gene blocks( at least exist 1 gene block)
+    @input      : list (this list comprises of genes, and '|' as split event)
+    @output     : set of gene blocks( at least exist 1 gene block)
 '''
 def setOfBlocks(Genome):
     GeneBlocks = Genome.split('|')
@@ -140,8 +140,8 @@ def split_distance(initial1,initial2,initial):
 
 ''' @function   : return list of blocks genes or genes that has no element that is a subset of an
                   element in the set
-    @para_type  : set of block of genes/ genes.
-    @result_type: list of blocks genes, genes.
+    @input      : set of block of genes/ genes.
+    @output     : list of blocks genes, genes.
 '''
 def reductionSubset(initial,elementCount):
         ''' for cases that return set {'abc','bc','a','ef','f'}
@@ -183,8 +183,8 @@ def reductionSubset(initial,elementCount):
     
 ''' @function   : return list of blocks genes or genes that for each block of genes, the gene
                   in the block has count of 2.
-    @para_type  : set of block of genes/ genes.
-    @result_type: set of blocks genes/ genes 
+    @input      : set of block of genes/ genes.
+    @output     : set of blocks genes/ genes 
 '''
 def reductionCount(initial, dic):
     result= set()
@@ -202,8 +202,8 @@ def reductionCount(initial, dic):
 ''' @function   : return list of blocks genes or genes that for each block of genes, 
                   and depends on the duplication dic to indicate whether to have the
                   or not
-    @para_type  : set of block of genes/ genes.
-    @result_type: set of blocks genes/ genes 
+    @input      : set of block of genes/ genes.
+    @output     : set of blocks genes/ genes 
 '''
 def reductionDup(initial,duplication):
     result= set()
@@ -229,8 +229,8 @@ def reductionDup(initial,duplication):
 # depends on the second parameter (either the target is a genome, or a set)
 #######################################################################################
 ''' @function   : Define the specification for each gene_frequency
-    @para_type  : 1 float
-    @result_type: 1 integer
+    @input      : 1 float
+    @output     : 1 integer
 '''           
 def frequency(gene_frequency):
     if gene_frequency < .25:
@@ -241,8 +241,8 @@ def frequency(gene_frequency):
         return 2
 ''' @function   : Given counts of specific gene g, return the count in their closest common
                   ancestor. this is for set vs Genome
-    @para_type  : 2 integers, 1 float
-    @result_type: integer
+    @input      : 2 integers, 1 float
+    @output     : integer
 '''
 def transitionSG(count1,count2,gene_frequency):
     # for case that only yield 1 answer
@@ -255,8 +255,8 @@ def transitionSG(count1,count2,gene_frequency):
 
 ''' @function   : Given counts of specific gene g, return the count in their closest common
                   ancestor. this is for set vs set
-    @para_type  : 2 integers, 1 float
-    @result_type: integer
+    @input      : 2 integers, 1 float
+    @output     : integer
 '''
 def transitionSS(count1,count2,gene_frequency):
     # for case that only yield 1 answer
@@ -274,8 +274,8 @@ def transitionSS(count1,count2,gene_frequency):
         
 ''' @function   : Given dictionary from a tuple, and a genome. Return the new
                    update dictionary
-    @para_type  : dictionary, dictionary/set
-    @result_type: dictionary
+    @input      : dictionary, dictionary/set
+    @output     : dictionary
 '''   
 def update_dictionary_SG(tuple_dic,genome_dic,count):
     for key in genome_dic:
@@ -307,8 +307,8 @@ def update_dictionary_SG(tuple_dic,genome_dic,count):
     
 ''' @function   : Given dictionary from a tuple, and another tuple. Return the new
                    update dictionary
-    @para_type  : dictionary, dictionary/set
-    @result_type: dictionary
+    @input      : dictionary, dictionary/set
+    @output     : dictionary
 '''   
 def update_dictionary_GG(tuple1_dic,tuple2_dic,count):
     result_dic={}
@@ -354,8 +354,8 @@ def update_dictionary_GG(tuple1_dic,tuple2_dic,count):
                   but for set it will be incremented for better correctness)
                   Also return the number of genome it runs through,
                   which is 2
-    @para_type  : 2 list of genes , 2 integer number
-    @result_type: tuple og (list of gene, dictionary,integer,dictionary)
+    @input      : 2 list of genes , 2 integer number
+    @output     : tuple og (list of gene, dictionary,integer,dictionary)
 '''
 def findSetInitial_GG(Genome1,Genome2,split1,split2):
     # set of initial gene and blocks that will be return
@@ -464,8 +464,8 @@ def findSetInitial_GG(Genome1,Genome2,split1,split2):
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   (either my set, or the genome), 2 means it appear in the set and the genome.
                   0 means no appearance.
-    @para_type  : 1 list of genes , 1 tuple of (set,dictionary,Genome count), 1 split.
-    @result_type: tuple of (set, dictionary,integer,dictionary))
+    @input      : 1 list of genes , 1 tuple of (set,dictionary,Genome count), 1 split.
+    @output     : tuple of (set, dictionary,integer,dictionary))
 '''
 def findSetInitial_SG(myTuple,Genome,split):
     ### working on the Genome info
@@ -538,8 +538,8 @@ def findSetInitial_SG(myTuple,Genome,split):
 ''' @function   : find the initial set of blocks of genes/ genes, and provide dictionary that
                   has key is the gene , and value is either 0, 1, 2. 1 means it appears in 1 of them
                   , 2 means it appear in the set and the genome. 
-    @para_type  : 2 tuples of (set,dictionary,Genome count).
-    @result_type: tuple of (set, dictionary,integer,dictionary))
+    @input      : 2 tuples of (set,dictionary,Genome count).
+    @output     : tuple of (set, dictionary,integer,dictionary))
 '''
 def findSetInitial_SS(myTuple1,myTuple2):
     ### extract info from myTuple1    
