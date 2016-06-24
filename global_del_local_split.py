@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ''' Author : Huy Nguyen
     Project: provide global approach to minimize deletion event
-
+             and finding local split event based prioritizing deletion event.
     Start  : 19/06/2016
     End    : 15/07/2016
 '''
@@ -22,7 +22,7 @@ def get_arguments():
     return args
     
 ###############################################################################
-## Helper function
+# Helper function
 ###############################################################################
 '''@function: set the genes that will appear in each inner node
    @input   : tree in nwk format
@@ -80,17 +80,15 @@ def display(rooted_tree):
             node.add_face(info,column=0,position = 'branch-top')
     return rooted_tree
 ###############################################################################
-## Main function
+# Functions to minimze deletion, duplication and  split cost.
 ###############################################################################
-if __name__ == "__main__":
-    args = get_arguments()
-    rooted_tree= Tree(args.Operon)
-    rooted_tree = set_inner_genes(rooted_tree) # set inner node's gene set
-    total_count = 0 
-    reference = rooted_tree.search_nodes(name='Escherichia_coli_NC_000913')
-    reference_block = reference[0].gene_block
-    genes = setOfGene(reference_block) 
-
+'''@function: Globablly minimize deletion cost by provide a set of genes
+              to be included in inner node., and output the total deletion events.
+   @input   : tree in nwk format,and set of genes
+   @output  : tree in nwk format, and total_count of deletion event
+'''
+def minimize_del(rooted_tree,genes):
+    total_count = 0     
     for gene in genes: # iterate through all genes of reference
     
         rooted_tree = set_initial_value(rooted_tree) #set initial data value as empty Set
@@ -125,15 +123,35 @@ if __name__ == "__main__":
                 (node.genes).add(gene)
         count =0
         for node in rooted_tree.traverse('postorder'):
-            if not node.is_leaf() and not node.is_root():
+            if not node.is_leaf():# and not node.is_root():
                 for child in node.get_children():
                     count += abs(node.data-child.data)
+        print 'gene :',gene 
+        print 'count :',count
             #    print 'inner: ', node.name, node.data, node.total_sum, node.total_leaf
             #else:
             #    print 'leaf: \t', node.name, node.data
         total_count += count
-        print 'gene :',gene 
-        print 'count :',count
+    return (rooted_tree,total_count)
+'''@function: Locally minimize split costusing the set of genes
+              to be included in inner node., and output the total split events
+   @input   : tree in nwk format,and set of genes
+   @output  : tree in nwk format, and total_count of split event
+'''
+def minimize_split(rooted_tree):
+    
+###############################################################################
+# Main function to reconstruct
+###############################################################################
+if __name__ == "__main__":
+    args = get_arguments()
+    rooted_tree= Tree(args.Operon)
+    rooted_tree = set_inner_genes(rooted_tree) # set inner node's gene set
+    total_count = 0 
+    reference = rooted_tree.search_nodes(name='Escherichia_coli_NC_000913')
+    reference_block = reference[0].gene_block
+    genes = setOfGene(reference_block) 
+    rooted_tree,total_count =   minimize_del(rooted_tree,genes)
     print(total_count)
     rooted_tree = display(rooted_tree)
     tree_style = TreeStyle()
