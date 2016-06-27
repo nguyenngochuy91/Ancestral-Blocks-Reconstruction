@@ -9,37 +9,23 @@ from __future__ import division
 from ete3 import *
 import argparse
 import os
-from findParent import *
 import random
+from file_handle import *
 
-'''@function: typical function to run by command
-   @input   : 
-   @output  : arguments
-'''
-def get_arguments():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--Operon","-i", help="Operon file name, which contains gene block for each genome")
-    parser.add_argument("--TreeFile","-t", help="Tree file name")
-    args = parser.parse_args()
-    return args
-    
-'''@function: parse the file that has infor of gene blocks for each leaf
-   @input   : file
-   @output  : dictionary, key is genome name, value is the gene block
-'''
-def parsing(file):
-    genomes={}
-    myfile = open(file,'r')
-    for line in myfile.readlines():
-        if line[0]=='N':
-            item = line.split(':')
-            name = item[0]
-            gene_blocks= item[1].split('\n')[0]
-            genomes[name]=gene_blocks
-    return genomes
 ###############################################################################
 # Helper function
 ###############################################################################
+''' @function   : return set of gene in a Genome
+    @input      : list (this list comprises of genes, and '|' as split event)
+    @output     : set of gene
+'''
+def setOfGene(Genome):
+    Genome_gene= set()
+    for gene in Genome:
+        if gene != '|':
+            Genome_gene.add(gene)
+    return Genome_gene
+
 '''@function: set the genes that will appear in each inner node
    @input   : tree in nwk format
    @output  : tree in nwk format
@@ -168,8 +154,8 @@ def minimize_del(rooted_tree,genes):
             if not node.is_leaf():# and not node.is_root():
                 for child in node.get_children():
                     count += abs(node.data-child.data)
-        print 'gene :',gene 
-        print 'count :',count
+        # print 'gene :',gene 
+        # print 'count :',count
             #    print 'inner: ', node.name, node.data, node.total_sum, node.total_leaf
             #else:
             #    print 'leaf: \t', node.name, node.data
@@ -211,15 +197,8 @@ def minimize_split(rooted_tree):
                     node.initial = dic[number_of_block1]
                 else:
                     node.initial = dic[number_of_block2]
-            print node.name, node.initial, children_blocks[0], children_blocks[1]
             total_count += count # the minimum count will always be the differences
             
-            '''
-            ancestor = node.get_ancestors()
-            if len(ancestor) == 0 : # this mean it is the root
-                node.initial = random.sample(node.children_blocks,1)
-            else:
-                extra_children_info = ancestor[0].get_children()  '''
     return (rooted_tree,total_count)
 ###############################################################################
 # Main function to reconstruct
@@ -227,17 +206,17 @@ def minimize_split(rooted_tree):
 if __name__ == "__main__":
     args = get_arguments()
     rooted_tree= Tree(args.TreeFile)
-    genomes = parsing(args.Operon)
+    mapping,genomes = parsing(args.InputDataDirectory)
+    mapping = mapping_write(mapping)
     rooted_tree = set_leaf_gene_block(rooted_tree,genomes) # assign the gene block infofor the leaf from the genomes dic
     rooted_tree = set_inner_genes(rooted_tree) # set inner node's gene set
-    total_count = 0 
     reference = rooted_tree.search_nodes(name='Escherichia_coli_NC_000913')
     reference_block = reference[0].gene_block
     genes = setOfGene(reference_block) 
     rooted_tree,total_count_del   =  minimize_del(rooted_tree,genes)
     rooted_tree,total_count_split =  minimize_split(rooted_tree)
-    print 'total_count_del: ',total_count_del
-    print 'minimize_split: ',total_count_split
+    # print 'total_count_del: ',total_count_del
+    # print 'minimize_split: ',total_count_split
     rooted_tree = display(rooted_tree)
     tree_style = TreeStyle()
     tree_style.show_leaf_name = False
