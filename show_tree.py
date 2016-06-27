@@ -97,10 +97,9 @@ if __name__ == "__main__":
     cost.margin_right = 5
     cost.background.color = 'LightGreen'
     tree_style.title.add_face(cost, column=1)
-    
-                                                    
+                                              
     # render the image
-    tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
+    # tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
     tree.show(tree_style=tree_style)
 
 
