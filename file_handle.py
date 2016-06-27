@@ -40,6 +40,7 @@ def get_arguments():
     parser.add_argument("--InputDataDirectory","-i",action=readable_dir,help="This contain the translation result in term of alphabet")
     parser.add_argument("--OutputDirectory","-o", help="Output of this program will be stored in the path supplied here. It will make a new directory if path given is valid or it will raise an error")
     parser.add_argument("--TreeFile","-t", help="Tree file name")
+    parser.add_argument("--Method","-m",help="Choose method to reconstruct (global or local)")
     args = parser.parse_args()
     return args
 
