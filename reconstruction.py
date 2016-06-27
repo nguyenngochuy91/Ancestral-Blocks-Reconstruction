@@ -116,11 +116,12 @@ def reconstruct_local(genomes,tree):
 '''
 def reconstruct_global(genomes,tree):
     tree = set_inner_genes(tree) # set inner node's gene set
+    tree = set_distances_genes(tree) # set default distances as 0 for inner node
     reference = tree.search_nodes(name='Escherichia_coli_NC_000913')
     reference_block = reference[0].gene_block
     genes = setOfGene(reference_block) 
-    tree,total_count_del   =  minimize_del(tree,genes)
-    tree,total_count_split =  minimize_split(tree)
+    tree =  minimize_del(tree,genes)
+    tree =  minimize_split(tree)
     return tree
 ###############################################################################
 ## Main function 
@@ -159,7 +160,7 @@ if __name__ == "__main__":
             elif method.lower() =='global':
                 tree = reconstruct_global(genomes,tree)
                 tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
-            'initial','gene_block','deletion','split'])
+            'initial','gene_block','deletion','duplication','split'])
             #if f == 'rplKAJL-rpoBC':
             #    for node in tree.iter_descendants("postorder"):
             #        if node.name == 'Node8' or node.name == 'Node15' or node.name =='Node18':
