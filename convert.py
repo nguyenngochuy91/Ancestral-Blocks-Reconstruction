@@ -33,7 +33,7 @@ class readable_dir(argparse.Action):
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--OperonDataDirectory","-n",action=readable_dir,help="This directory should contain files with gene name, start, stop, strand direction information for each genome.")
+    parser.add_argument("--OperonDataDirectory","-i",action=readable_dir,help="This directory should contain files with gene name, start, stop, strand direction information for each genome.")
     parser.add_argument("--splitDistance","-d", type=int ,default=500,help="Splitting distance")
     parser.add_argument("--OutputDirectory","-o", help="Output of this program will be stored in the path supplied here. It will make a new directory if path given is valid or it will raise an error")
     args = parser.parse_args()
