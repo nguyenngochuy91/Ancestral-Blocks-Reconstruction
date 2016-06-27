@@ -51,13 +51,18 @@ def set_inner_genes(rooted_tree):
     return rooted_tree
     
     
-'''@function: set initial value data for each node as empty Set
+'''@function: set initial value data for each node as empty Set, and set name for
+              initial node
    @input   : tree in nwk format
    @output  : tree in nwk format
 '''
 def set_initial_value(rooted_tree):
-    for node in rooted_tree.traverse("levelorder"):
+    count = 0
+    for node in rooted_tree.traverse("postorder"):
         node.add_features(data=set())
+        if node.name == '':
+            count +=1
+            node.name = 'Node'+ ' ' + str(count)
     return rooted_tree
    
 '''@function: set gene block data for each leaf node
@@ -99,7 +104,8 @@ def reduce_gene(gene_block,genes):
         for gene in block: # iterate through each gene in the gene block
             if gene in genes:
                 new_block +=gene # add gene to the string
-        result.append(''.join(sorted(new_block))) # add the sorted to the result
+        if len(new_block)>0:
+            result.append(''.join(sorted(new_block))) # add the sorted to the result
     return result
 '''@function: Display the tree, each inner node has info about genes to include.
               Leaf node has gene block
@@ -194,18 +200,26 @@ def minimize_split(rooted_tree):
             number_of_block1 = len(children_blocks[0])
             number_of_block2 = len(children_blocks[1])
             if number_of_block1 == number_of_block2:
-                node.initial = random.sample(children_blocks,1)
+                node.initial = random.sample(children_blocks,1)[0]
+
             else:
-                total_count += abs(number_of_block1-number_of_block2) # the minimum count will always be the differences
-                node.initial = random.sample(children_blocks,1)                
-                '''dic={number_of_block1:children_blocks[0],
-                     len(number_of_block2:children_blocks[1]}
-                
-                ancestor = node.get_ancestors()
-                if len(ancestor) == 0 : # this mean it is the root
-                    node.initial = random.sample(node.children_blocks,1)
+                if number_of_block1 !=0 and number_of_block2 !=0:
+                    count = abs(number_of_block1-number_of_block2)
+                dic={number_of_block1:children_blocks[0],
+                     number_of_block2:children_blocks[1]}  
+                if number_of_block1 > number_of_block2:
+                    node.initial = dic[number_of_block1]
                 else:
-                    extra_children_info = ancestor[0].get_children()  '''
+                    node.initial = dic[number_of_block2]
+            print node.name, node.initial, children_blocks[0], children_blocks[1]
+            total_count += count # the minimum count will always be the differences
+            
+            '''
+            ancestor = node.get_ancestors()
+            if len(ancestor) == 0 : # this mean it is the root
+                node.initial = random.sample(node.children_blocks,1)
+            else:
+                extra_children_info = ancestor[0].get_children()  '''
     return (rooted_tree,total_count)
 ###############################################################################
 # Main function to reconstruct
