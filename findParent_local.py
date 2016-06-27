@@ -343,7 +343,7 @@ def update_dictionary_GG(tuple1_dic,tuple2_dic,count):
             result_dic[key]=[newValue,tuple1_dic[key][1]]
     return result_dic
 #######################################################################################
-# Main functions to find initial set of genes/ genes block
+# Functions to find initial set of genes/ genes block
 # 3 functions to deal with 3 type of parameter (Genome,Genome), (Set,Genome), (Set,Set)
 #######################################################################################
     
@@ -603,4 +603,3 @@ def findSetInitial_SS(myTuple1,myTuple2):
     accumulate2_split = myTuple2[6][1]
     split_cost = [split,split+accumulate1_split+accumulate2_split]
     return (initial, elementCount, count,duplication,deletion_cost,duplication_cost,split_cost)
-    
