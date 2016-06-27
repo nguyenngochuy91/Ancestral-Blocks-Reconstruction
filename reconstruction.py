@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 ''' Author  : Huy Nguyen
     Program : Reconstruct the ancestral gene blocks given the newick tree and the leaf gene blocks
+              Using global optimal or local optimal depends on user choice
     Start   : 05/04/2016
     End     : 05/05/2016
 '''
@@ -9,21 +10,22 @@ import argparse
 import time
 import uuid
 from findParent_local import *
+from findParent_global import *
 from ete3 import *
 from file_handle import *
 
 ###############################################################################
-## Reconstruct method
+## Helper function
 ###############################################################################
-'''@function: Reconstruct the newick tree file with gene block info for inner 
-              node.
-   @input   : tree in nwk format,and a mapping between alphabet and gene name
-   @output  : tree in nwk format,gene g and a string of the info
+'''@function: set initial value data for each node as empty Set, and set name for
+              initial node
+   @input   : tree in nwk format
+   @output  : tree in nwk format
 '''
-def reconstruct(genomes,tree):
-    # traverse the first time to assign name, and the node_type
-    count =0
-    for node in tree.traverse('postorder'):
+def set_initial_value(genomes, tree):
+    count = 0
+    for node in tree.traverse("postorder"):
+        node.add_features(data=set())
         if node.name == '':
             count +=1
             node.name = 'Node'+ ' ' + str(count)
@@ -42,8 +44,18 @@ def reconstruct(genomes,tree):
             mylist= node.name.split('_')
             name = mylist[2]+'_'+mylist[3]
             # print(genomes[name])
-            node.add_features(gene_block=genomes[name])   
-     
+            node.add_features(gene_block=genomes[name]) 
+    return tree
+
+###############################################################################
+## Reconstruct methods
+###############################################################################
+'''@function: Reconstruct the newick tree file with gene block info for inner 
+              node using local LOCAL scheme
+   @input   : tree in nwk format,and a dictionary between specie name and gene block for leaf
+   @output  : tree in nwk format,gene g and a string of the info
+'''
+def reconstruct_local(genomes,tree):
     # use findParent function to find geneblock
     for node in tree.traverse('postorder'):
         if not node.is_leaf():
@@ -96,9 +108,20 @@ def reconstruct(genomes,tree):
                                   split = mytuple[6])
                                        
     return tree
-            # print (node.name,node.initial,node.elementCount)
-    # print (tree.write(features=['name','initial','gene_block']))
-    
+
+'''@function: Reconstruct the newick tree file with gene block info for inner 
+              node using local GLOBAL scheme
+   @input   : tree in nwk format,and a dictionary between specie name and gene block for leaf
+   @output  : tree in nwk format,gene g and a string of the info
+'''
+def reconstruct_global(genomes,tree):
+    tree = set_inner_genes(tree) # set inner node's gene set
+    reference = tree.search_nodes(name='Escherichia_coli_NC_000913')
+    reference_block = reference[0].gene_block
+    genes = setOfGene(reference_block) 
+    tree,total_count_del   =  minimize_del(tree,genes)
+    tree,total_count_split =  minimize_split(tree)
+    return tree
 ###############################################################################
 ## Main function 
 ###############################################################################
@@ -115,6 +138,7 @@ if __name__ == "__main__":
     sessionID = uuid.uuid1()
     condition = chk_output_directory_path(args.OutputDirectory,sessionID)
     treeFile=args.TreeFile
+    method =args.Method
     if condition:
         outputsession = args.OutputDirectory
         os.mkdir(outputsession)
@@ -126,8 +150,16 @@ if __name__ == "__main__":
                 continue
             mapping,genomes = parsing(r)
             mapping = mapping_write(mapping) # modify the string mapping to write out
-            tree= Tree(treeFile) # using ete3 to read treeFile
-            tree = reconstruct(genomes,tree)
+            tree = Tree(treeFile) # using ete3 to read treeFile
+            tree = set_initial_value(genomes,tree) # set up gene block for the leafs, names for inner node, and node type
+            if method.lower() =='local':
+                tree = reconstruct_local(genomes,tree)
+                tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
+            'initial','gene_block','deletion','duplication','split'])
+            elif method.lower() =='global':
+                tree = reconstruct_global(genomes,tree)
+                tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
+            'initial','gene_block','deletion','split'])
             #if f == 'rplKAJL-rpoBC':
             #    for node in tree.iter_descendants("postorder"):
             #        if node.name == 'Node8' or node.name == 'Node15' or node.name =='Node18':
@@ -135,6 +167,4 @@ if __name__ == "__main__":
             outfile=open(outputsession+'/'+f+'_mapping','w')
             outfile.write(mapping)      
             outfile.close()
-            tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
-            'initial','gene_block','deletion','duplication','split'])
     print (time.time() - start)
