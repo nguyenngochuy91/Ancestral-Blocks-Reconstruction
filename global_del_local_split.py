@@ -11,16 +11,32 @@ import argparse
 import os
 from findParent import *
 import random
+
 '''@function: typical function to run by command
    @input   : 
    @output  : arguments
 '''
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--Operon","-i", help="Operon file name")
+    parser.add_argument("--Operon","-i", help="Operon file name, which contains gene block for each genome")
+    parser.add_argument("--TreeFile","-t", help="Tree file name")
     args = parser.parse_args()
     return args
     
+'''@function: parse the file that has infor of gene blocks for each leaf
+   @input   : file
+   @output  : dictionary, key is genome name, value is the gene block
+'''
+def parsing(file):
+    genomes={}
+    myfile = open(file,'r')
+    for line in myfile.readlines():
+        if line[0]=='N':
+            item = line.split(':')
+            name = item[0]
+            gene_blocks= item[1].split('\n')[0]
+            genomes[name]=gene_blocks
+    return genomes
 ###############################################################################
 # Helper function
 ###############################################################################
@@ -43,8 +59,21 @@ def set_initial_value(rooted_tree):
     for node in rooted_tree.traverse("levelorder"):
         node.add_features(data=set())
     return rooted_tree
+   
+'''@function: set gene block data for each leaf node
+   @input   : tree in nwk format,genomes dictionaru
+   @output  : tree in nwk format
+'''   
+def set_leaf_gene_block(rooted_tree,genomes):
+    leaves= rooted_tree.get_leaves()
+    for leaf in leaves:
+        mylist= (leaf.name).split('_')
+        name = mylist[2]+'_'+mylist[3]
+        leaf.add_features(gene_block=genomes[name])
+    return rooted_tree
     
-'''@function: set initial value data for leaf based on whether it has the gene g
+'''@function: set initial value data for leaf based on whether it has the gene 
+              in the gene block
    @input   : tree in nwk format,and gene g
    @output  : tree in nwk format
 '''
@@ -58,13 +87,20 @@ def set_leaf_data(rooted_tree,gene):
             (leaf.data).add(0)
     return rooted_tree
     
-'''@function: Transform some of the inner node to be counted as leaf, and remove
-              some leaf node out of calculation
-   @input   : tree in nwk format,and gene g
-   @output  : tree in nwk format
+'''@function: Given gene block, remove the gene that not in the set of genes 
+              given from minimize deletion method
+   @input   : gene blocks
+   @output  : list of gene blocks
 '''
-
-    
+def reduce_gene(gene_block,genes):
+    result=[]
+    for block in gene_block: # iterate trhough each gene block in the genome
+        new_block =''
+        for gene in block: # iterate through each gene in the gene block
+            if gene in genes:
+                new_block +=gene # add gene to the string
+        result.append(''.join(sorted(new_block))) # add the sorted to the result
+    return result
 '''@function: Display the tree, each inner node has info about genes to include.
               Leaf node has gene block
    @input   : tree in nwk format,and gene g
@@ -76,7 +112,7 @@ def display(rooted_tree):
             info = TextFace(node.gene_block)
             node.add_face(info,column=0,position = 'branch-right')
         else: # display gene set if inner node
-            info = TextFace(node.genes)
+            info = TextFace(node.initial)
             node.add_face(info,column=0,position = 'branch-top')
     return rooted_tree
 ###############################################################################
@@ -139,22 +175,58 @@ def minimize_del(rooted_tree,genes):
    @output  : tree in nwk format, and total_count of split event
 '''
 def minimize_split(rooted_tree):
-    
+    total_count = 0
+    for node in rooted_tree.traverse('postorder'):
+        if not node.is_leaf():
+            node.add_features(initial=[])
+            children = node.get_children()
+            children_blocks=[]
+            for child in children:
+                gene_set = node.genes
+                if child.is_leaf(): # check if the child is a leaf
+                    processed = (child.gene_block).split('|')
+                    children_blocks.append(reduce_gene(processed,gene_set))
+                else:
+                    children_blocks.append(reduce_gene(child.initial,gene_set))
+            # check if the 2 related set of gene blocks has same number of block:
+            # also provide a count for split cost
+            count = 0
+            number_of_block1 = len(children_blocks[0])
+            number_of_block2 = len(children_blocks[1])
+            if number_of_block1 == number_of_block2:
+                node.initial = random.sample(children_blocks,1)
+            else:
+                total_count += abs(number_of_block1-number_of_block2) # the minimum count will always be the differences
+                node.initial = random.sample(children_blocks,1)                
+                '''dic={number_of_block1:children_blocks[0],
+                     len(number_of_block2:children_blocks[1]}
+                
+                ancestor = node.get_ancestors()
+                if len(ancestor) == 0 : # this mean it is the root
+                    node.initial = random.sample(node.children_blocks,1)
+                else:
+                    extra_children_info = ancestor[0].get_children()  '''
+    return (rooted_tree,total_count)
 ###############################################################################
 # Main function to reconstruct
 ###############################################################################
 if __name__ == "__main__":
     args = get_arguments()
-    rooted_tree= Tree(args.Operon)
+    rooted_tree= Tree(args.TreeFile)
+    genomes = parsing(args.Operon)
+    rooted_tree = set_leaf_gene_block(rooted_tree,genomes) # assign the gene block infofor the leaf from the genomes dic
     rooted_tree = set_inner_genes(rooted_tree) # set inner node's gene set
     total_count = 0 
     reference = rooted_tree.search_nodes(name='Escherichia_coli_NC_000913')
     reference_block = reference[0].gene_block
     genes = setOfGene(reference_block) 
-    rooted_tree,total_count =   minimize_del(rooted_tree,genes)
-    print(total_count)
+    rooted_tree,total_count_del   =  minimize_del(rooted_tree,genes)
+    rooted_tree,total_count_split =  minimize_split(rooted_tree)
+    print 'total_count_del: ',total_count_del
+    print 'minimize_split: ',total_count_split
     rooted_tree = display(rooted_tree)
     tree_style = TreeStyle()
     tree_style.show_leaf_name = False
-    tree_style.title.add_face(TextFace('total_count: '+str(total_count)),column=0)
+    tree_style.title.add_face(TextFace('total_count_del: '+str(total_count_del)+ '  '
+                                       'total_count_split:'+str(total_count_split)),column=0)
     rooted_tree.show(tree_style=tree_style)
