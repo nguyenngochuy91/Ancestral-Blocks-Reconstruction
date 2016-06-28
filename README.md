@@ -48,10 +48,12 @@ Here is the step by step usage:
 ```bash
 ./show_tree.py -i reconstruction/rplKAJL-rpoBC -g group.txt 
 ```
+
  2. Use the command line below for each operon that you like, here I use not so conserved operon caiTABCDE:
 ```bash
 ./show_tree.py -i reconstruction/caiTABCDE -g group.txt 
 ```
+
  3. Render the file:
 ```bash
 ./show_tree.py -i reconstruction/caiTABCDE -g group.txt -o caiTABCDE_image
