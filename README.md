@@ -37,21 +37,22 @@ Here is the step by step usage:
 ```bash
 ./convert.py  -i result_dic/ -o new_result/ 
 ```
+
 * Step 2: Using each operon file from new result, and the tree input (this tree was built using muscle alignment of the 33 taxa on the rpOb gene marker), then provide ancestral reconstruction method depends on user choice (global or local)
-1. Use the command line below and the output will be stored in directory reconstruction. Method use is global
+ 1. Use the command line below and the output will be stored in directory reconstruction. Method use is global
 ```bash
 ./reconstruction.py -i new_result/ -t muscle.ph -o reconstruction/ -m global 
 ```
 * Step 3: Provide a visualization of the ancestral reconstruction process using ete3 package, it also provide a grouping theme depends on the class of the taxa. You can uncommend the line 103 to render the file into image, however, you need to provide the where to output the render file
-1. Use the command line below for each operon that you like, here I use a highly conserved operon rplKAJL-rpoBC:
+ 1. Use the command line below for each operon that you like, here I use a highly conserved operon rplKAJL-rpoBC:
 ```bash
 ./show_tree.py -i reconstruction/rplKAJL-rpoBC -g group.txt 
 ```
-2. Use the command line below for each operon that you like, here I use not so conserved operon caiTABCDE:
+ 2. Use the command line below for each operon that you like, here I use not so conserved operon caiTABCDE:
 ```bash
 ./show_tree.py -i reconstruction/caiTABCDE -g group.txt 
 ```
-3. Render the file:
+ 3. Render the file:
 ```bash
 ./show_tree.py -i reconstruction/caiTABCDE -g group.txt -o caiTABCDE_image
 ```
