@@ -111,16 +111,14 @@ def reconstruct_local(genomes,tree):
 
 '''@function: Reconstruct the newick tree file with gene block info for inner 
               node using local GLOBAL scheme
-   @input   : tree in nwk format,and a dictionary between specie name and gene block for leaf
+   @input   : tree in nwk format,and a dictionary between specie name and gene block for leaf, and set of genes
    @output  : tree in nwk format,gene g and a string of the info
 '''
-def reconstruct_global(genomes,tree):
-    tree = set_inner_genes(tree) # set inner node's gene set
-    tree = set_distances_genes(tree) # set default distances as 0 for inner node
-    reference = tree.search_nodes(name='Escherichia_coli_NC_000913')
-    reference_block = reference[0].gene_block
-    genes = setOfGene(reference_block) 
-    tree =  minimize_del(tree,genes)
+def reconstruct_global(genomes,tree,genes):
+    tree = set_inner_genes(tree) # set inner node's gene set and the gene block number of the leaf,
+                                 # set default distances as 0 for inner node
+    tree =  minimize_del(tree,genes) # globally minimize deletion events, provide gene set for each inner node
+    tree =  initialize_block_number(tree) # using the gene set to get relevant gene block for each leaf
     tree =  minimize_split(tree)
     return tree
 ###############################################################################
@@ -150,7 +148,6 @@ if __name__ == "__main__":
             if "DS_Store" in f:
                 continue
             mapping,genomes = parsing(r)
-            mapping = mapping_write(mapping) # modify the string mapping to write out
             tree = Tree(treeFile) # using ete3 to read treeFile
             tree = set_initial_value(genomes,tree) # set up gene block for the leafs, names for inner node, and node type
             if method.lower() =='local':
@@ -158,13 +155,18 @@ if __name__ == "__main__":
                 tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
             'initial','gene_block','deletion','duplication','split'])
             elif method.lower() =='global':
-                tree = reconstruct_global(genomes,tree)
+                # get the set of genes for the method from mapping
+                genes =set()
+                for key in mapping:
+                    genes.add(mapping[key])
+                tree = reconstruct_global(genomes,tree,genes)
                 tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
             'initial','gene_block','deletion','duplication','split'])
             #if f == 'rplKAJL-rpoBC':
             #    for node in tree.iter_descendants("postorder"):
             #        if node.name == 'Node8' or node.name == 'Node15' or node.name =='Node18':
             #            print node.name,node.initial,node.elementCount,node.count
+            mapping = mapping_write(mapping) # modify the string mapping to write out
             outfile=open(outputsession+'/'+f+'_mapping','w')
             outfile.write(mapping)      
             outfile.close()
