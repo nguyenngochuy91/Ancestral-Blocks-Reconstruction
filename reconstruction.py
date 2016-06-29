@@ -158,7 +158,7 @@ if __name__ == "__main__":
                 # get the set of genes for the method from mapping
                 genes =set()
                 for key in mapping:
-                    genes.add(mapping[key])
+                    genes.add(key) # add genes alphabet 
                 tree = reconstruct_global(genomes,tree,genes)
                 tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
             'initial','gene_block','deletion','duplication','split'])
