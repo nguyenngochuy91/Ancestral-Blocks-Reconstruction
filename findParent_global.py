@@ -105,12 +105,12 @@ def reduce_gene(gene_block,genes):
 def display(rooted_tree):
     for node in rooted_tree.traverse('postorder'):
         if node.is_leaf(): # display gene block if leaf node
-            info = TextFace(node.gene_block)
+            info = TextFace(node.processed_block)
             node.add_face(info,column=0,position = 'branch-right')
             info = TextFace(node.block_number)
             node.add_face(info,column=0,position = 'branch-right')
         else: # display gene set if inner node
-            info = TextFace(node.initial)
+            info = TextFace(node.genes)
             node.add_face(info,column=0,position = 'branch-top')
             # info = TextFace(node.block_number)
             # node.add_face(info,column=0,position = 'branch-top')
@@ -147,17 +147,19 @@ def accumulate_del(rooted_tree):
 '''@function: From the set of genes of inner node, get the related gene block 
               in leaf nodes. Assign this the processed gene_block to attribute 
               proccessed block of the leaf node
-   @input   : tree in nwk format
+   @input   : tree in nwk formatprocessed
    @output  : tree in nwk format, matrix score of number of block
 '''   
 def initialize_block_number(rooted_tree):
     leaves= rooted_tree.get_leaves()
     for leaf in leaves:
         ancestors = leaf.get_ancestors()
-        gene_set = ancestors[0].genes # get the gene set of the ancestor
-        processed = reduce_gene(leaf.gene_block,gene_set)
-        node.add_features(processed_block=processed) # assign the processed block
-        node.add_features(block_number = len(processed)) # assign the number of block of the processed 
+        gene_set  = ancestors[0].genes # get the gene set of the ancestor
+        processed = leaf.gene_block.split('|') 
+        processed = reduce_gene(processed,gene_set)
+        leaf.add_features(processed_block=processed) # assign the processed block
+        # print leaf.name, leaf.gene_block, gene_set
+        leaf.add_features(block_number = len(processed)) # assign the number of block of the processed 
                                                          # so that sankoff'algo can be applied
     return rooted_tree
     
@@ -197,7 +199,6 @@ def accumulate_split(rooted_tree):
 '''
 def minimize_del(rooted_tree,genes):
     for gene in genes: # iterate through all genes of reference
-    
         rooted_tree = set_initial_value(rooted_tree) #set initial data value as empty Set
         # set data for the leavesrooted_tree.data = 1
         rooted_tree = set_leaf_data(rooted_tree,gene)        
@@ -249,8 +250,7 @@ def minimize_split(rooted_tree):
             for child in children:
                 gene_set = node.genes
                 if child.is_leaf(): # check if the child is a leaf
-                    processed = (child.gene_block).split('|')
-                    children_blocks.append(processed)
+                    children_blocks.append(child.processed_block)
                 else:
                     children_blocks.append(reduce_gene(child.initial,gene_set))
             # check if the 2 related set of gene blocks has same number of block:
@@ -271,7 +271,7 @@ def minimize_split(rooted_tree):
                     node.initial = dic[number_of_block1]    
                 else:
                     node.initial = dic[number_of_block2]
-    # calculate the accumulated split event        
+            
     rooted_tree = accumulate_split(rooted_tree)    
     return rooted_tree
 ###############################################################################
@@ -286,12 +286,10 @@ if __name__ == "__main__":
     # get the genes of the operon
     genes = set()
     for key in mapping:
-        genes.add(mapping[key])
+        genes.add(key)
     rooted_tree =  minimize_del(rooted_tree,genes)
     rooted_tree = initialize_block_number(rooted_tree)
     rooted_tree =  minimize_split(rooted_tree)
-    # print 'total_count_del: ',total_count_del
-    # print 'minimize_split: ',total_count_split
     rooted_tree = display(rooted_tree)
     tree_style = TreeStyle()
     tree_style.show_leaf_name = False
