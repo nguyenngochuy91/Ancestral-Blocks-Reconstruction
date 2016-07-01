@@ -161,25 +161,26 @@ def Fitch(rooted_tree,genes):
         if not node.is_leaf():
             children = node.get_children()
             for gene in genes:
-            intersect = (children[0].data).intersection(children[1].data)
-            if len(intersect) == 0:
-                node.data = (children[0].data).union(children[1].data)
-            else:
-                node.data = intersect
-    # traverse top-down 
-    
+                intersect = (children[0].data[gene]).intersection(children[1].data[gene])
+                if len(intersect) == 0:
+                    node.data[gene] = (children[0].data[gene]).union(children[1].data[gene])
+                else:
+                    node.data[gene] = intersect
+                    
+    # traverse top-down     
     for node in rooted_tree.traverse('levelorder'):
-        if node.is_root(): # for the root 
-            # if the root has 2 candidatnode.add_features()e, randomly choose 1, and get the numeric value
-            node.data = (random.sample(node.data,1))[0] 
-        else:
-            # for children node, first check the data from the ancestor
-            ancestors = node.get_ancestors() # get the list of ancestor
-            data = ancestors[0].data # get the data from the parent
-            if data in node.data:# check if the node.data has value equal to its parent data
-                node.data =data
+        for gene in genes:
+            if node.is_root(): # for the root 
+                # if the root has 2 candidatnode.add_features()e, randomly choose 1, and get the numeric value
+                node.data[gene] = (random.sample(node.data[gene],1))[0] 
             else:
-                node.data = (random.sample(node.data,1))[0]
+                # for children node, first check the data from the ancestor
+                ancestors = node.get_ancestors() # get the list of ancestor
+                data = ancestors[0].data[gene] # get the data from the parent
+                if data in node.data[gene]:# check if the node.data has value equal to its parent data
+                    node.data[gene] = data
+                else:
+                    node.data[gene] = (random.sample(node.data[gene],1))[0]
     return rooted_tree
 '''@function: Calculate accumulation split distance for each gene at each inner node
    @input   : tree in nwk format
