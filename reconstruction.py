@@ -115,11 +115,11 @@ def reconstruct_local(genomes,tree):
    @output  : tree in nwk format,gene g and a string of the info
 '''
 def reconstruct_global(genomes,tree,genes):
-    tree = set_inner_genes(tree) # set inner node's gene set and the gene block number of the leaf,
-                                 # set default distances as 0 for inner node
-    tree =  minimize_del(tree,genes) # globally minimize deletion events, provide gene set for each inner node
-    tree =  initialize_block_number(tree) # using the gene set to get relevant gene block for each leaf
-    tree =  minimize_split(tree)
+    tree   =  set_inner_genes(tree,genes) # set dictionary data value for each inner node, and the 3 events distances
+    leaves =  tree.get_leaves() # get leave data so dont have to keep on calling 
+    tree   =  minimize_del(tree,genes) # globally minimize deletion events, provide gene set for each inner node
+    tree   =  initialize_block_number(tree,leaves) # using the gene set to get relevant gene block for each leaf
+    tree   =  minimize_split(tree)
     return tree
 ###############################################################################
 ## Main function 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
                 # get the set of genes for the method from mapping
                 genes =set()
                 for key in mapping:
-                    genes.add(key) # add genes alphabet 
+                    genes.add(key)
                 tree = reconstruct_global(genomes,tree,genes)
                 tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
             'initial','gene_block','deletion','duplication','split'])
