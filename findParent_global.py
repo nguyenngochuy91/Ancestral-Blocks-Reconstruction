@@ -16,28 +16,29 @@ from file_handle import *
 # Helper function to set data structure
 ###############################################################################
 
-'''@function: set the genes that will appear in each inner node; the initial 
-              number of block; and set the deletion, split, duplication 
-              distance for each inner node
+'''@function: set the genes that will appear in each node as dictionary, and
+              the deletion, split, duplication events, and the genes set for each 
+              inner node
    @input   : tree in nwk format
    @output  : tree in nwk format
 '''
-def set_inner_genes(rooted_tree):
+def set_inner_genes(rooted_tree,genes):
     for node in rooted_tree.traverse("levelorder"):
-        if not node.is_leaf():
-            node.add_features(genes=set())
-            node.add_features(deletion=[0,0],duplication=[0,0],split=[0,0])
+        node.add_features(deletion=[0,0],duplication=[0,0],split=[0,0])
+        node.add_features(data={})
+        node.add_features(genes=set())
+        if node.is_leaf():        
+            for gene in genes:
+                if gene in node.gene_block:
+                    node.data[gene] = {1}
+                else:
+                    node.data[gene] = {0}
+        else:
+            for gene in genes:
+                node.data[gene] = {0}
     return rooted_tree
     
     
-'''@function: set initial value data for each node as empty Set
-   @input   : tree in nwk format
-   @output  : tree in nwk format
-'''
-def set_initial_value(rooted_tree):
-    for node in rooted_tree.traverse("postorder"):
-        node.add_features(data=set())
-    return rooted_tree
    
 '''@function: set gene block data for each leaf node, and name for inner node
    @input   : tree in nwk format,genomes dictionaru
@@ -55,38 +56,26 @@ def set_leaf_gene_block(rooted_tree,genomes):
             node.add_features(gene_block=genomes[name])
     return rooted_tree
     
-'''@function: set initial value data for leaf based on whether it has the gene 
-              in the gene block
-   @input   : tree in nwk format,and gene g and leave nodes
-   @output  : tree in nwk format
-'''
-
-def set_leaf_data(rooted_tree,gene,leaves):
-    for leaf in leaves:
-        if gene in leaf.gene_block: # if gene appear in the genome gene block
-            (leaf.data).add(1)
-        else:
-            (leaf.data).add(0)
-    return rooted_tree
     
 '''@function: Given gene block, remove the gene that not in the set of genes 
               given from minimize deletion method
-   @input   : gene blocks
+   @input   : gene blocks and dictionary of genes from parent
    @output  : list of gene blocks
 '''
-def reduce_gene(gene_block,genes):
+def reduce_gene(gene_block,data):
     result=[]
+    # print data
     for block in gene_block: # iterate trhough each gene block in the genome
         new_block =''
         for gene in block: # iterate through each gene in the gene block
-            if gene in genes:
+            if data[gene] == 1 : 
                 new_block +=gene # add gene to the string
         if len(new_block)>0:
             result.append(''.join(sorted(new_block))) # add the sorted to the result
     return result
 
 ### display the info
-'''@function: Display the tree, each inner node has info about genes to include.
+'''@function: Dileaf.data['split']=splay the tree, each inner node has info about genes to include.
               Leaf node has gene block
    @input   : tree in nwk format,and gene g
    @output  : tree in nwk format
@@ -96,10 +85,8 @@ def display(rooted_tree):
         if node.is_leaf(): # display gene block if leaf node
             info = TextFace(node.gene_block)
             node.add_face(info,column=0,position = 'branch-right')
-            info = TextFace(node.data)
-            node.add_face(info,column=0,position = 'branch-right')
         else: # display gene set if inner node
-            info = TextFace(node.split)
+            info = TextFace(node.deletion)
             node.add_face(info,column=0,position = 'branch-top')
             info = TextFace(node.initial)
             node.add_face(info,column=0,position = 'branch-top')
@@ -113,12 +100,14 @@ def display(rooted_tree):
    @input   : tree in nwk formatgene_set
    @output  : tree in nwk format
 '''
-def del_distance(rooted_tree):
+def del_distance(rooted_tree,genes):
     for node in rooted_tree.traverse('postorder'):
         if not node.is_leaf():# and not node.is_root():
             for child in node.get_children():
-                value = abs(node.data-child.data)
-                node.deletion[0]+=value
+                value = 0
+                for gene in genes:
+                    value = abs(node.data[gene]-child.data[gene])
+                    node.deletion[0]+=value
     return rooted_tree
     
 '''@function: Calculate accumulation deletion distance for each gene at each inner node
@@ -134,6 +123,71 @@ def accumulate_del(rooted_tree):
                     node.deletion[1]+=child.deletion[1]
     return rooted_tree
     
+### Duplication event helper
+    
+'''@function: Calculate accumulation deletion distance for each gene at each inner node
+   @input   : tree in nwk format
+   @output  : tree in nwk format
+'''  
+def find_Dup():
+    return 
+    
+### Split event helper
+'''@function: From the set of genes of inner node, get the related gene block 
+              in leaf nodes. Assign this the processed gene_block to attribute 
+              proccessed block of the leaf node
+   @input   : tree in nwk format, leave nodes
+   @output  : tree in nwk format, matrix score of number of block
+'''   
+def initialize_block_number(rooted_tree,leaves):
+    for leaf in leaves:
+        ancestors = leaf.get_ancestors()
+        data  = ancestors[0].data # get the data dictionary gene
+        processed = leaf.gene_block.split('|') 
+        processed = reduce_gene(processed,data)
+        leaf.add_features(processed_block=processed) # assign the processed block
+        # print leaf.name, leaf.gene_block, gene_set
+        leaf.data['split']=set([len(processed)]) # assign the number of block of the processed to key 'split'
+    return rooted_tree
+    
+'''@function: Fitch algorithm for deletion and duplication events
+   @input   : tree in nwk format, set of genes
+   @output  : tree in nwk format
+'''       
+def Fitch_del_dup(rooted_tree,genes):
+    # using of Fitch algorithm 
+    
+    # traverse Tree in post-order
+    for node in rooted_tree.traverse('postorder'):
+        if not node.is_leaf():
+            children = node.get_children()
+            for gene in genes:
+                intersect = (children[0].data[gene]).intersection(children[1].data[gene])
+                if len(intersect) == 0:
+                    node.data[gene] = (children[0].data[gene]).union(children[1].data[gene])
+                else:
+                    node.data[gene] = intersect
+                    
+    # traverse top-down     
+    for node in rooted_tree.traverse('levelorder'):
+        for gene in genes:
+            if node.is_root(): # for the root 
+                # if the root has 2 candidatnode.add_features()e, randomly choose 1, and get the numeric value
+                node.data[gene] = (random.sample(node.data[gene],1))[0] 
+            else:
+                # for children node, first check the data from the ancestor
+                ancestors = node.get_ancestors() # get the list of ancestor
+                data = ancestors[0].data[gene] # get the data from the parent
+                if data in node.data[gene]:# check if the node.data has value equal to its parent data
+                    node.data[gene] = data
+                else:
+                    node.data[gene] = (random.sample(node.data[gene],1))[0]
+    return rooted_tree
+'''@function: Fitch algorithm for split event
+   @input   : tree in nwk format
+   @output  : tree in nwk format
+'''       
+
 ### Duplication event helper
     
 '''@function: check whether there are duplication 
@@ -166,29 +220,8 @@ def find_dup(rooted_tree,leaves):
             leaf.add_features(dup=dup)
     return 
     
-### Split event helper
-'''@function: From the set of genes of inner node, get the related gene block 
-              in leaf nodes. Assign this the processed gene_block to attribute 
-              proccessed block of the leaf node
-   @input   : tree in nwk format, leave nodes
-   @output  : tree in nwk format, matrix score of number of block
-'''   
-def initialize_block_number(rooted_tree,leaves):
-    for leaf in leaves:
-        ancestors = leaf.get_ancestors()
-        gene_set  = ancestors[0].genes # get the gene set of the ancestor
-        processed = leaf.gene_block.split('|') 
-        processed = reduce_gene(processed,gene_set)
-        leaf.add_features(processed_block=processed) # assign the processed block
-        # print leaf.name, leaf.gene_block, gene_set
-        leaf.data =  set()
-        leaf.data.add(len(processed)) # assign the number of block of the processed
-    return rooted_tree
+### Split event helper    
     
-'''@function: Fitch algorithm
-   @input   : tree in nwk format
-   @output  : tree in nwk format
-'''       
 def Fitch(rooted_tree):
     # using of Fitch algorithm 
     
@@ -196,26 +229,27 @@ def Fitch(rooted_tree):
     for node in rooted_tree.traverse('postorder'):
         if not node.is_leaf():
             children = node.get_children()
-            intersect = (children[0].data).intersection(children[1].data)
+            intersect = (children[0].data['split']).intersection(children[1].data['split'])
             if len(intersect) == 0:
-                node.data = (children[0].data).union(children[1].data)
+                node.data['split'] = (children[0].data['split']).union(children[1].data['split'])
             else:
-                node.data = intersect
+                node.data['split'] = intersect
     # traverse top-down 
     
     for node in rooted_tree.traverse('levelorder'):
         if node.is_root(): # for the root 
             # if the root has 2 candidatnode.add_features()e, randomly choose 1, and get the numeric value
-            node.data = (random.sample(node.data,1))[0] 
+            node.data['split'] = (random.sample(node.data['split'],1))[0] 
         else:
             # for children node, first check the data from the ancestor
             ancestors = node.get_ancestors() # get the list of ancestor
-            data = ancestors[0].data # get the data from the parent
-            if data in node.data:# check if the node.data has value equal to its parent data
-                node.data =data
+            data = ancestors[0].data['split'] # get the data from the parent
+            if data in node.data['split']:# check if the node.data has value equal to its parent data
+                node.data['split'] =data
             else:
-                node.data = (random.sample(node.data,1))[0]
+                node.data['split'] = (random.sample(node.data['split'],1))[0]
     return rooted_tree
+    
 '''@function: Calculate accumulation split distance for each gene at each inner node
    @input   : tree in nwk format
    @output  : tree in nwk format
@@ -238,19 +272,10 @@ def accumulate_split(rooted_tree):
    @input   : tree in nwk format,and set of genes and leaves node
    @output  : tree in nwk format, and total_count of deletion event
 '''
-def minimize_del(rooted_tree,genes,leaves):
-    for gene in genes: # iterate through all genes of reference
-        rooted_tree = set_initial_value(rooted_tree) #set initial data value as empty Set
-        # set data for the leavesrooted_tree.data = 1
-        rooted_tree = set_leaf_data(rooted_tree,gene,leaves)        
-        
-        rooted_tree = Fitch(rooted_tree)
-        for node in rooted_tree.traverse('levelorder'):
-            if node.data ==1 and not node.is_leaf(): # include the gene into set of genes if data =1
-                (node.genes).add(gene)
-        # set the deletion distances for inner node
-        rooted_tree = del_distance(rooted_tree)
+def minimize_del(rooted_tree,genes):
+    rooted_tree = Fitch_del_dup(rooted_tree,genes)
     # calculate accumulation deletion distances
+    rooted_tree = del_distance(rooted_tree,genes)
     rooted_tree = accumulate_del(rooted_tree)
     return rooted_tree
     
@@ -268,7 +293,7 @@ def minimize_split(rooted_tree):
             children = node.get_children()
             children_blocks=[]
             for child in children:
-                gene_set = node.genes
+                gene_set = node.data
                 if child.is_leaf(): # check if the child is a leaf
                     children_blocks.append(child.processed_block)
                 else:
@@ -277,7 +302,7 @@ def minimize_split(rooted_tree):
             # also provide a count for split cost
 
             # set the split distances, check with the parent data
-            number_of_block_parent = node.data
+            number_of_block_parent = node.data['split']
             number_of_block1 = len(children_blocks[0])
             number_of_block2 = len(children_blocks[1])
             if number_of_block1 == number_of_block2:
@@ -303,16 +328,15 @@ if __name__ == "__main__":
     args = get_arguments()
     rooted_tree= Tree(args.TreeFile)
     mapping,genomes = parsing(args.InputDataDirectory)
-    rooted_tree = set_leaf_gene_block(rooted_tree,genomes) # assign the gene block infofor the leaf from the genomes dic
-    rooted_tree = set_inner_genes(rooted_tree) # set inner node's gene set, distances, and block number
-    # get the genes of the operon
     genes = set()
+        # get the genes of the operon
     for key in mapping:
         genes.add(key)
-    leaves= rooted_tree.get_leaves()
-    rooted_tree =  minimize_del(rooted_tree,genes,leaves)
+    rooted_tree = set_leaf_gene_block(rooted_tree,genomes) # assign the gene block infofor the leaf from the genomes dic
+    rooted_tree = set_inner_genes(rooted_tree,genes) # set inner node's gene set dictionary, distances, and block number
+    leaves      = rooted_tree.get_leaves()
+    rooted_tree =  minimize_del(rooted_tree,genes)
     rooted_tree = initialize_block_number(rooted_tree,leaves)
-    # check if there is duplication
     rooted_tree =  minimize_split(rooted_tree)
     rooted_tree = display(rooted_tree)
     tree_style = TreeStyle()
