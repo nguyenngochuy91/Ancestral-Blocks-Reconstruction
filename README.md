@@ -45,6 +45,7 @@ Here is the step by step usage:
 ```
 * Step 3: Provide a visualization of the ancestral reconstruction process using ete3 package, it also provide a grouping theme depends on the class of the taxa. You can uncommend the line 103 to render the file into image, however, you need to provide the where to output the render file
   * Use the command line below for each operon that you like, here I use not so conserved operon paaABCDEFGHIJK:
+  * ![Image of paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/paa_global.jpg)
   * Use the command line below for each operon that you like, here I use a highly conserved operon rplKAJL-rpoBC:
   * Render the file:
 ```bash
