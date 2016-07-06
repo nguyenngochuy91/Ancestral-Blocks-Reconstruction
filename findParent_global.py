@@ -86,12 +86,6 @@ def display(rooted_tree):
             info = TextFace(node.gene_block)
             node.add_face(info,column=0,position = 'branch-right')
         else: # display gene set if inner node
-            info = TextFace(node.deletion)
-            node.add_face(info,column=0,position = 'branch-top')
-            info = TextFace(node.duplication)
-            node.add_face(info,column=0,position = 'branch-top')
-            info = TextFace(node.split)
-            node.add_face(info,column=0,position = 'branch-top')
             info = TextFace(node.initial)
             node.add_face(info,column=0,position = 'branch-top')
     return rooted_tree
@@ -379,17 +373,18 @@ def minimize_dup(rooted_tree,genes):
     for node in rooted_tree.traverse('postorder'):
         if not node.is_leaf():
             boolean,dup = has_dup(node)
+
             data = node.data # get the dictionary data at node
-            corrected = True # set a flag means that we don't have to correct
+            
             for gene in genes: # check for gene in dupplicate gene set
                 if gene in dup:
-                    if dup[gene] != data[gene]: # there is a different that needs to
+                    if dup[gene] != set([data[gene]]): # there is a different that needs to
                                                 # be corrected
                         new =[] # new block to change the initial
                         initial = node.initial
                         length  = len(initial)
-                        
-                        if dup[gene] == 0: # means that we need to add a dupplicated gene
+                        # print initial, dup[gene],data[gene]
+                        if dup[gene] == set([0]): # means that we need to add a dupplicated gene
                             for index in range(length):
                                 if gene not in initial[index]:
                                     new.append(initial[index])
