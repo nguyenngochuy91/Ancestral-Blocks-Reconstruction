@@ -3,7 +3,7 @@
 Created on Wed Jul  6 16:14:23 2016
 
 @author: huyn
-@purpose: testing professor John output
+@purpose: visualize professor John output
 """
 from ete3 import *
 from findParent_local import *
@@ -18,7 +18,7 @@ def parse(myfile):
         name = array[0]
         info = array[1].split('(')
         if len(info) >1:
-            gene_block = info[0].split(' ')[0]
+            gene_block = info[0].split(' ')[1]
             distances  = info[1].split(')')[0]
             distances  = distances.split(',')
             deletion = int(distances[0])
@@ -32,30 +32,31 @@ def parse(myfile):
             dic[name]= {}
             dic[name]['gene_block']=''
             dic[name]['distances']=[]
-    print dic
+    
     for node in tree.traverse('postorder'):
         name = node.name
-        
-        node.add_features(gene_block = dic[name]['gene_block'],distances=dic[name][distances])
-    return tree
+        node.add_features(gene_block = dic[name]['gene_block'],distances=dic[name]['distances'])
+    return dic,tree
 
-def show_original(tree):
-    for node in tree:
-        gene_block = TextFace(node.gene_block)
+def display(tree):
+    for node in tree.traverse('postorder'):
+        string = node.name +': '+node.gene_block
+        gene_block = TextFace(string)
         distances = TextFace(node.distances)
         if node.is_leaf():            
             node.add_face(gene_block, column=0, position = "branch-right")
-            node.add_face(distances, column=0, position = "branch-right")
         else:
             node.add_face(gene_block, column=0, position = "branch-top")
             node.add_face(distances, column=0, position = "branch-top")
-    tree_style = TreeStyle()
-    tree_style.show_leaf_name = False
-    tree_style.min_leaf_separation = 5
-    tree_style.extra_branch_line_type = 0
-    tree_style.draw_guiding_lines=True
-    tree_style.guiding_lines_type = 1
-    tree.show(tree_style=tree_style)
-            
-tree = parse('sample_out.txt')
-# show_original(tree)
+    return tree
+dic,tree = parse('sample_out.txt')
+# print dic
+tree = display(tree)
+tree_style = TreeStyle()
+tree_style.show_leaf_name = False
+tree_style.min_leaf_separation = 5
+tree_style.extra_branch_line_type = 0
+tree_style.draw_guiding_lines=True
+tree_style.guiding_lines_type = 1
+tree.render('output_prof.pdf',dpi=1000,tree_style=tree_style)
+tree.show(tree_style=tree_style)
