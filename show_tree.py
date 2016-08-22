@@ -42,6 +42,14 @@ if __name__ == "__main__":
             # create face contain initial set info
             initial = TextFace(node.initial)
             node.add_face(initial, column=0, position = "branch-top")
+            deletion_cost = (node.deletion).split('|')[1]
+            dup_cost = (node.duplication).split('|')[1]
+            split_cost = (node.split).split('|')[1]
+            
+            distances = [int(deletion_cost),int(dup_cost),int(split_cost)]
+            
+            node.add_face(TextFace(distances), column=0, position = "branch-top")
+            
             child1,child2 = node.get_children()
             color1 = child1.node_color
             color2 = child2.node_color
@@ -97,9 +105,29 @@ if __name__ == "__main__":
     cost.margin_right = 5
     cost.background.color = 'LightGreen'
     tree_style.title.add_face(cost, column=1)
-                                              
+    # parse the mapping file
+    mapping = args.Operon+'_mapping'
+    infile = open(mapping,'r')
+    dic={}
+    for line in infile.readlines():
+        line = line.strip()
+        line = line.split('\t')
+    for item in line:
+        item = item.split(',')
+        dic[item[1]]=item[0]
+    mystring =''
+    for item in sorted(dic):
+        mystring += item+':'+dic[item]+'         '
+    mystring = TextFace(mystring,fsize =10)
+    mystring.margin_top =5
+    mystring.margin_bottom = 5
+    mystring.margin_left = 20
+    mystring.margin_right = 20
+    mystring.background.color = 'LightBlue'
+    tree_style.title.add_face(mystring, column=2)                                              
     # render the image
-    # tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
+    tree.render(args.Image+'.png',dpi=1000,tree_style=tree_style)
+    #tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
     tree.show(tree_style=tree_style)
 
 
