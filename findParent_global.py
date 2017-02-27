@@ -51,9 +51,15 @@ def set_leaf_gene_block(rooted_tree,genomes):
             count +=1
             node.name = 'Node'+ ' ' + str(count)
         else:
-            mylist= (node.name).split('_')
-            name = mylist[2]+'_'+mylist[3]
-            node.add_features(gene_block=genomes[name])
+#            mylist= (node.name).split('_')
+#            if len(mylist[-2]) ==2:
+#                name = mylist[-2]+'_'+ mylist[-1].split('.')[0]
+#            else:
+#                name = mylist[-1].split('.')[0]
+            if node.name in genomes:
+                node.add_features(gene_block=genomes[node.name])
+            else:
+                node.add_features(gene_block='')
     return rooted_tree
     
     
@@ -68,8 +74,9 @@ def reduce_gene(gene_block,data):
     for block in gene_block: # iterate trhough each gene block in the genome
         new_block =''
         for gene in block: # iterate through each gene in the gene block
-            if data[gene] == 1 : 
-                new_block +=gene # add gene to the string
+            if gene != 'p':            
+                if data[gene] == 1 : 
+                    new_block +=gene # add gene to the string
         if len(new_block)>0:
             result.append(''.join(sorted(new_block))) # add the sorted to the result
     return result
@@ -141,7 +148,9 @@ def Fitch_del_dup(rooted_tree,genes):
                     node.data[gene] = (children[0].data[gene]).union(children[1].data[gene])
                 else:
                     node.data[gene] = intersect
-                    
+            if node.name == "Node 61":
+                print "Node 61 postorder"
+                print node.data
     # traverse top-down     
     for node in rooted_tree.traverse('levelorder'):
         for gene in genes:
@@ -156,6 +165,10 @@ def Fitch_del_dup(rooted_tree,genes):
                     node.data[gene] = data
                 else:
                     node.data[gene] = (random.sample(node.data[gene],1))[0]
+        if node.name == "Node 61":
+            print "Node 61 levelorder"
+            print node.data
+
     return rooted_tree
 
 
@@ -173,15 +186,19 @@ def has_dup(node):
     else:
         processed = node.initial
     dup = {}
+    blocks = {} # store info about blocks has dup
     for block in processed:
+        if block not in blocks:
+            blocks[block] = set()
         dic ={}
         for gene in block:
             if gene not in dic:
-                dic[gene] = 1 # initialize it as 1
+                dic[gene] = 0 # initialize it as 1
             else: # add this gene to dup
                 dup[gene] = {1}
                 boolean = True
-    return boolean,dup
+                blocks[block].add(gene)
+    return boolean,dup,blocks
 '''@function: check whether there are duplication, if there is , then return yes, and
               add features dictionary that keep track of dupplicated gene 
    @input   : tree in nwk format, leaves
@@ -193,7 +210,7 @@ def find_dup(rooted_tree,leaves):
     check = False
     genes_dup = set()
     for leaf in leaves:
-        boolean,dup = has_dup(leaf)
+        boolean,dup,blocks = has_dup(leaf)
         leaf.data = dup # reset the data dictionary
         if boolean:
             check = True
@@ -312,7 +329,9 @@ def accumulate_split(rooted_tree):
    @output  : tree in nwk format
 '''
 def minimize_del(rooted_tree,genes):
+    print "deletion minimization"
     rooted_tree = Fitch_del_dup(rooted_tree,genes)
+    
     # calculate accumulation deletion distances
     rooted_tree = del_distance(rooted_tree,genes)
     rooted_tree = accumulate_del(rooted_tree)
@@ -358,54 +377,92 @@ def minimize_split(rooted_tree):
                     node.initial = dic[number_of_block1]
                 else:
                     node.initial = dic[number_of_block2]
+            # correct adding the genes suppose to be in the block
+            appear = [key for key in gene_set if gene_set[key] ==1 and key !="split"]
+            initial_genes =set()
+            for block in node.initial:
+                for gene in block:
+                    initial_genes.add(gene)
+            for gene in appear:
+                if gene not in initial_genes:
+                    node.initial[0]+=gene
+            if  len(node.initial) > 0:
+                node.initial[0] = ''.join(sorted(node.initial[0]))
+            
     rooted_tree = accumulate_split(rooted_tree)    
     return rooted_tree
     
+'''@function: helper function to remove wrong duplication gene in a block 
+   @input   : block (string), and set of wrong duplication genes
+   @output  : new_block (string)
+   
+'''
+def remove_wrong_dup(block,wrong_dup_genes):
+    new = []
+    dic = {}
+    for gene in block:
+        if gene not in wrong_dup_genes:
+            if gene in dic:
+                dic[gene]+=1
+            else:
+                dic[gene]=1
+        else:
+            dic[gene]=1
+    for gene in dic:
+        for i in range(dic[gene]):
+            new.append(gene)
+    return "".join(new)
+
 '''@function: Globablly minimize dup cost by provide a set of dupplicated genes
               to be included in inner node
    @input   : tree in nwk format, set of genes that are duplicated
    @output  : tree in nwk format
 '''
 def minimize_dup(rooted_tree,genes):
+    print "dupplication minimization"
+    print ("dup genes:",genes)
+    # reset the data for duplicaion:
+    for node in rooted_tree.traverse("levelorder"):
+        node.data ={}
+        if node.is_leaf():        
+            boolean,dup,blocks = has_dup(node)
+            if boolean: # means that there are dup
+                for gene in genes:
+                    if gene in dup:
+                        node.data[gene] = {1}
+                    else:
+                        node.data[gene] = {0}
+            else:
+                for gene in genes:
+                    node.data[gene] = {0}
+        else:
+            for gene in genes:
+                node.data[gene] = {0}
     # Run Fitch to get globally minimal duplication events
     rooted_tree = Fitch_del_dup(rooted_tree,genes)
     # correct if there should be a duplication gene, or should remove one.
     for node in rooted_tree.traverse('postorder'):
         if not node.is_leaf():
-            boolean,dup = has_dup(node)
-
+            boolean,dup,blocks = has_dup(node)
             data = node.data # get the dictionary data at node
-            
-            for gene in genes: # check for gene in dupplicate gene set
-                if gene in dup:
-                    if dup[gene] != set([data[gene]]): # there is a different that needs to
-                                                # be corrected
-                        new =[] # new block to change the initial
-                        initial = node.initial
-                        length  = len(initial)
-                        # print initial, dup[gene],data[gene]
-                        if dup[gene] == set([0]): # means that we need to add a dupplicated gene
-                            for index in range(length):
-                                if gene not in initial[index]:
-                                    new.append(initial[index])
-                                else: # check if there is a duplicated, if there is then remove
-                                    pos = initial[index].find(gene)
-                                    string = initial[index][:pos]+initial[index][pos]+initial[index][pos:]
-                                    new.append(string)
-                                    break
-                            if index != length:
-                                for i in range(index+1,length):
-                                    new.append(initial[i])
-                                                            
-                        else: # means that we need to delete a duplicated gene 
-                            for index in range(length):
-                                if gene not in initial[index]:
-                                    new.append(initial[index])
-                                else:
-                                    pos = initial[index].find(gene)
-                                    string = initial[index][:pos]+ initial[index][:pos+1]
-                                    new.append(string)
-                        node.initial = new # assign new to the initial
+            flag = False # initiate that there is no wrong duplication             
+            # we only have to remove dup that not suppose to be there
+            if boolean: # check if there is a dup
+               
+                new_initial =[]
+                for block in blocks:
+                    wrong_gene_set = []
+                    for dup_gene in blocks[block]: # if empty we will move to next                   
+                        if not data[dup_gene]: # means that this dup not suppose to be there
+                            wrong_gene_set.append(dup_gene)
+                            flag = True
+                    if flag:
+                        new_block = remove_wrong_dup(block,sorted(wrong_gene_set))
+                    else:
+                        new_block = block
+                    new_initial.append(new_block)
+            if flag:
+                node.initial = new_initial
     rooted_tree = dup_distance(rooted_tree,genes)
     rooted_tree = accumulate_dup(rooted_tree)    
     return rooted_tree
@@ -428,7 +485,10 @@ if __name__ == "__main__":
     rooted_tree = minimize_split(rooted_tree)
     # check if there is duplication in leaves node
     check,rooted_tree,genes = find_dup(rooted_tree,leaves) 
+    if "p" in genes:
+        genes.remove("p")
     if check:
+        print check
         rooted_tree = minimize_dup(rooted_tree,genes)
     rooted_tree = display(rooted_tree)
     tree_style  = TreeStyle()
