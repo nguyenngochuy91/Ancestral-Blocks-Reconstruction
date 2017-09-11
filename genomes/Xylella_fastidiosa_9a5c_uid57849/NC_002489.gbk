@@ -1,0 +1,144 @@
+LOCUS       NC_002489               1286 bp    DNA     circular CON 27-JUN-2013
+DEFINITION  Xylella fastidiosa 9a5c plasmid pXF1.3, complete sequence.
+ACCESSION   NC_002489
+VERSION     NC_002489.3  GI:56968324
+DBLINK      Project: 57849
+            BioProject: PRJNA57849
+KEYWORDS    .
+SOURCE      Xylella fastidiosa 9a5c
+  ORGANISM  Xylella fastidiosa 9a5c
+            Bacteria; Proteobacteria; Gammaproteobacteria; Xanthomonadales;
+            Xanthomonadaceae; Xylella.
+REFERENCE   1  (bases 1 to 1286)
+  AUTHORS   Simpson,A.J., Reinach,F.C., Arruda,P., Abreu,F.A., Acencio,M.,
+            Alvarenga,R., Alves,L.M., Araya,J.E., Baia,G.S., Baptista,C.S.,
+            Barros,M.H., Bonaccorsi,E.D., Bordin,S., Bove,J.M., Briones,M.R.,
+            Bueno,M.R., Camargo,A.A., Camargo,L.E., Carraro,D.M., Carrer,H.,
+            Colauto,N.B., Colombo,C., Costa,F.F., Costa,M.C., Costa-Neto,C.M.,
+            Coutinho,L.L., Cristofani,M., Dias-Neto,E., Docena,C., El-Dorry,H.,
+            Facincani,A.P., Ferreira,A.J., Ferreira,V.C., Ferro,J.A.,
+            Fraga,J.S., Franca,S.C., Franco,M.C., Frohme,M., Furlan,L.R.,
+            Garnier,M., Goldman,G.H., Goldman,M.H., Gomes,S.L., Gruber,A.,
+            Ho,P.L., Hoheisel,J.D., Junqueira,M.L., Kemper,E.L., Kitajima,J.P.,
+            Krieger,J.E., Kuramae,E.E., Laigret,F., Lambais,M.R., Leite,L.C.,
+            Lemos,E.G., Lemos,M.V., Lopes,S.A., Lopes,C.R., Machado,J.A.,
+            Machado,M.A., Madeira,A.M., Madeira,H.M., Marino,C.L.,
+            Marques,M.V., Martins,E.A., Martins,E.M., Matsukuma,A.Y.,
+            Menck,C.F., Miracca,E.C., Miyaki,C.Y., Monteriro-Vitorello,C.B.,
+            Moon,D.H., Nagai,M.A., Nascimento,A.L., Netto,L.E., Nhani,A. Jr.,
+            Nobrega,F.G., Nunes,L.R., Oliveira,M.A., de Oliveira,M.C., de
+            Oliveira,R.C., Palmieri,D.A., Paris,A., Peixoto,B.R., Pereira,G.A.,
+            Pereira,H.A. Jr., Pesquero,J.B., Quaggio,R.B., Roberto,P.G.,
+            Rodrigues,V., de M Rosa,A.J., de Rosa,V.E. Jr., de Sa,R.G.,
+            Santelli,R.V., Sawasaki,H.E., da Silva,A.C., da Silva,A.M., da
+            Silva,F.R., da Silva,W.A. Jr., da Silveira,J.F., Silvestri,M.L.,
+            Siqueira,W.J., de Souza,A.A., de Souza,A.P., Terenzi,M.F.,
+            Truffi,D., Tsai,S.M., Tsuhako,M.H., Vallada,H., Van Sluys,M.A.,
+            Verjovski-Almeida,S., Vettore,A.L., Zago,M.A., Zatz,M., Meidanis,J.
+            and Setubal,J.C.
+  TITLE     The genome sequence of the plant pathogen Xylella fastidiosa. The
+            Xylella fastidiosa Consortium of the Organization for Nucleotide
+            Sequencing and Analysis
+  JOURNAL   Nature 406 (6792), 151-159 (2000)
+   PUBMED   10910347
+REFERENCE   2  (bases 1 to 1286)
+  CONSRTM   NCBI Genome Project
+  TITLE     Direct Submission
+  JOURNAL   Submitted (24-OCT-2000) National Center for Biotechnology
+            Information, NIH, Bethesda, MD 20894, USA
+REFERENCE   3  (bases 1 to 1286)
+  AUTHORS   Simpson,A.J.G., Reinach,F.C., Arruda,P., Abreu,F.A., Acencio,M.,
+            Alvarenga,R., Alves,L.M.C., Araya,J.E., Baia,G.S., Baptista,C.S.,
+            Barros,M.H., Bonaccorsi,E.D., Bordin,S., Bove,J.M., Briones,M.R.S.,
+            Bueno,M.R.P., Camargo,A.A., Camargo,L.E.A., Carraro,D.M.,
+            Carrer,H., Colauto,N.B., Colombo,C., Costa,F.F., Costa,M.C.R.,
+            Costa-Neto,C.M., Coutinho,L.L., Cristofani,M., Dias-Neto,E.,
+            Docena,C., El-Dorry,H., Facincani,A.P., Ferreira,A.J.S.,
+            Ferreira,V.C.A., Ferro,J.A., Fraga,J.S., Franca,S.C., Franco,M.C.,
+            Frohme,M., Furlan,L.R., Garnier,M., Goldman,G.H., Goldman,M.H.S.,
+            Gomes,S.L., Gruber,A., Ho,P.L., Hoheisel,J.D., Junqueira,M.L.,
+            Kemper,E.L., Kitajima,J.P., Krieger,J.E., Kuramae,E.E., Laigret,F.,
+            Lambais,M.R., Leite,L.C.C., Lemos,E.G.M., Lemos,M.V.F., Lopes,S.A.,
+            Lopes,C.R., Machado,J.A., Machado,M.A., Madeira,A.M.B.N.,
+            Madeira,H.M.F., Marino,C.L., Marques,M.V., Martins,E.A.L.,
+            Martins,E.M.F., Matsukuma,A.Y., Menck,C.F.M., Miracca,E.C.,
+            Miyaki,C.Y., Monteiro-Vitorello,C.B., Moon,D.H., Nagai,M.A.,
+            Nascimento,A.L.T.O., Netto,L.E.S., Nhani,A. Jr., Nobrega,F.G.,
+            Nunes,L.R., Oliveira,M.A., de Oliveira,M.C., de Oliveira,R.C.,
+            Palmieri,D.A., Paris,A., Peixoto,B.R., Pereira,G.A.G., Pereira,H.A.
+            Jr., Pesquero,J.B., Quaggio,R.B., Roberto,P.G., Rodrigues,V., de M.
+            Rosa,A.J., de Rosa,V.E. Jr., de Sa,R.G., Santelli,R.V.,
+            Sawasaki,H.E., da Silva,A.C.R., da Silva,F.R., da Silva,A.M.,
+            Silva,W.A. Jr., da Silveira,J.F., Silvestri,M.L.Z., Siqueira,W.J.,
+            de Souza,A.A., de Souza,A.P., Terenzi,M.F., Truffi,D., Tsai,S.M.,
+            Tsuhako,M.H., Vallada,H., Van Sluys,M.A., Verjovski-Almeida,S.,
+            Vettore,A.L., Zago,M.A., Zatz,M., Meidanis,J. and Setubal,J.C.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (02-JUN-2000) Organization for Nucleotide Sequencing and
+            Analysis, Bioinformatics Lab - IC/Unicamp, C.P. 6176, Campinas, SP
+            13083-970, Brazil
+COMMENT     PROVISIONAL REFSEQ: This record has not yet been subject to final
+            NCBI review. The reference sequence was derived from AE003850.
+            On Jan 3, 2005 this sequence version replaced gi:40365134.
+            COMPLETENESS: full length.
+FEATURES             Location/Qualifiers
+     source          1..1286
+                     /organism="Xylella fastidiosa 9a5c"
+                     /mol_type="genomic DNA"
+                     /strain="9a5c"
+                     /db_xref="taxon:160492"
+                     /plasmid="pXF1.3"
+     gene            complement(19..870)
+                     /locus_tag="XFb0001"
+                     /db_xref="GeneID:1125444"
+     CDS             complement(19..870)
+                     /locus_tag="XFb0001"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="replication protein"
+                     /protein_id="NP_061655.1"
+                     /db_xref="GI:10956709"
+                     /db_xref="GeneID:1125444"
+                     /translation="MPVITVYRHGGKGGVAPMNSSHIRTPRGEVQGWSPGAVRRNTEF
+                     LMSVREDQLTGAGLALTLTVRDCPPTAQEWQKIRRAWEARMRRAGMIRVHWVTEWQRR
+                     GVPHLHCAIWFSGTVYDVLLCVDAWLAVASSCGAGLRGQHGRIIDGVVGWFQYVSKHA
+                     ARGVRHYQRCSENLPEGWKGLTGRVWGKGGYWPVSDALRIDLQDHRERGDGGYFAYRR
+                     LVRSWRVSDARSSGDRYRLRSARRMLTCSDTSRSRAIGFMEWVPLEVMLAFCANLAGR
+                     GYSVTSE"
+     gene            complement(922..1176)
+                     /locus_tag="XFb0002"
+                     /db_xref="GeneID:1125445"
+     CDS             complement(922..1176)
+                     /locus_tag="XFb0002"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="hypothetical protein"
+                     /protein_id="NP_061656.1"
+                     /db_xref="GI:10956710"
+                     /db_xref="GeneID:1125445"
+                     /translation="MSPGWKSRFPVVSNWMTFSSTPLDLTSSDCLTNCHWGIEISPAF
+                     ERAKRVRNGGDFHPPLISGYISVRFVKVGGFSSFLHAAKK"
+ORIGIN      
+        1 ggtacccccc acacccccct actcgctcgt aactgagtac ccacgaccgg ctaggttcgc
+       61 gcaaaaggcc aacatgacct ctaggggaac ccactccatg aagccaatgg cacgagaacg
+      121 ggaggtatcg ctacaggtga gcatcctacg agcactacgg agccgataac gatcacccga
+      181 gctgcgagcg tctgagacgc gccaggagcg caccaaacgg cgataagcga aatacccccc
+      241 atcaccacgc tcacgatgat cctgtagatc gatacgaagg gcatcagaca caggccaata
+      301 gccaccctta ccccaaacac ggcccgtaag ccctttccag ccttcaggga gattctcaga
+      361 acaacgctgg taatggcgca cgcctcgggc ggcgtgcttg ctcacgtact gaaaccatcc
+      421 gacaacccca tcaataatcc gaccatgctg cccacgcaga ccagcaccac aggaggacgc
+      481 aacagccaac cacgcatcga cgcatagaag cacatcgtaa acagtgccag aaaaccagat
+      541 agcacaatgc aaatgcggga cacctcgacg ctgccactcc gtcacccagt gaaccctgat
+      601 cataccagca cgcctcatgc gagcttccca cgcacgcctg attttctgcc actcctgagc
+      661 agtaggaggg caatcacgaa cggtaagggt caaagcgaga ccagcgcccg ttaactgatc
+      721 ctcacgaacg gacatgagga actctgtatt gcgacggaca gccccaggag accacccctg
+      781 aacctcgcct cgtggcgtcc tgatatgtga tgagttcatg ggagcaacac caccttttcc
+      841 cccatgacgg taaactgtaa ttactggcat cggcctctcc gatagctggt cacgaccccg
+      901 ggtgctcgta acaccgcggg gttatttttt tgccgcatgc aggaaggagg aaaaaccccc
+      961 aaccttaaca aaacgtacag atatgtaacc actaatcaag ggaggatgga aatccccccc
+     1021 gtttcgcact cgcttcgctc gctcaaaagc gggggagatt tctattcccc aatgacaatt
+     1081 tgtcaagcaa tcacttgacg ttaaatccaa gggggttgaa ctgaatgtca tccaattgga
+     1141 gaccactgga aacctagatt tccacccagg ggacacaggg cgtaaaaacg gttatccgtg
+     1201 aaatagatca gggcttcgtg ttgggggtca tttggccccc acataacgga ccgaaggaga
+     1261 gggcgtaaaa gcgcctccgc aggggn
+//

@@ -51,15 +51,9 @@ def set_leaf_gene_block(rooted_tree,genomes):
             count +=1
             node.name = 'Node'+ ' ' + str(count)
         else:
-#            mylist= (node.name).split('_')
-#            if len(mylist[-2]) ==2:
-#                name = mylist[-2]+'_'+ mylist[-1].split('.')[0]
-#            else:
-#                name = mylist[-1].split('.')[0]
-            if node.name in genomes:
-                node.add_features(gene_block=genomes[node.name])
-            else:
-                node.add_features(gene_block='')
+            mylist= (node.name).split('_')
+            name = mylist[-2]+'_'+mylist[-1]
+            node.add_features(gene_block=genomes[name])
     return rooted_tree
     
     
@@ -74,9 +68,8 @@ def reduce_gene(gene_block,data):
     for block in gene_block: # iterate trhough each gene block in the genome
         new_block =''
         for gene in block: # iterate through each gene in the gene block
-            if gene != 'p':            
-                if data[gene] == 1 : 
-                    new_block +=gene # add gene to the string
+            if data[gene] == 1 : 
+                new_block +=gene # add gene to the string
         if len(new_block)>0:
             result.append(''.join(sorted(new_block))) # add the sorted to the result
     return result
@@ -148,9 +141,7 @@ def Fitch_del_dup(rooted_tree,genes):
                     node.data[gene] = (children[0].data[gene]).union(children[1].data[gene])
                 else:
                     node.data[gene] = intersect
-            if node.name == "Node 61":
-                print "Node 61 postorder"
-                print node.data
+
     # traverse top-down     
     for node in rooted_tree.traverse('levelorder'):
         for gene in genes:
@@ -165,9 +156,7 @@ def Fitch_del_dup(rooted_tree,genes):
                     node.data[gene] = data
                 else:
                     node.data[gene] = (random.sample(node.data[gene],1))[0]
-        if node.name == "Node 61":
-            print "Node 61 levelorder"
-            print node.data
+
 
     return rooted_tree
 
@@ -329,7 +318,7 @@ def accumulate_split(rooted_tree):
    @output  : tree in nwk format
 '''
 def minimize_del(rooted_tree,genes):
-    print "deletion minimization"
+
     rooted_tree = Fitch_del_dup(rooted_tree,genes)
     
     # calculate accumulation deletion distances
@@ -385,7 +374,11 @@ def minimize_split(rooted_tree):
                     initial_genes.add(gene)
             for gene in appear:
                 if gene not in initial_genes:
-                    node.initial[0]+=gene
+                    if len(node.initial)>0:
+                        node.initial[0]+=gene
+                    else:
+                        node.initial =[gene]
+                        
             if  len(node.initial) > 0:
                 node.initial[0] = ''.join(sorted(node.initial[0]))
             
@@ -419,8 +412,7 @@ def remove_wrong_dup(block,wrong_dup_genes):
    @output  : tree in nwk format
 '''
 def minimize_dup(rooted_tree,genes):
-    print "dupplication minimization"
-    print ("dup genes:",genes)
+
     # reset the data for duplicaion:
     for node in rooted_tree.traverse("levelorder"):
         node.data ={}
@@ -460,7 +452,7 @@ def minimize_dup(rooted_tree,genes):
                         new_block = remove_wrong_dup(block,sorted(wrong_gene_set))
                     else:
                         new_block = block
-                    new_initial.append(new_block)
+                    new_initial.append(''.join(sorted(new_block)))
             if flag:
                 node.initial = new_initial
     rooted_tree = dup_distance(rooted_tree,genes)
