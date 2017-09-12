@@ -97,7 +97,6 @@ if __name__ == "__main__":
                 genome_class =str(info.strip(' ').split(';')[2])
                 class_dic[accession_num]=genome_class
                 myclass.add(genome_class)
-        print myclass
         # assign the collor to the class
         for item in myclass:
             # randomly choose a color
