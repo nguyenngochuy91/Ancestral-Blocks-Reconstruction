@@ -61,25 +61,25 @@ optional arguments:
   -h, --help            show this help message and exit
 
   --genomes_directory GENOMES_DIRECTORY, -g GENOMES_DIRECTORY
-                        The directory that store all the genomes file
-                        (E.Coli/genomes)
+                        The directory that store all the genomes file in genbank format.
+                        (`E.Coli/genomes`)
 
   --gene_blocks GENE_BLOCKS, -b GENE_BLOCKS
                         The gene_block_names_and_genes.txt file, this file
-                        stores the operon name and its set of genes
+                        stores the operon name and its set of genes.
 
   --reference REFERENCE, -r REFERENCE
-                        The ncbi accession number for the reference genome
+                        The ncbi accession number for the reference genome.
                         (NC_000913 for E.Coli and NC_000964 for B.Sub)
 
   --filter FILTER, -f FILTER
-                        The filter file for creating the tree
-                        (E.Coli/phylo_order.txt for E.Coli or
-                        B.Sub/phylo_order.txt for B.Sub)
+                        The filter file for creating the tree.
+                        (`E.Coli/phylo_order.tx` for E.Coli or
+                        `B.Sub/phylo_order.txt` for B.Sub)
 
   --method METHOD, -m METHOD
-                        The method to reconstruc ancestral gene block, we
-                        support either global or local
+                        The method to reconstruct ancestral gene block, we
+                        support either global or local approach.
 
 ## Credits
 1. http://bioinformatics.oxfordjournals.org/content/early/2015/04/13/bioinformatics.btv128.full 
