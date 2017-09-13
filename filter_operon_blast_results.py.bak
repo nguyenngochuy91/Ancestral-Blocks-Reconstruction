@@ -47,7 +47,7 @@ def check_options(parsed_args):
     if os.path.isdir(parsed_args.infolder):
         infolder = parsed_args.infolder
     else:
-        print("The infolder directory %s does not exist." % parsed_args.infolder)
+        print "The infolder directory %s does not exist." % parsed_args.infolder
         sys.exit()
     
     # if the directory that the user specifies does not exist, then the program makes it for them. 
@@ -62,7 +62,7 @@ def check_options(parsed_args):
     elif parsed_args.filter == '':
         filter_file = parsed_args.filter
     else:
-        print("The filter file %s does not exist." % parsed_args.filter)
+        print "The filter file %s does not exist." % parsed_args.filter
         sys.exit()
         
     # section of code that deals determining the number of CPU cores that will be used by the program
@@ -77,19 +77,19 @@ def check_options(parsed_args):
     try:    
         e_val = float(parsed_args.eval)
     except:
-        print("The e-value you entered is not a floating point number, please enter a floating point number, ex. '1e-3', or '12'.")
+        print "The e-value you entered is not a floating point number, please enter a floating point number, ex. '1e-3', or '12'."
         sys.exit()
         
     # validate the input for the maximum allowed gap
     try:    
         max_gap = int(parsed_args.max_gap)
         if max_gap <= 0:
-           print("The gap that you entered %s is a negative number, please enter a positive integer." % parsed_args.max_gap)
+           print "The gap that you entered %s is a negative number, please enter a positive integer." % parsed_args.max_gap
            sys.exit()
         else:
            pass
     except:
-        print("The gap that you entered %s is not an integer, please enter a positive integer." % parsed_args.max_gap)
+        print "The gap that you entered %s is not an integer, please enter a positive integer." % parsed_args.max_gap
         sys.exit()
     
     quiet = parsed_args.quiet
@@ -159,7 +159,7 @@ def return_valid_organism_homologs(hlog_list, max_gap):
     for item in hlog_list:
         accession = item.accession()
         #print accession
-        if accession in list(org_dict.keys()):
+        if accession in org_dict.keys():
             org_dict[accession].append(item)
         else:
             org_dict.update({accession:[item]})
@@ -192,8 +192,8 @@ def return_valid_organism_homologs(hlog_list, max_gap):
                     
                     geneblock += blocks.blast_annotation()+ ',' + str(blocks.query_start())+ ',' + str(blocks.query_stop()) +'\t'
         if len(geneblock) != 0:
-            print(accession)
-            print(geneblock)
+            print accession
+            print geneblock
         
         if neighborhood_found:
             neighborhood_dict.update({accession:gene_block_list})
@@ -305,7 +305,7 @@ def return_best_singleton_genes(grouped_lists):
     for tmp in filtered_singlgeton_genes:
         gene = tmp[0]
         # a singleton gene with this annotation has already been found, use e-val to determine wich is the more significant hit
-        if gene.blast_annotation() in list(best_singleton_dict.keys()):
+        if gene.blast_annotation() in best_singleton_dict.keys():
             old_gene = best_singleton_dict.pop(gene.blast_annotation())
             if old_gene.e_val() <= gene.e_val(): # the existing homolog is a more significant hit
                 best_singleton_dict.update({gene.blast_annotation(): old_gene})
@@ -315,7 +315,7 @@ def return_best_singleton_genes(grouped_lists):
             best_singleton_dict.update({gene.blast_annotation(): gene})
             
     # Step 5: return a list of lists, [[s1], [s2], [s3]] for each entry in the best_singleton_dict.
-    for i in list(best_singleton_dict.keys()):
+    for i in best_singleton_dict.keys():
         result.append([best_singleton_dict[i]])
     return result
             
@@ -404,7 +404,7 @@ def main():
     infolder, outfolder, filter_file, num_proc, e_val, max_gap, quiet = check_options(parsed_args)
     
     if not quiet:
-        print(infolder, outfolder, filter_file, num_proc, e_val, max_gap)
+        print infolder, outfolder, filter_file, num_proc, e_val, max_gap
     
     file_list = return_file_list(infolder, filter_file)
     parallel_list_param = [(i, outfolder, max_gap, e_val) for i in file_list]
@@ -436,7 +436,7 @@ def main():
         handle.close()
 
     if not quiet:
-             print(time.time() - start)
+             print time.time() - start
 
     # ./filter_operon_blast_results.py -f phylo_order.txt
 

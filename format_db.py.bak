@@ -161,7 +161,7 @@ def convert_genbank(genbank_tuple):
                     locus = feature.qualifiers['gene'][0]
                 except:
                     locus = 'error'
-                    print(("Error in the organism %s with NC # %s" % (organism, accession)))
+                    print("Error in the organism %s with NC # %s" % (organism, accession))
                     err_flag = True
                     err_log.append([organism, accession])
 

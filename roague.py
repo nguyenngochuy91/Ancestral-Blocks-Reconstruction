@@ -57,7 +57,6 @@ if __name__ == '__main__':
     ### Given the gene_block_names_and_genes.txt, create a gene_block_query.fa using the reference gene bank file. output in file gene_block_query.fa
     gene_block_names_and_genes = parent_dir+'gene_block_names_and_genes.txt'
     gene_block_query           = parent_dir +'gene_block_query.fa'
-    print gene_block_query
     cmd2 ='./make_operon_query.py -i {} -b {} -r {} -o {}'.format(genomes_directory,gene_block_names_and_genes,reference,gene_block_query)
     os.system(cmd2)
     print ('cmd2:',cmd2)
