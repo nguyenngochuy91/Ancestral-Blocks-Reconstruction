@@ -35,11 +35,11 @@ Caution:
 There are several different between running python2 or python3 (such as divide function). My program is written in python3, if you want to run it correctly in python2, please uncooment the second line in the program "findParent_local.py".
 
 The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). The user can run this script on the two data sets provided in directory [E.Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E.Coli) and [B.Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B.Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories.
-1. E.Coli: The final results (pdf file of our ancestral reconstruction) are stored in 'E.Coli/visualization' directory.
+### E.Coli: The final results (pdf file of our ancestral reconstruction) are stored in 'E.Coli/visualization' directory.
 ```bash
 ./roague.py -g E.Coli/genomes/ -b E.Coli/gene_block_names_and_genes.txt -r NC_000913 -f E.Coli/phylo_order.txt -m global
 ```
-2. B.Sub: The final results (pdf file of our ancestral reconstruction) are stored in 'B.Sub/visualization' directory.
+### B.Sub: The final results (pdf file of our ancestral reconstruction) are stored in 'B.Sub/visualization' directory.
 ```bash
 ./roague.py -g B.Sub/genomes/ -b B.Sub/gene_block_names_and_genes.txt -r NC_000964 -f B.Sub/phylo_order.txt -m global
 ```
