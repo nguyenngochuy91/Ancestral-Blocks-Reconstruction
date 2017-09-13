@@ -1,1 +1,0 @@
-NC_000913|Escherichia_coli_str._K-12_substr._MG1655|b3224|nanT|3371083|3372574|-1|Protein|ECK3213:JW3193|55.1	NC_004633.1|Pseudomonas_syringae_pv._tomato_str._DC3000|PSPTOA0037|unknown|39437|40784|1|47.88	27.14	210	131	5	20	207	22	231	4e-12	59.3

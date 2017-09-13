@@ -49,7 +49,7 @@ def traverseAll(path):
 def formatOperon(operon,output,operon_genes_dict,accession_dict):
     alphabet = 'abcdefghijklmnop'
     operon_name = operon.split('/')[-1].split('.')[0]
-    genes = operon_genes_dict[operon_name]
+    genes = sorted(operon_genes_dict[operon_name])
     outfile = open(output+operon_name,'w')
     for i in range(len(genes)):
         outfile.write(genes[i]+','+alphabet[i]+'\t')
