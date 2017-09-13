@@ -6,29 +6,23 @@ bsub-BSU00830	yacK	radA	mcsA	ctsR	mcsB	clpC
 bsub-BSU00930	yacP	mrnC	cysE	sigH	cysS	rlmB
 bsub-BSU00990	nusG	secE	rplK	rpmG	rplA
 bsub-BSU01070	rpoC	rpoB	tufA	rpsL	fusA	ybxF	rpsG
-bsub-BSU01150	rpsE	mapA	rpsC	rplX	rplV	rplW	rpsM	rplR	rpsJ	rplP	rpsH	rplN	rplO	rpoA	rpmJ	rpsS	infA	rpsQ	rplF	rpmC	rplE	rplB	rplC	ybzG	secY	rplD	rplQ	rpmD	rpsK	rpsN	adk
 bsub-BSU01700	ybbF	murQ	ybbE	ybbD	ybbC	ybbH
 bsub-BSU02460	gudP	ycbC	garD	gudD	ycbG	ycbD
 bsub-BSU02530	ycbK	ycbN	ycbO	ycbL	ycbM	rtpA
 bsub-BSU03320	nasB	nasC	nasF	nasD	nasE
 bsub-BSU04050	ycsG	ycsF	kipI	lipC	ycsI	kipA	kipR
 bsub-BSU04670	rsbS	sigB	rsbW	rsbV	rsbU	rsbT	rsbRA	rsbX
-bsub-BSU04880	yddB	ydcS	yddJ	yddI	yddH	yddG	yddF	yddE	yddD	yddC	ydcT	yddA
-bsub-BSU05810	gmuC	gmuB	gmuA	gmuG	gmuF	gmuE	gmuR	gmuD
 bsub-BSU05900	gcp	ydiB	ydiC	rimI	thiL
 bsub-BSU06420	purS	purQ	purC	purB	purF	purE	purD	purK	purH	purN	purM	purL
 bsub-BSU06940	yesO	yesN	yesM	yesL	rhgT	yesV	yesU	yesS	yesR	yesQ	yesP
 bsub-BSU08060	acoR	acoL	sspH	acoA	acoC	acoB
 bsub-BSU08290	yfiN	yfiL	yfiM	yfiJ	yfiK
 bsub-BSU08920	yhbE	yhbD	yhbF	cspR	yhbB
-bsub-BSU08990	yhbI	yhbJ	yhcH	yhcI	yhcB	yhcC	yhcA	yhcF	yhcG	yhcD	yhcE
 bsub-BSU10720	gerPF	gerPE	gerPD	gerPC	gerPB	gerPA
 bsub-BSU11190	argJ	carA	carB	argB	argC	argD	argF
 bsub-BSU11430	oppA	oppC	oppB	oppD	oppF	yjbB
 bsub-BSU11650	yjbV	tenI	thiO	thiS	tenA	thiG	thiF
 bsub-BSU12300	exuT	uxaB	uxuA	exuR	uxaA	yjmF	exuM	yjmD	uxaC	yjmC
-bsub-BSU12570	xkdG	xkdF	ykzL	ykzM	xkdK	xkdJ	xkdI	xkdH	xtmB	xtmA	xkdM	xkdE
-bsub-BSU12720	xepA	xhlA	xhlB	xkdS	xkdW	xkdV	xkdU	xkdT	xlyA	xkdX	xkzA
 bsub-BSU12920	dppA	dppB	dppC	dppD	dppE
 bsub-BSU13870	glcT	ptsH	ykvZ	ptsI	ptsG
 bsub-BSU14260	moeB	moeA	moaD	mobB	moaE	mobA
@@ -36,29 +30,12 @@ bsub-BSU14880	ctaF	ctaG	ctaD	ctaE	ctaB	ctaC
 bsub-BSU15170	divIB	sbp	mraY	murB	murD	murE	murG	ylxW	ylxX	spoVE	spoVD
 bsub-BSU15370	ylmH	divIVA	ylmD	ylmE	ylmG	sepF
 bsub-BSU15490	pyrE	pyrK	carB	pyrF	pyrAA	pyrD	pyrC	pyrB
-bsub-BSU15570	sirB	sirC	cysH	sumT	cysP	cysC	sat
-bsub-BSU15660	gmk	rsmB	prkC	yloN	prpC	priA	rpoZ	fmt	coaBC	ylzA	rpe	thiN	yloC	yloQ	def
 bsub-BSU15880	ylpC	plsX	fabG	acpP	fabD
 bsub-BSU16120	clpQ	gid	hslU	xerC	topA	codY
-bsub-BSU16180	ylzI	fliY	ylxF	fliZ	ylxH	fliQ	fliP	fliR	fliM	fliL	flhA	fliI	fliH	fliK	fliJ	fliE	fliG	fliF	flhB	cheB	sigD	ylxL	cheW	cheY	flgC	flgB	cheD	flgG	cheC	flgD	flhF	cheA
 bsub-BSU16490	uppS	frr	rpsB	pyrH	tsf	cdsA	rseP	proS	dxr
 bsub-BSU16590	pnpA	rpsO	rbfA	infB	nusA	ylxS	ylxR	ylxQ	ylxP	ribC	truB
 bsub-BSU16730	dapA	asd	spoVFB	dapG	spoVFA
-bsub-BSU17110	pksM	pksF	pksG	pksD	pksE	pksJ	pksH	pksI	pksL	acpK
-bsub-BSU18260	yngH	yngI	yngJ	yngHB	yngE	yngF	yngG
-bsub-BSU18340	ppsE	ppsD	ppsA	ppsC	ppsB
-bsub-BSU19080	csaA	yobT	yobR	yobS	yobQ
 bsub-BSU19740	kamA	yokU	yodT	yodP	yodQ	yodR	yodS
-bsub-BSU19940	yotH	yotI	yotD	yotE	yotF	yotG	yotB	yotC
-bsub-BSU20180	yosI	yosH	yosK	yosJ	yosC	yosB	yosE	yosD	yosG	yosF
-bsub-BSU20320	mtbP	yorX	yorY	yorV	yorW	yorT	yorR	yorS	yorP	yorQ	yorN	yorO
-bsub-BSU20390	yorL	yorM	yorJ	yorK	yorH	yorI	yorG
-bsub-BSU20740	yopW	yopX	yopY	yopZ	yoqC	yoqB	yoqA	yoqG	yoqF	yoqE	yoqD
-bsub-BSU20920	yopE	yopF	yopG	yopH	yopI	yopJ
-bsub-BSU21100	yonB	yonC	yonA	yonF	yonG	yonD	yonE	youA	yomW	yomV	yomU	yomT	yomZ	yomY	yomX
-bsub-BSU21240	yomS	yomR	yomQ	yomP	yomO	yomN	yomM
-bsub-BSU21340	yomG	yomF	yomE	yomJ	yomI	yomH
-bsub-BSU21480	bdbA	bdbB	sunA	yolJ	sunT
 bsub-BSU22500	ypjD	ypjG	dapB	birA	cca	mgsA	ypjH
 bsub-BSU22680	tyrA	aroE	hisC	trpB	trpC	trpA	trpF	trpD	trpE
 bsub-BSU23030	ypbE	ypbD	recQ	ypbF	ypbB
@@ -73,53 +50,36 @@ bsub-BSU24730	comGC	comGB	comGA	comGG	comGF	comGE	comGD
 bsub-BSU24990	pstS	pstC	pstA	pstBA	pstBB
 bsub-BSU25510	yqeU	hrcA	rimO	hemN	prmA	dnaK	dnaJ	lepA	grpE
 bsub-BSU25680	yqeG	aroE	yqeM	yqeL	yqeI	yqeH	yqeK	nadD
-bsub-BSU25980	yqcC	yqcB	yqcA	yqbT	yqcE	yqcD
-bsub-BSU26030	yqbP	yqbQ	yqbR	yqbS	yqbO
-bsub-BSU26200	yqbA	yqbB	yqbC	yqbD	yqbE	yqbF	yqbG	yqbH	yqbI	yqbJ	yqbK	yqzN	yqaS	yqaT
 bsub-BSU26950	adhB	yraF	yraG	yraD	yraE
-bsub-BSU27490	yrrD	yrrC	yrrB	yrzQ	yrzR
 bsub-BSU27630	recJ	relA	yrvI	apt	yrvD
 bsub-BSU28030	mreB	mreC	minC	minD	mreD
 bsub-BSU28170	hemX	hemL	hemB	hemC	hemA	hemD
 bsub-BSU28310	leuC	leuB	ilvH	leuA	leuD	ilvC	ilvB
 bsub-BSU28560	etfA	fadR	etfB	lcfA	ysiB
 bsub-BSU28800	araB	araP	araA	araD	araQ	abfA	araN	araL	araM
-bsub-BSU29390	rbfK	tcyJ	tcyK	tcyL	tcyM	tcyN	ytnM	ytnL	ytnI	ytnJ	ytmO	ytmI
 bsub-BSU30135	yteT	yteU	yteP	yteR	yteS
 bsub-BSU30240	bioB	bioA	bioF	bioW	bioD	ytbQ	bioI
 bsub-BSU30260	amyD	msmE	melA	msmR	amyC
 bsub-BSU30420	bceB	bceR	bceS	bceA	ytrE	ytrF
 bsub-BSU30830	ytxM	menD	menE	menF	menB	menC
 bsub-BSU30980	glgP	glgA	glgB	glgC	glgD
-bsub-BSU31220	yulD	yulE	yulB	yuxG	yulC
 bsub-BSU31600	mrpA	mrpC	mrpB	mrpE	mrpD	mrpG	mrpF
 bsub-BSU31710	comQ	comX	yuxO	comA	comP
-bsub-BSU31910	yukE	yukD	yukC	yukB	yueC	yueB	yueD
-bsub-BSU32000	ybdZ	dhbF	dhbE	dhbB	dhbC	dhbA
-bsub-BSU32420	pucR	pucK	pucL	pucJ	pucM
 bsub-BSU32510	pucA	pucB	pucC	pucD	pucE
-bsub-BSU32610	frlB	frlD	frlM	frlN	frlO
 bsub-BSU32710	iscU	sufC	sufB	sufD	sufS
 bsub-BSU33950	cggR	tpiA	gapA	pgm	pgk	eno
-bsub-BSU34180	ganR	ganA	ganP	ganQ	ganB	yvfI	cycB
 bsub-BSU34350	epsN	epsO	epsL	epsM	epsJ	epsK	epsH	epsI	epsF	epsG	epsD	epsE	epsC
-bsub-BSU34630	mdxG	mdxF	mdxE	mdxD	mdxR	yvdK	yvdJ	pgcM	malL
 bsub-BSU34780	yvcI	yvcJ	yvcK	yvcN	crh	whiA
 bsub-BSU34930	hisD	hisF	hisG	hisA	hisB	hisH	hisI	hisZ
 bsub-BSU35000	yvoD	hprK	hprP	yvoF	lgt
-bsub-BSU35350	fliD	yvzG	yvyC	fliS	fliT
 bsub-BSU35910	rbsK	rbsB	rbsA	rbsC	rbsR	rbsD
-bsub-BSU36210	ywqK	ywqJ	ywqI	ywqH	ywqL
 bsub-BSU36880	atpI	atpH	atpC	atpB	atpA	atpG	atpF	atpE	atpD
-bsub-BSU37350	albF	sboX	albA	albC	albB	albE	albD	albG	sboA
 bsub-BSU37740	bacD	bacE	bacB	bacC	bacA	ywfG
 bsub-BSU37910	spsL	spsI	spsJ	spsK	spsD	spsE	spsF	spsG	spsA	spsB	spsC
 bsub-BSU38500	dltA	dltB	dltC	dltD	dltE
 bsub-BSU38600	licH	licA	licR	licC	licB
 bsub-BSU38700	yxlC	sigY	yxlG	yxlF	yxlE	yxlD
 bsub-BSU38760	cydA	cydB	cydC	cydD	yxkO
-bsub-BSU39170	yxzG	yxzJ	yxiI	yxiJ	yxiK
-bsub-BSU39320	yxiD	yxxE	yxxD	yxiB	yxiC
 bsub-BSU39350	hutU	hutM	hutG	hutI	hutH
 bsub-BSU39520	yxeP	yxeQ	yxeK	yxeL	yxeM	yxeN	yxeO
 bsub-BSU39680	yxeA	yxdM	yxdK	yxdJ	iolI	iolJ	yxdL
