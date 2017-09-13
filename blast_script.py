@@ -5,7 +5,6 @@ import time
 import os
 import sys
 import argparse
-from Bio.Blast.Applications import NcbiblastxCommandline
 
 # Copyright(C) 2015 David Ream
 # Released under GPL version 3 licence. http://www.gnu.org/licenses/lgpl.html

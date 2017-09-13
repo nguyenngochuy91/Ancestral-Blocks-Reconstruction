@@ -26,8 +26,9 @@ def parser_code():
     parser = argparse.ArgumentParser()
                      
     parser.add_argument("--genomes_directory","-g", help="The directory that store all the genomes file (E.Coli/genomes)")  
+    parser.add_argument("--gene_blocks","-b", help="The gene_block_names_and_genes.txt file, this file stores the operon name and its set of genes") 
     parser.add_argument("--reference","-r", help="The ncbi accession number for the reference genome (NC_000913 for E.Coli and NC_000964 for B.Sub)")  
-    parser.add_argument("--filter","-f", help="The filter file for creating the tree (E.Coli/phylo_order.txt for E.Coli)")  
+    parser.add_argument("--filter","-f", help="The filter file for creating the tree (E.Coli/phylo_order.txt for E.Coli or B.Sub/phylo_order.txt for B.Sub)")  
     parser.add_argument("--method","-m", help="The method to reconstruc ancestral gene block, we support either global or local")                   
     return parser.parse_args()
 
@@ -37,6 +38,7 @@ if __name__ == '__main__':
     reference                  = args.reference
     filter_file                = args.filter
     method                     = args.method
+    gene_block_names_and_genes                = args.gene_blocks
     # check if we are going to output results in the current directory
     dirs = genomes_directory.split('/')
     if len(dirs)>=3: # means that we have to go to subdirectory

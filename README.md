@@ -8,59 +8,45 @@ splitting and block fusion are frequently observed.
 ROAGUE accepts a set of species and a gene block in a reference species. It then finds all gene blocks, orhtologous to the reference gene blocks, and reconsructs their
 ancestral states.
 
-## Prerequisites
-* [http://etetoolkit.org/download/] ete3 
+## Requirements
+* Python 2.7.6+
+* Biopython 1.63+ (python-biopython)
+* Muscle Alignment
+* ncbi-tools (ncbi-tools-bin)
+* BLAST2 (blast2)
+* BLAST+ (ncbi-blast+)
+* ete3 (python framework for trees)
 
 ## Installation
 User can either use github interface Download or type the following command in command line:
 ```bash
 git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
 ```
-User has to install python, and ete3 (would recommend use anaconda package). The instruction can be followed from this site:
-http://etetoolkit.org/download/
+For the requirements, everything but ete3 can be installed using the following command line:
+```bash
+sudo apt-get install python-biopython ncbi-tools-bin blast2 ncbi-blast+ muscle
+```
+
+For ete3, user can check installation instructions on this website: http://etetoolkit.org/download/
 
 ## Usage
 
 Caution:
-There are several different between running python2 or python3 (such as divide function
-). My program is written in python3, if you want to run it correctly in python2, please uncooment the second line in the program "findParent_local.py".
-Here is the step by step usage:
-* Step 1: Parse each operon file in the result dic, and convert it into appropriate form:
-  1. For each gene in an operon file, map it into an alphabet letter
-  2. For each genomes, use the start, stop position and strand to find neighbor gene pairs, only display those genomes info that actually have at least orthoblocks
-  3. Use the command line below and the output will be stored in directory new_result
+There are several different between running python2 or python3 (such as divide function). My program is written in python3, if you want to run it correctly in python2, please uncooment the second line in the program "findParent_local.py".
+
+The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). The user can run this script on the two data sets provided in directory [E.Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E.Coli) and [B.Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B.Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories.
+1. E.Coli
 ```bash
-./convert.py  -i result_dic/ -o new_result/ 
+./roague.py -g E.Coli/genomes/ -b E.Coli/gene_block_names_and_genes.txt -r NC_000913 -f E.Coli/phylo_order.txt -m global
+```
+2. B.Sub 
+```bash
+./roague.py -g B.Sub/genomes/ -b B.Sub/gene_block_names_and_genes.txt -r NC_000964 -f B.Sub/phylo_order.txt -m global
 ```
 
-* Step 2: Using each operon file from new result, and the tree input (this tree was built using muscle alignment of the 33 taxa on the rpOb gene marker), then provide ancestral reconstruction method depends on user choice (global or local)
- 1. Use the command line below and the output will be stored in directory reconstruction. Method used is global
-```bash
-./reconstruction.py -i new_result/ -t muscle.ph -o reconstruction_global/ -m global 
-```
-<<<<<<< HEAD
-* Step 3: Provide a visualization of the ancestral reconstruction process using ete3 package, it also provide a grouping theme depends on the class of the taxa. You can uncommend the line 103 to render the file into image, however, you need to provide the where to output the render file
-  * Use the command line below for each operon that you like, here I use not so conserved operon paaABCDEFGHIJK, and it will be save as a png file with name "paa.png":
-=======
-* Step 3: Provide a visualization of the ancestral reconstruction using ete3. ete3 also provides a grouping theme depends on the class of the taxa. You can uncomment the line 103 to render the file into image, however, you need to provide the where to output the render file
-  * Use the command line below for each operon that you like, here I use not so conserved operon paaABCDEFGHIJK:
->>>>>>> b8e17810ed58f42a7f7f98931f09b5703cd9e95a
-```bash
-./show_tree.py -g group.txt -i reconstruction_global/paaABCDEFGHIJK -o paa 
-```
+Each accompanying script can be run on its own as well, and each help for each script can be found by
+using the -h or --help option.
 
-  ![Image of paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/paa_global.jpg)
-  * Use the command line below for each operon that you like, here I use a highly conserved operon rplKAJL-rpoBC, and it will be save as a png file with name "rpl.png":
-```bash
-./show_tree.py -g group.txt -i reconstruction_global/rplKAJL-rpoBC -o rpl
-```
-  ![Image of paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/rpl_global.jpg)
-
-  * Render the file:
-
-```bash
-./show_tree.py -g group.txt -i reconstruction_global/caiTABCDE -o caiTABCDE_image
-```
 
 ## Credits
 1. http://bioinformatics.oxfordjournals.org/content/early/2015/04/13/bioinformatics.btv128.full 

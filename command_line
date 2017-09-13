@@ -3,7 +3,7 @@ ROAGUE pipeline running example:
 1. To run our pipeline on a given reference
 Reference: 
 a) E.Coli
-./roague.py -g E.Coli/genomes/ -r NC_000913 -f E.Coli/phylo_order.txt -m global
+./roague.py -g E.Coli/genomes/ -b E.Coli/gene_block_names_and_genes.txt -r NC_000913 -f E.Coli/phylo_order.txt -m global
 b)B.Sub
-./roague.py -g B.Sub/genomes/ -r NC_000964 -f B.Sub/phylo_order.txt -m global
+./roague.py -g B.Sub/genomes/ -b B.Sub/gene_block_names_and_genes.txt -r NC_000964 -f B.Sub/phylo_order.txt -m global
 
