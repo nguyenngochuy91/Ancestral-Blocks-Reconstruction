@@ -31,9 +31,6 @@ For ete3, user can check installation instructions on this website: http://eteto
 
 ## Usage
 
-Caution:
-There are several different between running python2 or python3 (such as divide function). My program is written in python3, if you want to run it correctly in python2, please uncooment the second line in the program "findParent_local.py".
-
 The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). The user can run this script on the two data sets provided in directory [E.Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E.Coli) and [B.Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B.Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf file of our ancestral reconstruction) are stored in `E.Coli/visualization` and `B.Sub/visualization` directory.
 ### E.Coli 
 ```bash
