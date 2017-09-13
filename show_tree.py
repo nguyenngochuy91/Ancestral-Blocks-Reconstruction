@@ -126,9 +126,8 @@ if __name__ == "__main__":
     mystring.background.color = 'LightBlue'
     tree_style.title.add_face(mystring, column=2)                                              
     # render the image
-    tree.render(args.Image+'.png',dpi=1000,tree_style=tree_style)
-    #tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
-    tree.show(tree_style=tree_style)
+    tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
+    #tree.show(tree_style=tree_style)
 
 
 

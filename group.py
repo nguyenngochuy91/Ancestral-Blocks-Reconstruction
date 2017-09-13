@@ -9,7 +9,6 @@ import os
 import argparse
 import uuid
 from Bio import SeqIO
-import random
 # traverse and get the file
 def traverseAll(path):
     res=[]
@@ -35,7 +34,7 @@ def get_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("--InputGenBackDirectory","-i",action=readable_dir,help="Genbank directory")
     parser.add_argument("--OutputFile","-o", help="Output of this program will be stored in the path supplied here. It will make a new directory if path given is valid or it will raise an error")
-    parser.add_argument("--AccessionNumber","-a", help="Accession name (phylo_order.txt")
+    parser.add_argument("--AccessionNumber","-a", help="Accession name (phylo_order.txt)")
     args = parser.parse_args()
     return args
 
@@ -67,13 +66,14 @@ if __name__ == "__main__":
     myclass=set() # keep track of class
     class_dic={} # key is accesion number, value is the class
     # color avaliable for SVG_Color of ete3
-    color_list=['indianred','red','deeppink','gold','yellow','magenta','purple',
-               'green','cyan','mediumblue','brown','silver','black']
+    color_list=['hotpink','deepskyblue','black','brown','yellow','magenta','purple',
+               'green','mediumblue','silver']
     color_dic={}
     if condition:
         accession = parse_accession(args.AccessionNumber)
         outputsession = args.OutputFile
         res = traverseAll(args.InputGenBackDirectory)
+        index =0
         for r in res:
             root,f = os.path.split(r)
             accession_num= f.split('.')[0]
@@ -100,11 +100,11 @@ if __name__ == "__main__":
         # assign the collor to the class
         for item in myclass:
             # randomly choose a color
-            index = random.randrange(len(color_list))
             # get the color
             color_dic[item]=color_list[index]
-            # remove the color
+           # remove the color
             color_list.remove(color_list[index])
+            
         # assign the accession the the color:
         for key in class_dic:
             color_dic[key]=color_dic[class_dic[key]]

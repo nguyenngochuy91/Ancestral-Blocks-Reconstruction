@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # Copyright(C) 2015 David Ream
 # Released under GPL version 3 licence. http://www.gnu.org/licenses/lgpl.html

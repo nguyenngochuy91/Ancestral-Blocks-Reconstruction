@@ -138,39 +138,42 @@ if __name__ == "__main__":
     start = time.time()
     args = get_arguments()
     sessionID = uuid.uuid1()
-    condition = chk_output_directory_path(args.OutputDirectory,sessionID)
+
     treeFile=args.TreeFile
     method =args.Method
-    if condition:
-        outputsession = args.OutputDirectory
+
+    outputsession = args.OutputDirectory
+    try:
         os.mkdir(outputsession)
-        res = traverseAll(args.InputDataDirectory)
-        for r in res:
-            # check for DS.Store
-            root,f = os.path.split(r)
-            if "DS_Store" in f:
-                continue
-            mapping,genomes = parsing(r)
-            tree = Tree(treeFile) # using ete3 to read treeFile
-            tree = set_initial_value(genomes,tree) # set up gene block for the leafs, names for inner node, and node type
-            if method.lower() =='local':
-                tree = reconstruct_local(genomes,tree)
-                tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
-            'initial','gene_block','deletion','duplication','split'])
-            elif method.lower() =='global':
-                # get the set of genes for the method from mapping
-                genes =set()
-                for key in mapping:
-                    genes.add(key)
-                tree = reconstruct_global(genomes,tree,genes)
-                tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
-            'initial','gene_block','deletion','duplication','split'])
-            #if f == 'rplKAJL-rpoBC':
-            #    for node in tree.iter_descendants("postorder"):
-            #        if node.name == 'Node8' or node.name == 'Node15' or node.name =='Node18':
-            #            print node.name,node.initial,node.elementCount,node.count
-            mapping = mapping_write(mapping) # modify the string mapping to write out
-            outfile=open(outputsession+'/'+f+'_mapping','w')
-            outfile.write(mapping)      
-            outfile.close()
+    except:
+        print ("reconstruction_global is already created")
+    res = traverseAll(args.InputDataDirectory)
+    for r in res:
+        # check for DS.Store
+        root,f = os.path.split(r)
+        if "DS_Store" in f:
+            continue
+        mapping,genomes = parsing(r)
+        tree = Tree(treeFile) # using ete3 to read treeFile
+        tree = set_initial_value(genomes,tree) # set up gene block for the leafs, names for inner node, and node type
+        if method.lower() =='local':
+            tree = reconstruct_local(genomes,tree)
+            tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
+        'initial','gene_block','deletion','duplication','split'])
+        elif method.lower() =='global':
+            # get the set of genes for the method from mapping
+            genes =set()
+            for key in mapping:
+                genes.add(key)
+            tree = reconstruct_global(genomes,tree,genes)
+            tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
+        'initial','gene_block','deletion','duplication','split'])
+        #if f == 'rplKAJL-rpoBC':
+        #    for node in tree.iter_descendants("postorder"):
+        #        if node.name == 'Node8' or node.name == 'Node15' or node.name =='Node18':
+        #            print node.name,node.initial,node.elementCount,node.count
+        mapping = mapping_write(mapping) # modify the string mapping to write out
+        outfile=open(outputsession+'/'+f+'_mapping','w')
+        outfile.write(mapping)      
+        outfile.close()
     print (time.time() - start)

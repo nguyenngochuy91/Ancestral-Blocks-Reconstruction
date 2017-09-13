@@ -10,7 +10,7 @@ a) For E.Coli:
 b) For B.Sub:
 ./make_operon_query.py -i genomes/ -b B.Subtilis_gene_block_names_and_genes.txt -r NC_000964
 
-3. Blast each files in directory db vs the fasta file gene_block_query.fa, the output are store in dictionary blast_result. The output are blast file of each tax versus the set of genes that found in all operon in the reference taxa
+3. Blast each files in directory db vs the fasta file gene_block_query.fa, the output are store in blast_result. The output are blast file of each tax versus the set of genes that found in all operon in the reference taxa
 ./blast_script.py -u gene_block_query.fa
 
 4. The idea is group all the blast result of each taxa into operon files. Each file in the directory is a combination of blast file for each taxa vs the genes of the operon.  Input is the directory blast_result, output is in directory blast_parse. 
@@ -25,6 +25,12 @@ b) For B.Sub:
 7. From the directory optimized_gene_block, create a directory result that reformat the gene blocks so it can be parsed into the ROAGUE pipeline.
 ./get_result.py -g E.Coli_gene_block_names_and_genes.txt 
 
+8. Run the group.txt to color taxa based on class
+./group.py -i E.Coli/genomes/ -o E.Coli/group.txt -a E.Coli/phylo_order.txt 
 
+ROAGUE pipeline running example:
 
-ROAGUE pipeline
+1. To run our pipeline on E.Coli and its group of taxa:
+
+./roague.py -g E.Coli/genomes/ -r NC_000913 -f E.Coli/phylo_order.txt -m global
+

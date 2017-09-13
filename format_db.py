@@ -26,7 +26,7 @@ def parser_code():
     #parser.add_argument("-i", "--infolder", dest="infolder", metavar="DIRECTORY", default='./genomes/',
     #            help="Folder containing all genbank files for use by the program.")
      
-    parser.add_argument("-G", "--genbank_directory", dest="genbank_directory", metavar="DIRECTORY", default='./genomes/',
+    parser.add_argument("-i", "--genbank_directory", dest="genbank_directory", metavar="DIRECTORY", default='./genomes/',
                 help="Folder containing all genbank files for use by the program.")        
                  
     parser.add_argument("-o", "--outfolder", dest="outfolder", metavar="DIRECTORY", default='./db/',

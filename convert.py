@@ -125,16 +125,18 @@ if __name__ == "__main__":
     start = time.time()
     args = get_arguments()
     sessionID = uuid.uuid1()
-    condition = chk_output_directory_path(args.OutputDirectory,sessionID)
-    if condition:
-        outputsession = args.OutputDirectory
+
+    outputsession = args.OutputDirectory
+    try:
         os.mkdir(outputsession)
-        res = traverseAll(args.OperonDataDirectory)
-        for r in res:
-            root,f = os.path.split(r)
-            result= toDict(r)
-            wholestring = toString(result[0],result[1])
-            outfile = open(outputsession+'/'+f,'w')
-            outfile.write(wholestring)
-            outfile.close()
+    except:
+        print ("new_result is already created")
+    res = traverseAll(args.OperonDataDirectory)
+    for r in res:
+        root,f = os.path.split(r)
+        result= toDict(r)
+        wholestring = toString(result[0],result[1])
+        outfile = open(outputsession+'/'+f,'w')
+        outfile.write(wholestring)
+        outfile.close()
     print (time.time() - start)
