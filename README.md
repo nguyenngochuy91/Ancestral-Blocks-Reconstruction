@@ -1,20 +1,15 @@
-# Ancestral-BLocks-Reconstruction project
-## Sypnosis
-This project provide ancestral reconstruction tools dedicated to bacteria genomes.
+# ROAGUE: **R**econstruction **o**f **A**ncestral **G**ene Blocks **U**sing **E**vents
+## Purpose
 
-## Model Assumption
-* Phylogenetic Tree
-  1. Our phylogenetic tree is given, it is binary and rooted.
-  2. Leaves are populated by orthoblocks. At least one leaf has a reference operon.
-  3. The model is agnostic to gene order.
-* Relationship between parent nodes and their children
-  1. Given a parent gene blocks, its children gene blocks can't have any gene that is not in the parent gene blocks. (Hard assumption)
-  2. There are 3 types of events that can happen from a parent to a child:
-     * Split      : If two genes in one taxon are neighboring and their homologs in the other taxon are not, then that is defined as a single split event. The distance is the minimal number of split events identified between the compared genomes.
-     * Deletion    : A gene exists in the operon in the one taxon, but its homolog cannot be found in an orthoblock in another taxon. Note that the definition of homolog, e-value 10−10 is strict, and may result in false negatives. The deletion distance is the number of deletion events identified between the compared target genomes.
-     * Duplication : A duplication event is defined as having gene j in a gene block in the source genome, and homologous genes (j′,j″)(j′,j″) in the homologous block in the target genome. The duplication distance is the number of duplication events counted between the source and target genomes. The duplication has to occur in a gene block to be tallied.
-  3. Multiple events from parent to children are possible.
-  4. Events are treated as independent.
+ROAGUE is a tool to reconstruct ancestors of gene blocks in prokaryotic genomes. Gene blocks are genes co-located on the chromosome. In many cases, gene blocks are
+conserved between bacterial species, sometimes as operons, when genes are co-transcribed. The conservation is rarely absolute: gene loss, gain, duplication, block
+splitting and block fusion are frequently observed. 
+
+ROAGUE accepts a set of species and a gene block in a reference species. It then finds all gene blocks, orhtologous to the reference gene blocks, and reconsructs their
+ancestral states.
+
+## Prerequisites
+* [http://etetoolkit.org/download/] ete3 
 
 ## Installation
 User can either use github interface Download or type the following command in command line:
@@ -26,7 +21,7 @@ http://etetoolkit.org/download/
 
 ## Usage
 
-Cautious:
+Caution:
 There are several different between running python2 or python3 (such as divide function
 ). My program is written in python3, if you want to run it correctly in python2, please uncooment the second line in the program "findParent_local.py".
 Here is the step by step usage:
@@ -43,16 +38,16 @@ Here is the step by step usage:
 ```bash
 ./reconstruction.py -i new_result/ -t muscle.ph -o reconstruction_global/ -m global 
 ```
-* Step 3: Provide a visualization of the ancestral reconstruction process using ete3 package, it also provide a grouping theme depends on the class of the taxa. You can uncommend the line 103 to render the file into image, however, you need to provide the where to output the render file
-  * Use the command line below for each operon that you like, here I use not so conserved operon paaABCDEFGHIJK, and it will be save as a png file with name "paa.png":
+* Step 3: Provide a visualization of the ancestral reconstruction using ete3. ete3 also provides a grouping theme depends on the class of the taxa. You can uncomment the line 103 to render the file into image, however, you need to provide the where to output the render file
+  * Use the command line below for each operon that you like, here I use not so conserved operon paaABCDEFGHIJK:
 ```bash
-./show_tree.py -g group.txt -i reconstruction_global/paaABCDEFGHIJK -o paa 
+./show_tree.py -g group.txt -i reconstruction_global/paaABCDEFGHIJK 
 ```
 
   ![Image of paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/paa_global.jpg)
-  * Use the command line below for each operon that you like, here I use a highly conserved operon rplKAJL-rpoBC, and it will be save as a png file with name "rpl.png":
+  * Use the command line below for each operon that you like, here I use a highly conserved operon rplKAJL-rpoBC:
 ```bash
-./show_tree.py -g group.txt -i reconstruction_global/rplKAJL-rpoBC -o rpl
+./show_tree.py -g group.txt -i reconstruction_global/rplKAJL-rpoBC 
 ```
   ![Image of paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/rpl_global.jpg)
 
