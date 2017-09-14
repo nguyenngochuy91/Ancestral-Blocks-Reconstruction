@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from __future__ import division
 ''' Author : Huy Nguyen
     Project: provide method and helper method to find minaml possible parents
              from 2 given gene_block. As well as provide he edit distance
