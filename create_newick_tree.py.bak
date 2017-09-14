@@ -61,13 +61,13 @@ def check_options(parsed_args):
     if os.path.isdir(parsed_args.genbank_directory):
         genbank_directory = parsed_args.genbank_directory
     else:
-        print("The folder %s does not exist." % parsed_args.genbank_directory)
+        print "The folder %s does not exist." % parsed_args.genbank_directory
         sys.exit()
     
     if parsed_args.filter == 'NONE' or os.path.exists(parsed_args.filter):
         filter_file = parsed_args.filter
     else:
-        print("The file %s does not exist." % parsed_args.filter)
+        print "The file %s does not exist." % parsed_args.filter
         sys.exit()
     
     outfolder = parsed_args.outfolder
@@ -86,7 +86,7 @@ def check_options(parsed_args):
     if parsed_args.tree_file == 'NONE' or os.path.exists(parsed_args.tree_file):
         tree_file = parsed_args.tree_file
     else:
-        print("The file %s does not exist." % parsed_args.tree_file)
+        print "The file %s does not exist." % parsed_args.tree_file
         sys.exit()
     
     quiet = parsed_args.quiet
@@ -120,7 +120,7 @@ def make_common_to_accession_dict(infolder, filter_file):
     org_paths = return_file_list(infolder, filter_file)
     common_to_accession_dict = {}
     for org in org_paths:
-        seq_record = next(SeqIO.parse(open(org), "genbank"))
+        seq_record = SeqIO.parse(open(org), "genbank").next()
         accession = seq_record.annotations['accessions'][0]
         organism_tmp = seq_record.annotations['organism'].replace(' ', '_')
         organism_tmp = organism_tmp.replace('[','')
@@ -139,7 +139,7 @@ def make_target_fasta(marker, infolder, filter_file, marker_fasta):
     #print org_paths
     #print "infolder", infolder
     #print "filter_file", filter_file
-    print("org_paths",org_paths)
+    print "org_paths",org_paths
     result = [] # this is not great
     common_to_accession_dict = {}
     orgs_with_marker = []
@@ -147,7 +147,7 @@ def make_target_fasta(marker, infolder, filter_file, marker_fasta):
     #print len(org_paths)
     for org in org_paths:
         genes_found = []
-        seq_record = next(SeqIO.parse(open(org), "genbank"))
+        seq_record = SeqIO.parse(open(org), "genbank").next()
         accession = seq_record.annotations['accessions'][0]
         organism_tmp = seq_record.annotations['organism'].replace(' ', '_')
         organism_tmp = organism_tmp.replace('[','')
@@ -280,8 +280,8 @@ def make_newick_tree(marker_fasta, tree_outfile,reference):
     # have to wait for few second for the aln file actually comes out lol
     os.system(cm2)
     temp_tree = '.'.join(marker_fasta.split('.')[:-1]) + '.ph' # that's what this file gets named by default, and i'm sick of looking for the cmd line arg to fix.
-    print(temp_tree)
-    print("modifying")
+    print temp_tree
+    print "modifying"
     #modify for negative branch
     modify_tree = '.'.join(marker_fasta.split('.')[:-1]) + '.new'
     cm3 = "sed -e 's,:-[0-9\.]\+,:0.0,g' "+temp_tree+" > "+modify_tree   
@@ -367,7 +367,7 @@ def main():
     #marker_gene = "rpob"
     
     if not quiet:
-        print(genbank_directory, outfolder, filter_file, marker_gene)
+        print genbank_directory, outfolder, filter_file, marker_gene
     
     # set the paths for the three output files
     newick_tree_outfile = outfolder + 'out_tree.nwk'
@@ -404,7 +404,7 @@ def main():
     # shutil.rmtree(tmp_directory)
     
     if not quiet:
-        print(time.time() - start)
+        print time.time() - start
 # ./create_newick_tree.py -i ./gram_positive_test_organisms/  -f gram_positive_phylo_order.txt    
 if __name__ == '__main__':
     main()    
