@@ -105,7 +105,7 @@ def do_parallel_blast(arg_tuple):
     #cmd = "blastall -p tblastn -a %i -i %s -d %s -e %s -o %s -m 9" % (num_processors, query_file, db, eval_threshold, out_file)
     #cmd = "blastall -p tblastn -a %i -i %s -d %s -e %s -o %s -m 9" % (1, query_file, db, eval_threshold, out_file)
     #cmd = "blastall -p blastp -a %i -i %s -d %s -e %s -o %s -m 9" % (1, query_file, db, eval_threshold, out_file)
-    cmd = "blastall -p blastp -a %i -i %s -d %s -e %s -o %s -m 8" % (1, query_file, db, eval_threshold, out_file)
+    cmd ="blastp -num_threads %i -query %s -db %s -evalue %s -out %s -outfmt 6 -seg yes" % (1, query_file, db, eval_threshold, out_file)
     #print cmd
     os.system( cmd )
 

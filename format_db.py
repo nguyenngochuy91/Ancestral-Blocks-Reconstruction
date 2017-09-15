@@ -238,10 +238,10 @@ def convert_genbank(genbank_tuple):
         out_handle.close()
         
     if do_protein:
-        cmd = "formatdb -i %s -p T -o F" % (outpath)
+        cmd = "makeblastdb -in %s -dbtype prot" % (outpath)
         #print "got here"
     else:    
-        cmd = "formatdb -i %s -p F -o F" % (outpath)
+        cmd = "makeblastdb -in %s -dbtype prot" % (outpath)
     os.system(cmd)
     #print "Passed main loop"
   
