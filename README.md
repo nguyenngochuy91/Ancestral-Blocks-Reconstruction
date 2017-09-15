@@ -12,8 +12,8 @@ ancestral states.
 * [Python 3+](https://www.python.org/download/releases/3.0/)
 * [Biopython 1.63+](http://biopython.org/wiki/Download)
 * [Muscle Alignment](https://www.drive5.com/muscle/downloads.htm)
-* [BLAST+] (https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download)
-* [ETE3] (http://etetoolkit.org/download/) (python framework for tree)
+* [BLAST+](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download)
+* [ETE3](http://etetoolkit.org/download/) (python framework for tree)
 
 ## Installation
 User can either use github interface Download or type the following command in command line:
