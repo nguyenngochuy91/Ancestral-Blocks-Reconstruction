@@ -9,12 +9,11 @@ ROAGUE accepts a set of species and a gene block in a reference species. It then
 ancestral states.
 
 ## Requirements
-* Python 2.7.6+
-* Biopython 1.63+ (python-biopython)
-* Muscle Alignment
-* BLAST2 (blast2)
-* BLAST+ (ncbi-blast+)
-* ete3 (python framework for trees)
+* [Python 3+](https://www.python.org/download/releases/3.0/)
+* [Biopython 1.63+](http://biopython.org/wiki/Download)
+* [Muscle Alignment](https://www.drive5.com/muscle/downloads.htm)
+* [BLAST+] (https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download)
+* [ETE3] (http://etetoolkit.org/download/) (python framework for tree)
 
 ## Installation
 User can either use github interface Download or type the following command in command line:
@@ -26,16 +25,16 @@ For the requirements, everything but ete3 can be installed using the following c
 sudo apt-get install python-biopython blast2 ncbi-blast+ muscle
 ```
 
-For ete3, user can check installation instructions on this website: http://etetoolkit.org/download/
+For ete3, check installation instructions on this website: http://etetoolkit.org/download/
 
 ## Usage
 
-The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). The user can run this script on the two data sets provided in directory [E.Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E.Coli) and [B.Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B.Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf file of our ancestral reconstruction) are stored in `E.Coli/visualization` and `B.Sub/visualization` directory.
+The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). The user can run this script on the two data sets provided in directory [E.Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E.Coli) and [B.Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B.Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `E.Coli/visualization` and `B.Sub/visualization` directory.
 ### E.Coli 
 ```bash
 ./roague.py -g E.Coli/genomes/ -b E.Coli/gene_block_names_and_genes.txt -r NC_000913 -f E.Coli/phylo_order.txt -m global
 ```
-<<<<<<< HEAD
+
 ### B.Sub
 ```bash
 ./roague.py -g B.Sub/genomes/ -b B.Sub/gene_block_names_and_genes.txt -r NC_000964 -f B.Sub/phylo_order.txt -m global
@@ -46,18 +45,6 @@ using the -h or --help option.
 
 ```bash
 ./roague.py -h
-=======
-* Step 3: Provide a visualization of the ancestral reconstruction using ete3. ete3 also provides a grouping theme depends on the class of the taxa. You can uncomment the line 103 to render the file into image, however, you need to provide the where to output the render file
-  * Use the command line below for each operon that you like, here I use not so conserved operon paaABCDEFGHIJK:
-```bash
-./show_tree.py -g group.txt -i reconstruction_global/paaABCDEFGHIJK 
-```
-
-  ![Image of paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/paa_global.jpg)
-  * Use the command line below for each operon that you like, here I use a highly conserved operon rplKAJL-rpoBC:
-```bash
-./show_tree.py -g group.txt -i reconstruction_global/rplKAJL-rpoBC 
->>>>>>> idoerg-master
 ```
 
 usage: 
