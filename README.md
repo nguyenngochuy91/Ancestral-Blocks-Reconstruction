@@ -12,7 +12,6 @@ ancestral states.
 * Python 2.7.6+
 * Biopython 1.63+ (python-biopython)
 * Muscle Alignment
-* ncbi-tools (ncbi-tools-bin)
 * BLAST2 (blast2)
 * BLAST+ (ncbi-blast+)
 * ete3 (python framework for trees)
@@ -24,7 +23,7 @@ git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
 ```
 For the requirements, everything but ete3 can be installed using the following command line:
 ```bash
-sudo apt-get install python-biopython ncbi-tools-bin blast2 ncbi-blast+ muscle
+sudo apt-get install python-biopython blast2 ncbi-blast+ muscle
 ```
 
 For ete3, user can check installation instructions on this website: http://etetoolkit.org/download/
@@ -79,6 +78,19 @@ optional arguments:
                         The method to reconstruct ancestral gene block, we
                         support either global or local approach.
 
+## Examples
+
+Here are two gene blocks that were generated through our program. 
+1. Gene block paaABCDEFGHIJK:
+
+This gene block codes for genes involved in the catabolism of phenylacetate and it is not conserved between the group of studied bacteria
+
+![paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/paa_global.jpg "Gene block paaABCDEFGHIJK")
+2. Gene block atpIBEFHAGDC:
+
+This gene block catalyzes the synthesis of ATP from ADP and inorganic phosphate and it is very conserved between the group of studied bacteria
+
+![atpIBEFHAGDC](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/atp_global.jpg "Gene block atpIBEFHAGDC")
 ## Credits
 1. http://bioinformatics.oxfordjournals.org/content/early/2015/04/13/bioinformatics.btv128.full 
 
