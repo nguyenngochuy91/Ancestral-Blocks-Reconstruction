@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ''' Author  : Huy Nguyen
     Program : Automate create group dic for the chosen taxa, write it to a file
-              I classift by class
+              I classify them by class
     Start   : 05/10/2016
     End     : 05//2016
 '''
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     sessionID = uuid.uuid1()
     condition = chk_output_directory_path(args.OutputFile,sessionID)
     accessions=args.AccessionNumber
-    myclass=set() # keep track of class
+    myclass={0:set(),1:set(),2:set(),3:set(),4:set(),5:set(),6:set(),7:set()} # keep track of class
     class_dic={} # key is accesion number, value is the class
     # color avaliable for SVG_Color of ete3
     color_list=['hotpink','deepskyblue','black','brown','yellow','magenta','purple',
@@ -73,41 +73,37 @@ if __name__ == "__main__":
         accession = parse_accession(args.AccessionNumber)
         outputsession = args.OutputFile
         res = traverseAll(args.InputGenBackDirectory)
-        index =0
+
         for r in res:
-            root,f = os.path.split(r)
-            accession_num= f.split('.')[0]
+            print (r)
+            input_seq_iterator = SeqIO.parse(r, "genbank")
+            first_rec = input_seq_iterator.next()
+            accession_num= first_rec.annotations['accessions'][0]
             # check if the file name is in our ancession file
             if accession_num in accession: # NC_000964.gbk
-                ''' parse using SeqIO on genbank is too slow. I will open
-                    the file and read it directly 
-                genome=SeqIO.parse(r,'genbank')
-                first_rec = next (genome)
-                genome_class = first_rec.annotations['taxonomy'][2]'''
-                
-                # dirty version of manipulate genbank file
-                myfile = open(r,'r')
-                flag= False
-                for line in myfile.readlines():
-                    if flag:
-                        info = line
-                        break
-                    if 'ORGANISM' in line:
-                        flag= True
-                genome_class =str(info.strip(' ').split(';')[2])
-                class_dic[accession_num]=genome_class
-                myclass.add(genome_class)
+                print (accession_num)
+                taxonomy = first_rec.annotations['taxonomy']
+                index = 0
+                for item in taxonomy:
+                    myclass[index].add(item)
+                    index+=1
+                class_dic[accession_num]=taxonomy
         # assign the collor to the class
-        for item in myclass:
+        for group in sorted(myclass):
+            if len(myclass[group])>=4:
+                break
+        print (myclass)
+        index =0
+        for item in myclass[group]:
             # randomly choose a color
             # get the color
             color_dic[item]=color_list[index]
            # remove the color
             color_list.remove(color_list[index])
-            
+        print (color_dic)
         # assign the accession the the color:
         for key in class_dic:
-            color_dic[key]=color_dic[class_dic[key]]
+            color_dic[key]=color_dic[class_dic[key][group]]
         # writing to outfile
         outfile=open(outputsession,'w')
         for key in color_dic:
