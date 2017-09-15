@@ -47,13 +47,13 @@ using the -h or --help option.
 ./roague.py -h
 ```
 
-usage: 
+Usage: 
 
 roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
                  [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
                  [--filter FILTER] [--method METHOD]
 
-optional arguments:
+Optional arguments:
 
   -h, --help            show this help message and exit
 
@@ -83,12 +83,12 @@ optional arguments:
 Here are two gene blocks that were generated through our program. 
 1. Gene block paaABCDEFGHIJK:
 
-This gene block codes for genes involved in the catabolism of phenylacetate and it is not conserved between the group of studied bacteria
+This gene block codes for genes involved in the catabolism of phenylacetate and it is not conserved between the group of studied bacteria.
 
 ![paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/paa_global.jpg "Gene block paaABCDEFGHIJK")
 2. Gene block atpIBEFHAGDC:
 
-This gene block catalyzes the synthesis of ATP from ADP and inorganic phosphate and it is very conserved between the group of studied bacteria
+This gene block catalyzes the synthesis of ATP from ADP and inorganic phosphate and it is very conserved between the group of studied bacteria.
 
 ![atpIBEFHAGDC](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/atp_global.jpg "Gene block atpIBEFHAGDC")
 ## Credits
