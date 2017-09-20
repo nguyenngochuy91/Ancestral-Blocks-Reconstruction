@@ -41,10 +41,14 @@ if __name__ == '__main__':
     gene_block_names_and_genes                = args.gene_blocks
     # check if we are going to output results in the current directory
     dirs = genomes_directory.split('/')
+    try:
+        os.mkdir("result")
+    except:
+        print ("directory result has already been created")
     if len(dirs)>=3: # means that we have to go to subdirectory
-        parent_dir = dirs[0]+'/'
+        parent_dir = 'result/'+dirs[0]+"/"
     else:
-        parent_dir = './'
+        parent_dir = './result/'
     ##########################################################################
     # finding gene blocks 
         
@@ -55,7 +59,7 @@ if __name__ == '__main__':
     print ('cmd1:',cmd1)
     
     ### Given the gene_block_names_and_genes.txt, create a gene_block_query.fa using the reference gene bank file. output in file gene_block_query.fa
-    gene_block_names_and_genes = parent_dir+'gene_block_names_and_genes.txt'
+    gene_block_names_and_genes = dirs[0]+"/"+'gene_block_names_and_genes.txt'
     gene_block_query           = parent_dir +'gene_block_query.fa'
     cmd2 ='./make_operon_query.py -i {} -b {} -r {} -o {}'.format(genomes_directory,gene_block_names_and_genes,reference,gene_block_query)
     os.system(cmd2)
