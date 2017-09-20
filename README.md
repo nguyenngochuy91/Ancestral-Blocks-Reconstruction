@@ -29,15 +29,15 @@ For ete3, check installation instructions on this website: http://etetoolkit.org
 
 ## Usage
 
-The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). The user can run this script on the two data sets provided in directory [E.Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E.Coli) and [B.Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B.Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `E.Coli/visualization` and `B.Sub/visualization` directory.
-### E.Coli 
+The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). The user can run this script on the two data sets provided in directory [E_Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E_Coli) and [B_Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B_Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `E_Coli/visualization` and `B_Sub/visualization` directory.
+### E_Coli
 ```bash
-./roague.py -g E.Coli/genomes/ -b E.Coli/gene_block_names_and_genes.txt -r NC_000913 -f E.Coli/phylo_order.txt -m global
+./roague.py -g E_Coli/genomes/ -b E_Coli/gene_block_names_and_genes.txt -r NC_000913 -f E_Coli/phylo_order.txt -m global
 ```
 
-### B.Sub
+### B_Sub
 ```bash
-./roague.py -g B.Sub/genomes/ -b B.Sub/gene_block_names_and_genes.txt -r NC_000964 -f B.Sub/phylo_order.txt -m global
+./roague.py -g B_Sub/genomes/ -b B_Sub/gene_block_names_and_genes.txt -r NC_000964 -f B_Sub/phylo_order.txt -m global
 ```
 
 Each accompanying script can be run on its own as well, and each help for each script can be found by
@@ -59,7 +59,7 @@ Optional arguments:
 
   --genomes_directory GENOMES_DIRECTORY, -g GENOMES_DIRECTORY
                         The directory that store all the genomes file in genbank format.
-                        (`E.Coli/genomes`)
+                        (`E_Coli/genomes`)
 
   --gene_blocks GENE_BLOCKS, -b GENE_BLOCKS
                         The gene_block_names_and_genes.txt file, this file
@@ -67,12 +67,12 @@ Optional arguments:
 
   --reference REFERENCE, -r REFERENCE
                         The ncbi accession number for the reference genome.
-                        (NC_000913 for E.Coli and NC_000964 for B.Sub)
+                        (NC_000913 for E_Coli and NC_000964 for B_Sub)
 
   --filter FILTER, -f FILTER
                         The filter file for creating the tree.
-                        (`E.Coli/phylo_order.tx` for E.Coli or
-                        `B.Sub/phylo_order.txt` for B.Sub)
+                        (`E_Coli/phylo_order.tx` for E_Coli or
+                        `B_Sub/phylo_order.txt` for B_Sub)
 
   --method METHOD, -m METHOD
                         The method to reconstruct ancestral gene block, we
