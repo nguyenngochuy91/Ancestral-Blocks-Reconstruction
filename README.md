@@ -29,7 +29,9 @@ For ete3, check installation instructions on this website: http://etetoolkit.org
 
 ## Usage
 
-The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). The user can run this script on the two data sets provided in directory [E_Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E_Coli) and [B_Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B_Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `result/E_Coli/visualization` and `result/B_Sub/visualization` directory.
+The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). 
+
+a.The user can run this script on the example data sets provided in directory [E_Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E_Coli) and [B_Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B_Sub). The two following command line will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `result/E_Coli/visualization` and `result/B_Sub/visualization` directory.
 ### E_Coli
 ```bash
 ./roague.py -g E_Coli/genomes/ -b E_Coli/gene_block_names_and_genes.txt -r NC_000913 -f E_Coli/phylo_order.txt -m global
@@ -39,13 +41,8 @@ The easiest way to run the project is to execute the script [roague](https://git
 ```bash
 ./roague.py -g B_Sub/genomes/ -b B_Sub/gene_block_names_and_genes.txt -r NC_000964 -f B_Sub/phylo_order.txt -m global
 ```
+b. The user can provide his/her own set of bacteria species in genbank format. Preferably, the user should download all the available bacterial genomes from the NCBI website. The ftp link for that is [here](ftp://ftp.ncbi.nih.gov/genomes/archive/old_refseq/Bacteria/all.gbk.tar.gz). (about 30GB) 
 
-Each accompanying script can be run on its own as well, and each help for each script can be found by
-using the -h or --help option.
-
-```bash
-./roague.py -h
-```
 
 Usage: 
 
