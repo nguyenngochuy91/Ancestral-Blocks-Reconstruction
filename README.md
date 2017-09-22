@@ -45,7 +45,7 @@ The users can run this script on the example data sets provided in directory [E_
 ### Run on users' specific datasets
 If the users wants to run the program on their own datasets, then they have to provide the following inputs:
   1. Directory that stores all the genomes file to study in genbank format 
-  2. Gene block text file that stores gene blocks in a reference species (this reference has to be in the genomes directory). The gene block format is tab delimited. The first column is the gene block name, then followed by the genes' name. For example, here is an example `gene_block_names_and_genes.txt` from Escheria coli K-12 MG1655.
+  2. Gene block text file that stores gene blocks in a reference species (this reference has to be in the genomes directory). The gene block format is tab delimited. The first column is the gene block name, then followed by the genes' name. For example, here is `gene_block_names_and_genes.txt` file from Escheria coli K-12 MG1655.
 ```bash
 astCADBE	astA	astB	astC	astD	astE
 atpIBEFHAGDC	atpI	atpH	atpC	atpB	atpA	atpG	atpF	atpE	atpD
