@@ -57,6 +57,32 @@ Besides, the user can also provide a filter text file. This filter file specifie
    1. Generate a phylogenetic trees from the genomes directory
    ```bash
    ./create_newick_tree.py -G genomes_directory -o tree_directory -f NONE -r ref_accession
+   usage: create_newick_tree.py [-h] [-G DIRECTORY] [-o DIRECTORY] [-f FILE]
+                             [-m STRING] [-t FILE] [-r REF] [-q]
+
+The purpose of this script is to build a newick format phylogenetic tree from
+a list of genomes and a marker gene.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -G DIRECTORY, --genbank_directory DIRECTORY
+                        Folder containing all genbank files for use by the
+                        program.
+  -o DIRECTORY, --outfolder DIRECTORY
+                        Directory where the results of this program will be
+                        stored.
+  -f FILE, --filter FILE
+                        File restrictiong which accession numbers this script
+                        will process. If no file is provided, filtering is not
+                        performed.
+  -m STRING, --marker_gene STRING
+                        This is a single marker gene that will be used to
+                        construct phylogenetic trees.
+  -t FILE, --tree FILE  Newick format tree file which will be used to bypass
+                        tree creation.
+  -r REF, --ref REF     The reference genome
+  -q, --quiet           Suppresses most program text outputs.
+
    ```
    2. Download and install [PDA](http://www.cibiv.at/software/pda/#download). Debias the phylogenetic tree using `PDA` program:
    ```bash
