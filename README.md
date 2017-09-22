@@ -53,7 +53,36 @@ caiTABCDE	caiA	caiE	caiD	caiC	caiB	caiT
 casABCDE12	casE	casD	casA	casC	casB	cas1	cas2
 chbBCARFG	chbG	chbF	chbC	chbB	chbA	chbR
 ``` 
-Besides, the user can also provide a filter text file. This filter file specifies the species to be included in the reconstruction analysis. The reason is that there might be families of species that are over representative. This will reduce phylogenetic diversity and cause bias in our ancestral reconstruction. Hence, it is recomended to run [PDA](http://www.cibiv.at/software/pda/#download) on generated tree before proceeding further steps in our analysis. In order to achieve this, the user can follow the following instructions:
+   3. Run ROAGUE:
+  ```bash
+  ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r ref_accession -m global
+  ```
+  ```
+  usage: roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
+                 [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
+                 [--filter FILTER] [--method METHOD]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --genomes_directory GENOMES_DIRECTORY, -g GENOMES_DIRECTORY
+                        The directory that store all the genomes file
+                        (E_Coli/genomes)
+  --gene_blocks GENE_BLOCKS, -b GENE_BLOCKS
+                        The gene_block_names_and_genes.txt file, this file
+                        stores the operon name and its set of genes
+  --reference REFERENCE, -r REFERENCE
+                        The ncbi accession number for the reference genome
+                        (NC_000913 for E_Coli and NC_000964 for B_Sub)
+  --filter FILTER, -f FILTER
+                        The filter file for creating the tree
+                        (E_Coli/phylo_order.txt for E_Coli or
+                        B_Sub/phylo_order.txt for B-Sub)
+  --method METHOD, -m METHOD
+                        The method to reconstruc ancestral gene block, we
+                        support either global or local
+  ```
+   
+Besides, the users can also provide a filter text file. This filter file specifies the species to be included in the reconstruction analysis. The reason is that there might be families of species that are over representative. This will reduce phylogenetic diversity and cause bias in our ancestral reconstruction. Hence, it is recomended to run [PDA](http://www.cibiv.at/software/pda/#download) on generated tree before proceeding further steps in our analysis. In order to achieve this, the user can follow the following instructions:
    1. Generate a phylogenetic trees from the genomes directory
    ```bash
    ./create_newick_tree.py -G genomes_directory -o tree_directory -f NONE -r ref_accession
@@ -94,41 +123,16 @@ optional arguments:
   -o PDA_OUT, --pda_out PDA_OUT
                         Output of pda to be store.
   -s TREE_SIZE, --tree_size TREE_SIZE
-                        Reduce the size of the tree to this size, for example,
-                        you can reduce your number of species from 100 to 30
-                        by input 30
+                        Reduce the size of the tree to this size
   -r REF, --ref REF     Force to include the following species, here I force
                         to include the reference species
 
    ```
    3. Run ROAGUE:
   ```bash
-  ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r NC_000964 -f phylo_order.txt -m global
+  ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r ref_accession -f phylo_order.txt -m global
   ```
-  ```
-  usage: roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
-                 [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
-                 [--filter FILTER] [--method METHOD]
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --genomes_directory GENOMES_DIRECTORY, -g GENOMES_DIRECTORY
-                        The directory that store all the genomes file
-                        (E_Coli/genomes)
-  --gene_blocks GENE_BLOCKS, -b GENE_BLOCKS
-                        The gene_block_names_and_genes.txt file, this file
-                        stores the operon name and its set of genes
-  --reference REFERENCE, -r REFERENCE
-                        The ncbi accession number for the reference genome
-                        (NC_000913 for E_Coli and NC_000964 for B_Sub)
-  --filter FILTER, -f FILTER
-                        The filter file for creating the tree
-                        (E_Coli/phylo_order.txt for E_Coli or
-                        B_Sub/phylo_order.txt for B-Sub)
-  --method METHOD, -m METHOD
-                        The method to reconstruc ancestral gene block, we
-                        support either global or local
-  ```
 
 
 
