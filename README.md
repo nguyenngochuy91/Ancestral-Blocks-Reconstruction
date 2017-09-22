@@ -100,6 +100,28 @@ optional arguments:
    3. Run ROAGUE:
   ```bash
   ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r NC_000964 -f phylo_order.txt -m global
+  usage: roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
+                 [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
+                 [--filter FILTER] [--method METHOD]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --genomes_directory GENOMES_DIRECTORY, -g GENOMES_DIRECTORY
+                        The directory that store all the genomes file
+                        (E_Coli/genomes)
+  --gene_blocks GENE_BLOCKS, -b GENE_BLOCKS
+                        The gene_block_names_and_genes.txt file, this file
+                        stores the operon name and its set of genes
+  --reference REFERENCE, -r REFERENCE
+                        The ncbi accession number for the reference genome
+                        (NC_000913 for E_Coli and NC_000964 for B_Sub)
+  --filter FILTER, -f FILTER
+                        The filter file for creating the tree
+                        (E_Coli/phylo_order.txt for E_Coli or
+                        B_Sub/phylo_order.txt for B-Sub)
+  --method METHOD, -m METHOD
+                        The method to reconstruc ancestral gene block, we
+                        support either global or local
   ```
 
 
