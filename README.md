@@ -85,6 +85,7 @@ Besides, the user can also provide a filter text file. This filter file specifie
    ```bash
    ./debias.py -i tree_directory/out_tree.nwk -o pda_result.txt -s num -r ref_accession
    ```
+   
    ```
    usage: debias.py [-h] [-i INPUT_TREE] [-o PDA_OUT] [-s TREE_SIZE] [-r REF]
 
@@ -107,7 +108,7 @@ Besides, the user can also provide a filter text file. This filter file specifie
   -r REF, --ref REF     Force to include the following species, here I force
                         to include the reference species
 
-    ```
+   
    3. Run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py)
   ```bash
   ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r NC_000964 -f phylo_order.txt -m global
@@ -141,7 +142,7 @@ Optional arguments:
   --method METHOD, -m METHOD
                         The method to reconstruct ancestral gene block, we
                         support either global or local approach.
-```
+
 ## Examples
 
 Here are two gene blocks that were generated through our program. 
