@@ -45,7 +45,7 @@ The users can run this script on the example data sets provided in directory [E_
 ### Run on users' specific datasets
 If the users wants to run the program on their own datasets, then they have to provide the following inputs:
   1. Directory that stores all the genomes file to study in genbank format 
-  2. Gene block text file that stores gene blocks in a reference species (this reference has to be in the genomes directory). The gene block format is tab delimited. The first column is the gene block name, then followed by the genes' name. For example, here is `gene_block_names_and_genes.txt` file from Escheria coli K-12 MG1655.
+  2. Gene block text file that stores gene blocks in a reference species (this reference has to be in the genomes directory). The gene block format is tab delimited. The first column is the gene block name, then followed by the genes' name. For example, here is the `gene_block_names_and_genes.txt` file from Escheria coli K-12 MG1655.
 ```bash
 astCADBE	astA	astB	astC	astD	astE
 atpIBEFHAGDC	atpI	atpH	atpC	atpB	atpA	atpG	atpF	atpE	atpD
@@ -53,7 +53,7 @@ caiTABCDE	caiA	caiE	caiD	caiC	caiB	caiT
 casABCDE12	casE	casD	casA	casC	casB	cas1	cas2
 chbBCARFG	chbG	chbF	chbC	chbB	chbA	chbR
 ``` 
-   3. Run ROAGUE:
+   3. Run ROAGUE, the output is stored in directory result.
   ```bash
   ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r ref_accession -m global
   ```
@@ -82,8 +82,8 @@ optional arguments:
                         support either global or local
   ```
    
-Besides, the users can also provide a filter text file. This filter file specifies the species to be included in the reconstruction analysis. The reason is that there might be families of species that are over representative. This will reduce phylogenetic diversity and cause bias in our ancestral reconstruction. Hence, it is recomended to run [PDA](http://www.cibiv.at/software/pda/#download) on generated tree before proceeding further steps in our analysis. In order to achieve this, the user can follow the following instructions:
-   1. Generate a phylogenetic trees from the genomes directory
+Besides, the users can also provide a filter text file. This filter file specifies the species to be included in the reconstruction analysis. The reason is that there might be families of species that are over representative in our genomes directory. This will reduce phylogenetic diversity and cause bias in our ancestral reconstruction. Hence, it is recomended to run [PDA](http://www.cibiv.at/software/pda/#download) on generated tree before proceeding further steps in our analysis. In order to achieve this, the user can follow the following instructions:
+   1. Generate a phylogenetic tree from the genomes directory
    ```bash
    ./create_newick_tree.py -G genomes_directory -o tree_directory -f NONE -r ref_accession
    ```
@@ -114,7 +114,6 @@ optional arguments:
    ```
    usage: debias.py [-h] [-i INPUT_TREE] [-o PDA_OUT] [-s TREE_SIZE] [-r REF]
 
-The purpose of this script to debias tree based on parameter
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -128,7 +127,7 @@ optional arguments:
                         to include the reference species
 
    ```
-   3. Run ROAGUE:
+   3. Run ROAGUE,  the output is stored in directory result. 
   ```bash
   ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r ref_accession -f phylo_order.txt -m global
   ```
