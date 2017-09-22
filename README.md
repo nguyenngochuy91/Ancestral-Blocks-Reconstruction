@@ -58,6 +58,7 @@ Besides, the user can also provide a filter text file. This filter file specifie
    ```bash
    ./create_newick_tree.py -G genomes_directory -o tree_directory -f NONE -r ref_accession
    ```
+   ```
    usage: create_newick_tree.py [-h] [-G DIRECTORY] [-o DIRECTORY] [-f FILE]
                              [-m STRING] [-t FILE] [-r REF] [-q]
 
@@ -79,10 +80,11 @@ Besides, the user can also provide a filter text file. This filter file specifie
 
     -r REF, --ref REF     The reference genome number such as NC_000913 for E_Coli 
 
-
+  ```
    2. Download and install [PDA](http://www.cibiv.at/software/pda/#download). Debias the phylogenetic tree using `PDA` program:
    ```bash
    ./debias.py -i tree_directory/out_tree.nwk -o pda_result.txt -s num -r ref_accession
+   ```
    ```
    usage: debias.py [-h] [-i INPUT_TREE] [-o PDA_OUT] [-s TREE_SIZE] [-r REF]
 
@@ -105,11 +107,12 @@ Besides, the user can also provide a filter text file. This filter file specifie
   -r REF, --ref REF     Force to include the following species, here I force
                         to include the reference species
 
+    ```
    3. Run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py)
   ```bash
   ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r NC_000964 -f phylo_order.txt -m global
   ```
-
+```
 roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
                  [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
                  [--filter FILTER] [--method METHOD]
@@ -138,7 +141,7 @@ Optional arguments:
   --method METHOD, -m METHOD
                         The method to reconstruct ancestral gene block, we
                         support either global or local approach.
-
+```
 ## Examples
 
 Here are two gene blocks that were generated through our program. 
