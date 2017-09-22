@@ -109,7 +109,10 @@ Besides, the user can also provide a filter text file. This filter file specifie
                         to include the reference species
 
   ```
-     3. Run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py)
+     
+     3. Run ROAGUE
+     
+     
   ```bash
   ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r NC_000964 -f phylo_order.txt -m global
   ```
