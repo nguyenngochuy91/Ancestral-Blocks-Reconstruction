@@ -60,9 +60,6 @@ Besides, the user can also provide a filter text file. This filter file specifie
    usage: create_newick_tree.py [-h] [-G DIRECTORY] [-o DIRECTORY] [-f FILE]
                              [-m STRING] [-t FILE] [-r REF] [-q]
 
-The purpose of this script is to build a newick format phylogenetic tree from
-a list of genomes and a marker gene.
-
 optional arguments:
   -h, --help            show this help message and exit
   -G DIRECTORY, --genbank_directory DIRECTORY
@@ -75,18 +72,30 @@ optional arguments:
                         File restrictiong which accession numbers this script
                         will process. If no file is provided, filtering is not
                         performed.
-  -m STRING, --marker_gene STRING
-                        This is a single marker gene that will be used to
-                        construct phylogenetic trees.
-  -t FILE, --tree FILE  Newick format tree file which will be used to bypass
-                        tree creation.
-  -r REF, --ref REF     The reference genome
+  -r REF, --ref REF     The reference genome number, such as NC_000913 for E_Coli
   -q, --quiet           Suppresses most program text outputs.
 
    ```
    2. Download and install [PDA](http://www.cibiv.at/software/pda/#download). Debias the phylogenetic tree using `PDA` program:
    ```bash
    ./debias.py -i tree_directory/out_tree.nwk -o pda_result.txt -s num -r ref_accession
+   usage: debias.py [-h] [-i INPUT_TREE] [-o PDA_OUT] [-s TREE_SIZE] [-r REF]
+
+The purpose of this script to debias tree based on parameter
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUT_TREE, --input_tree INPUT_TREE
+                        Input tree that we want to debias
+  -o PDA_OUT, --pda_out PDA_OUT
+                        Output of pda to be store.
+  -s TREE_SIZE, --tree_size TREE_SIZE
+                        Reduce the size of the tree to this size, for example,
+                        you can reduce your number of species from 100 to 30
+                        by input 30
+  -r REF, --ref REF     Force to include the following species, here I force
+                        to include the reference species
+
    ```
    3. Run ROAGUE:
   ```bash
