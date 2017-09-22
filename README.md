@@ -58,7 +58,8 @@ Besides, the user can also provide a filter text file. This filter file specifie
    ```bash
    ./create_newick_tree.py -G genomes_directory -o tree_directory -f NONE -r ref_accession
    ```
-   ```
+   
+   ```bash
    usage: create_newick_tree.py [-h] [-G DIRECTORY] [-o DIRECTORY] [-f FILE]
                              [-m STRING] [-t FILE] [-r REF] [-q]
 
@@ -86,7 +87,7 @@ Besides, the user can also provide a filter text file. This filter file specifie
    ./debias.py -i tree_directory/out_tree.nwk -o pda_result.txt -s num -r ref_accession
    ```
    
-   ```
+   ```bash
    usage: debias.py [-h] [-i INPUT_TREE] [-o PDA_OUT] [-s TREE_SIZE] [-r REF]
 
 
@@ -116,36 +117,37 @@ Besides, the user can also provide a filter text file. This filter file specifie
   ```bash
   ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r NC_000964 -f phylo_order.txt -m global
   ```
-  ```
-roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
+  
+  ```bash
+    usage:roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
                  [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
                  [--filter FILTER] [--method METHOD]
 
-Optional arguments:
+    optional arguments:
 
-  -h, --help            show this help message and exit
+    -h, --help            show this help message and exit
 
-  --genomes_directory GENOMES_DIRECTORY, -g GENOMES_DIRECTORY
-                        The directory that store all the genomes file in genbank format.
-                        (`E_Coli/genomes`)
+    --genomes_directory GENOMES_DIRECTORY, -g GENOMES_DIRECTORY
+                          The directory that store all the genomes file in genbank format.
+                          (`E_Coli/genomes`)
 
-  --gene_blocks GENE_BLOCKS, -b GENE_BLOCKS
-                        The gene_block_names_and_genes.txt file, this file
-                        stores the operon name and its set of genes.
+    --gene_blocks GENE_BLOCKS, -b GENE_BLOCKS
+                          The gene_block_names_and_genes.txt file, this file
+                          stores the operon name and its set of genes.
 
-  --reference REFERENCE, -r REFERENCE
-                        The ncbi accession number for the reference genome.
-                        (NC_000913 for E_Coli and NC_000964 for B_Sub)
+    --reference REFERENCE, -r REFERENCE
+                          The ncbi accession number for the reference genome.
+                          (NC_000913 for E_Coli and NC_000964 for B_Sub)
 
-  --filter FILTER, -f FILTER
-                        The filter file for creating the tree.
-                        (`E_Coli/phylo_order.tx` for E_Coli or
-                        `B_Sub/phylo_order.txt` for B_Sub)
+    --filter FILTER, -f FILTER
+                          The filter file for creating the tree.
+                          (`E_Coli/phylo_order.tx` for E_Coli or
+                          `B_Sub/phylo_order.txt` for B_Sub)
 
-  --method METHOD, -m METHOD
-                        The method to reconstruct ancestral gene block, we
-                        support either global or local approach.
-  ```
+    --method METHOD, -m METHOD
+                          The method to reconstruct ancestral gene block, we
+                          support either global or local approach.
+    ```
 
 ## Examples
 
