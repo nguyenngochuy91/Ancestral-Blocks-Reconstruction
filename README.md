@@ -57,6 +57,8 @@ Besides, the user can also provide a filter text file. This filter file specifie
    1. Generate a phylogenetic trees from the genomes directory
    ```bash
    ./create_newick_tree.py -G genomes_directory -o tree_directory -f NONE -r ref_accession
+   ```
+   ```
    usage: create_newick_tree.py [-h] [-G DIRECTORY] [-o DIRECTORY] [-f FILE]
                              [-m STRING] [-t FILE] [-r REF] [-q]
 
@@ -79,6 +81,8 @@ optional arguments:
    2. Download and install [PDA](http://www.cibiv.at/software/pda/#download). Debias the phylogenetic tree using `PDA` program:
    ```bash
    ./debias.py -i tree_directory/out_tree.nwk -o pda_result.txt -s num -r ref_accession
+   ```
+   ```
    usage: debias.py [-h] [-i INPUT_TREE] [-o PDA_OUT] [-s TREE_SIZE] [-r REF]
 
 The purpose of this script to debias tree based on parameter
@@ -100,6 +104,8 @@ optional arguments:
    3. Run ROAGUE:
   ```bash
   ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r NC_000964 -f phylo_order.txt -m global
+  ```
+  ```
   usage: roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
                  [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
                  [--filter FILTER] [--method METHOD]
