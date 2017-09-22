@@ -43,17 +43,70 @@ The easiest way to run the project is to execute the script [roague](https://git
 ```
 2. If the users wants to run the program on their own datasets, then they have to provide the following inputs:
   1. Directory that store all the genomes file to study in genbank format 
-  2. Gene block text file that stores gene block in a reference species (this reference has to be in the genomes directory). The gene block format is tab delimited. The first column is the gene block name, then followed by the genes' name. For example:
+  2. Gene block text file that stores gene blocks in a reference species (this reference has to be in the genomes directory). The gene block format is tab delimited. The first column is the gene block name, then followed by the genes' name. For example, here is an example `gene_block_names_and_genes.txt` from Escheria coli K-12 MG1655.
 ```bash
 astCADBE	astA	astB	astC	astD	astE
 atpIBEFHAGDC	atpI	atpH	atpC	atpB	atpA	atpG	atpF	atpE	atpD
-bamA-skp-lpxD-fabZ-lpxAB-rnhB-dnaE	dnaE	skp	rnhB	lpxA	lpxB	lpxD	bamA	fabZ
 caiTABCDE	caiA	caiE	caiD	caiC	caiB	caiT
 casABCDE12	casE	casD	casA	casC	casB	cas1	cas2
 chbBCARFG	chbG	chbF	chbC	chbB	chbA	chbR
 ``` 
+Besides, the user can also provide a filter text file. This filter file specifies the species to be included in the reconstruction analysis. The reason is that there might be families of species that are over representative. This will reduce phylogenetic diversity and cause bias in our ancestral reconstruction. Hence, it is recomended to run [PDA](http://www.cibiv.at/software/pda/#download) on generated tree before proceeding further steps in our analysis. In order to achieve this, the user can follow the following instructions:
+   1. Generate a phylogenetic trees from the genomes directory
+   ```bash
+   ./create_newick_tree.py -G genomes_directory -o tree_directory -f NONE -r ref_accession
+   ```
+   usage: create_newick_tree.py [-h] [-G DIRECTORY] [-o DIRECTORY] [-f FILE]
+                             [-m STRING] [-t FILE] [-r REF] [-q]
 
-Usage: 
+  optional arguments:
+    -h, --help            show this help message and exit
+    
+    -G DIRECTORY, --genbank_directory DIRECTORY
+                          Folder containing all genbank files for use by the
+                          program.
+                          
+    -o DIRECTORY, --outfolder DIRECTORY
+                          Directory where the results of this program will be
+                          stored.
+                          
+    -f FILE, --filter FILE
+                          File restrictiong which accession numbers this script
+                          will process. If no file is provided, filtering is not
+                          performed.
+
+    -r REF, --ref REF     The reference genome number such as NC_000913 for E_Coli 
+
+
+   2. Download and install [PDA](http://www.cibiv.at/software/pda/#download). Debias the phylogenetic tree using `PDA` program:
+   ```bash
+   ./debias.py -i tree_directory/out_tree.nwk -o pda_result.txt -s num -r ref_accession
+   ```
+   usage: debias.py [-h] [-i INPUT_TREE] [-o PDA_OUT] [-s TREE_SIZE] [-r REF]
+
+
+
+  optional arguments:
+  -h, --help            show this help message and exit
+  
+  -i INPUT_TREE, --input_tree INPUT_TREE
+                        Input tree that we want to debias
+                        
+  -o PDA_OUT, --pda_out PDA_OUT
+                        Output of pda to be store.
+                        
+  -s TREE_SIZE, --tree_size TREE_SIZE
+                        Reduce the size of the tree to this size, for example,
+                        you can reduce your number of species from 100 to 30
+                        by input 30
+                        
+  -r REF, --ref REF     Force to include the following species, here I force
+                        to include the reference species
+
+   3. Run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py)
+  ```bash
+  ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r NC_000964 -f phylo_order.txt -m global
+  ```
 
 roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
                  [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
