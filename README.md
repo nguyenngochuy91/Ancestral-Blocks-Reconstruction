@@ -14,25 +14,27 @@ ancestral states.
 * [Muscle Alignment](https://www.drive5.com/muscle/downloads.htm)
 * [BLAST+](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download)
 * [ETE3](http://etetoolkit.org/download/) (python framework for tree)
+* [PDA](http://www.cibiv.at/software/pda/#download) (optional if you want to debias your tree base on Phylogenetic Diversity)
 
 ## Installation
 Users can either use github interface Download or type the following command in command line:
 ```bash
 git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
 ```
-For the requirements, everything but ete3 can be installed using the following command line:
+For the requirements, everything but ete3, PDA can be installed using the following command line:
 ```bash
 sudo apt-get install python-biopython blast2 ncbi-blast+ muscle
 ```
 
 For ete3, check installation instructions on this website: http://etetoolkit.org/download/
+For PDA, check installation instructions on this website: http://www.cibiv.at/software/pda/#download
 
 ## Usage
 
 The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). 
 
 ### Run on example datasets
-The users can run this script on the example data sets provided in directory [E_Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E_Coli) and [B_Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B_Sub). The two following command lines will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `result/E_Coli/visualization` and `result/B_Sub/visualization` directory.
+The users can run this script on the example data sets provided in directory [E_Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E_Coli) and [B_Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B_Sub). The two following command lines will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `result/E_Coli/visualization` and `result/B_Sub/visualization` directory by default.
 #### E_Coli
 ```bash
 ./roague.py -g E_Coli/genomes/ -b E_Coli/gene_block_names_and_genes.txt -r NC_000913 -f E_Coli/phylo_order.txt -m global
@@ -53,14 +55,14 @@ caiTABCDE	caiA	caiE	caiD	caiC	caiB	caiT
 casABCDE12	casE	casD	casA	casC	casB	cas1	cas2
 chbBCARFG	chbG	chbF	chbC	chbB	chbA	chbR
 ``` 
-   3. Run ROAGUE, the output is stored in directory result.
+   3. Run ROAGUE, the output is stored in directory `result`.
   ```bash
-  ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r ref_accession -m global
+  ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r ref_accession -m global -o result
   ```
   ```
   usage: roague.py [-h] [--genomes_directory GENOMES_DIRECTORY]
                  [--gene_blocks GENE_BLOCKS] [--reference REFERENCE]
-                 [--filter FILTER] [--method METHOD]
+                 [--filter FILTER] [--method METHOD] [--output OUTPUT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -80,6 +82,9 @@ optional arguments:
   --method METHOD, -m METHOD
                         The method to reconstruc ancestral gene block, we
                         support either global or local
+  --output OUTPUT, -o OUTPUT
+                        Output directory to store the result
+
   ```
    
 Besides, the users can also provide a filter text file. This filter file specifies the species to be included in the reconstruction analysis. The reason is that there might be families of species that are over representative in our genomes directory. This will reduce phylogenetic diversity and cause bias in our ancestral reconstruction. Hence, it is recomended to run [PDA](http://www.cibiv.at/software/pda/#download) on generated tree before proceeding further steps in our analysis. In order to achieve this, the user can follow the following instructions:
@@ -127,9 +132,9 @@ optional arguments:
                         to include the reference species
 
    ```
-   3. Run ROAGUE,  the output is stored in directory result. 
+   3. Run ROAGUE,  the output is stored in directory `result`. 
   ```bash
-  ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r ref_accession -f phylo_order.txt -m global
+  ./roague.py -g genomes_directory -b gene_block_names_and_genes.txt -r ref_accession -f phylo_order.txt -m global -o result
   ```
 
 
