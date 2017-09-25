@@ -26,9 +26,9 @@ For the requirements, everything but ete3, PDA can be installed using the follow
 sudo apt-get install python-biopython blast2 ncbi-blast+ muscle
 ```
 
-For ete3, check installation instructions on this website: http://etetoolkit.org/download/
+For ete3, check installation instructions on this website: [ETE3](http://etetoolkit.org/download/)
 
-For PDA, check installation instructions on this website: http://www.cibiv.at/software/pda/#download
+For PDA, check installation instructions on this website: [PDA](http://www.cibiv.at/software/pda/#download)
 
 ## Usage
 
