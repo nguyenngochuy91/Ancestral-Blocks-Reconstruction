@@ -29,7 +29,8 @@ def parser_code():
     parser.add_argument("--gene_blocks","-b", help="The gene_block_names_and_genes.txt file, this file stores the operon name and its set of genes") 
     parser.add_argument("--reference","-r", help="The ncbi accession number for the reference genome (NC_000913 for E_Coli and NC_000964 for B_Sub)")  
     parser.add_argument("--filter","-f", help="The filter file for creating the tree (E_Coli/phylo_order.txt for E_Coli or B_Sub/phylo_order.txt for B-Sub)")  
-    parser.add_argument("--method","-m", help="The method to reconstruc ancestral gene block, we support either global or local")                   
+    parser.add_argument("--method","-m", help="The method to reconstruc ancestral gene block, we support either global or local")       
+    parser.add_argument("--output","-o", help="Output directory to store the result",default = "result/")                  
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -39,16 +40,17 @@ if __name__ == '__main__':
     filter_file                = args.filter
     method                     = args.method
     gene_block_names_and_genes                = args.gene_blocks
+    outdir                     = args.output
     # check if we are going to output results in the current directory
     dirs = genomes_directory.split('/')
     try:
-        os.mkdir("result")
+        os.mkdir(outdir)
     except:
-        print ("directory result has already been created")
+        print ("output directory has already been created")
     if len(dirs)>=3: # means that we have to go to subdirectory
-        parent_dir = 'result/'+dirs[0]+"/"
+        parent_dir = outdir+dirs[0]+"/"
     else:
-        parent_dir = './result/'
+        parent_dir = outdir
     ##########################################################################
     # finding gene blocks 
         
