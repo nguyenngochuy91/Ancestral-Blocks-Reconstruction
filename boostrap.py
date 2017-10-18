@@ -72,18 +72,18 @@ def getDuplication(string):
     return dup
 ### class block to store geneblock info
 class Block(object):
-    def __init__(self,geneBlock = "",deletion= [0,0],duplication = [0,0],split = [0,0]):
+    def __init__(self,geneBlock,deletion,duplication ,split):
         self.geneBlock = geneBlock
         self.deletion = deletion
         self.duplication = duplication
         self.split  = split
-     
+    
     def calculateDistance(self,geneBlock):
         genes1 = setOfGene(self.geneBlock)
         genes2 = setOfGene(geneBlock)
         del_distance = len(genes1.symmetric_difference(genes2))
         intersection = genes1.intersection(genes2)
-        deletion = [del_distance,self.deletion[1]]
+        deletion = [del_distance,int(self.deletion.split('|')[1])]
             
         # remove gene that is not in itnersection
         string1 = relevant(geneBlock,intersection)
@@ -92,22 +92,21 @@ class Block(object):
         # duplciation
         dup1 = getDuplication(string1)
         dup2 = getDuplication(string2)
-        duplication = [abs(len(dup1)-len(dup2)),self.duplication[1]]
+        duplication = [abs(len(dup1)-len(dup2)),int(self.duplication.split('|')[1])]
         
         # split
         count1 = getSplit(string1)
         count2 = getSplit(string2)
-        split = [abs(count1-count2),self.split[1]]        
+        split = [abs(count1-count2),int(self.split.split('|')[1])]        
         distance = [deletion,duplication,split]
         return distance
         
-    
 '''@function: given ref block, and current innitial, generate possible suboptimal sets
    @input   : string1, string2
    @output  : set of strings
 '''   
 def generateSample(node):
-    res = set([(node.initial,0)])
+    res = {}
     geneInit = setOfGene(node.initial)
     children = [child for child in node.get_children()]
     childrenBlock  = []
@@ -119,8 +118,7 @@ def generateSample(node):
             newBlock = Block(child.initial,child.deletion,child.duplication,child.split)
             childrenBlock.append(newBlock)
     geneChild = [setOfGene(child.geneBlock) for child in childrenBlock]
-#    blockInit = setOfBlocks(initial)
-#    blockChild = [setOfBlocks(child.geneBlock) for child in childrenBlock]
+
     unionGenes = geneChild[0].union(geneChild[1])
     intersectionGenes = geneChild[0].intersection(geneChild[1])
     if geneInit == unionGenes:
@@ -128,15 +126,17 @@ def generateSample(node):
         for gene in geneInit:
         
             temp = (node.initial).replace(gene,"")
+            if temp in res:
+                continue
             distance1 = childrenBlock[0].calculateDistance(temp)
             distance2 = childrenBlock[1].calculateDistance(temp)
             distance = []
-            print distance1,distance2
             for i in range(3):
-                temp = []
-                temp.append(distance1[i][0]+distance2[i][0])
-                temp.append(temp[0]+distance1[i][1]+distance2[i][1])
-            res.add((temp,distance))
+                dist = []
+                dist.append(distance1[i][0]+distance2[i][0])
+                dist.append(dist[0]+distance1[i][1]+distance2[i][1])
+                distance.append(dist)
+            res[temp] = distance
     else:
         onlyOne = unionGenes-intersectionGenes
         powerSet = powerset(onlyOne)
@@ -166,7 +166,7 @@ def generateSample(node):
             
     return res
 
-### newick file, get the reference gene block
+### newick file, get the reference gene blockres.add((temp,0))
 '''@function: given a tree file, find the reference initial gene block 
    @input   : tree
    @output  : string (ref gene block)
@@ -185,8 +185,16 @@ def parseTree(tree):
         if not node.is_leaf():
             # create face contain initial set info
             node.sample = generateSample(node)
+            children = [child for child in node.get_children()]
+            blocks = []
+            for child in children:
+                if child.is_leaf():
+                    blocks.append(child.gene_block)
+                else:
+                    blocks.append(child.initial)
             print ("Name:",node.name)
             print ("Initial:",node.initial)
+            print ("Children block:",blocks)
             print (node.sample)
     return tree
 if __name__ == "__main__":
