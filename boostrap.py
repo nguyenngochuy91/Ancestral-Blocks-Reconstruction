@@ -239,8 +239,19 @@ if __name__ == "__main__":
 
     args = get_arguments()
     tree = Tree(args.Operon)
-    # get the gene block in reference genomes
+    # get the gene block in reference genomes, generate the sameple
     tree = parseTree(tree) 
+    # from the sample for each inner node, prune the tree and run the reconstruction, then generate the normal tree.
+    for node in tree.traverse("levelorder"):
+        if not node.is_leaf():
+            sampleTree = tree(Tree(args.Operon))
+            name = node.name
+            children = node.children
+            child1   = children[0]
+            child2   = children[1]
+            child1.detach()
+            child2.detach()
+        
     
 
 

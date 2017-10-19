@@ -127,7 +127,7 @@ if __name__ == "__main__":
     tree_style.title.add_face(mystring, column=2)                                              
     # render the image
     tree.render(args.Image+'.pdf',dpi=1000,tree_style=tree_style)
-    #tree.show(tree_style=tree_style)
+    tree.show(tree_style=tree_style)
 
 
 
