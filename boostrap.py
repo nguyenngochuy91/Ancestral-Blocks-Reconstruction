@@ -8,8 +8,7 @@ from itertools import chain, combinations
 from ete3 import Tree
 import argparse
 from findParent_local import setOfBlocks,setOfGene
-
-
+from findParent_global import set_inner_genes,minimize_del,initialize_block_number,minimize_split,find_dup,minimize_dup
 
 
 def get_arguments():
@@ -21,6 +20,18 @@ def get_arguments():
     return args
 
 
+'''@function: parsing the genes name into a set
+   @input   : textfile
+   @output  : set
+'''
+def parsingMap(infile):
+    infile = open(infile,'r')
+    line = infile.readlines()
+    line = line[0].split()
+    genes  = set()
+    for info in line:
+        genes.add(info.split(',')[1])
+    return genes
 
 ### generate the powerset of a given set
 def powerset(iterable):
@@ -232,26 +243,102 @@ def parseTree(tree):
     for node in tree.iter_descendants("postorder"):
         if not node.is_leaf():
             # create face contain initial set info
-            node.sample = generateSample(node)
-            print (node.sample)
+            node.add_features(sample= generateSample(node))
+#            print (node.sample)
+#    print (tree)
     return tree
+
+'''@function: Reconstruct the newick tree file with gene block info for inner 
+              node using local GLOBAL scheme
+   @input   : tree in nwk format,and a dictionary between specie name and gene block for leaf, and set of genes
+   @output  : tree in nwk format,gene g and a string of the info
+'''
+def reconstruct_global(tree,genes):
+    tree             =  set_inner_genes(tree,genes) # set dictionary data value for each inner node, and the 3 events distances
+    leaves           =  tree.get_leaves() # get leave data so dont have to keep on calling 
+    tree             =  minimize_del(tree,genes) # globally minimize deletion events, provide gene set for each inner node
+    tree             =  initialize_block_number(tree,leaves) # using the gene set to get relevant gene block for each leaf
+    tree             =  minimize_split(tree)
+    check,tree,genes = find_dup(tree,leaves) 
+    if check:
+        tree  = minimize_dup(tree,genes)
+    return tree
+    
+'''@function: set the genes that will appear in each node as dictionary, and
+              the deletion, split, duplication events, and the genes set for each 
+              inner node
+   @input   : tree in nwk format
+   @output  : tree in nwk format
+'''
+def set_inner_genes(rooted_tree,genes):
+    for node in rooted_tree.iter_descendants("postorder"):
+        node.add_features(data={})
+        node.add_features(genes=set())
+        if node.is_leaf():    
+            for gene in genes:
+                if gene in node.gene_block:
+                    node.data[gene] = {1}
+                else:
+                    node.data[gene] = {0}
+        else:
+            node.deletion = [0,0]
+            node.duplication = [0,0]
+            node.split = [0,0]
+            for gene in genes:
+                node.data[gene] = {0}
+    return rooted_tree
 if __name__ == "__main__":
 
     args = get_arguments()
     tree = Tree(args.Operon)
+    mapping = args.Operon+"_mapping"
+    genes = parsingMap(mapping)
     # get the gene block in reference genomes, generate the sameple
     tree = parseTree(tree) 
+    sampleTree = Tree(args.Operon)
     # from the sample for each inner node, prune the tree and run the reconstruction, then generate the normal tree.
-    for node in tree.traverse("levelorder"):
+    for node in tree.iter_descendants("postorder"):
         if not node.is_leaf():
-            sampleTree = tree(Tree(args.Operon))
+            # tree that we will do the reconstruction by prunning subtree
+            copyTree = sampleTree.copy("deepcopy")
+            # sample at the node we want to experiment
             name = node.name
-            children = node.children
-            child1   = children[0]
-            child2   = children[1]
-            child1.detach()
-            child2.detach()
-        
+            print name
+            sample = node.sample
+            # get the node pointer in the sample tree            
+            nodeInSample = copyTree&name
+            print sample
+            nodeInSample.add_features(gene_block= None)
+            # detach the children of this nodeInSample
+            children = nodeInSample.get_children()
+            children[0].detach()
+            children[1].detach()
+            # the 2 child to append later on to the sampleTree come from our tree
+            children = node.get_children()
+            # for each candidate in sample, copy the part of copyTree that got detach
+            # pick out a sample from the sample list
+            for candidate in sample:
+                print ("new iteration")
+                # get the distance of this in the subtree
+                distance = sample[candidate]
+                deletion = distance[0]
+                duplication = distance[1]
+                split    = distance[2]
+                # subcopy of the copytree
+                subCopyTree = copyTree.copy("deepcopy")
+                nodeInSub   = subCopyTree&name
+                nodeInSub.gene_block = candidate
+                print nodeInSub.gene_block
+                nodeInSub.deletion = deletion
+                nodeInSub.duplication = duplication
+                nodeInSub.split = split
+                subCopyTree.show()
+                subCopyTree = set_inner_genes(subCopyTree,genes)
+                subCopyTree = reconstruct_global(subCopyTree,genes)
+                subCopyTree.show()
+            if len(sample) >5:
+                break
+            
     
 
 

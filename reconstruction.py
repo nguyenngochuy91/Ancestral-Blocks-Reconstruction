@@ -114,7 +114,7 @@ def reconstruct_local(genomes,tree):
    @input   : tree in nwk format,and a dictionary between specie name and gene block for leaf, and set of genes
    @output  : tree in nwk format,gene g and a string of the info
 '''
-def reconstruct_global(genomes,tree,genes):
+def reconstruct_global(tree,genes):
     tree             =  set_inner_genes(tree,genes) # set dictionary data value for each inner node, and the 3 events distances
     leaves           =  tree.get_leaves() # get leave data so dont have to keep on calling 
     tree             =  minimize_del(tree,genes) # globally minimize deletion events, provide gene set for each inner node
@@ -165,7 +165,7 @@ if __name__ == "__main__":
             genes =set()
             for key in mapping:
                 genes.add(key)
-            tree = reconstruct_global(genomes,tree,genes)
+            tree = reconstruct_global(tree,genes)
             tree.write(format=2, outfile=outputsession+'/'+f,features=['name',
         'initial','gene_block','deletion','duplication','split'])
         #if f == 'rplKAJL-rpoBC':
