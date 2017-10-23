@@ -79,16 +79,14 @@ if __name__ == "__main__":
     children= []
     for child in tree.get_children():
         children.append(child)
-    deletion_cost1 = (children[0].deletion).split('|')[1]
-    deletion_cost2 = (children[1].deletion).split('|')[1] 
-    duplication_cost1 = (children[0].duplication).split('|')[1]
-    duplication_cost2 = (children[1].duplication).split('|')[1]
-    split_cost1 = (children[0].split).split('|')[1]
-    split_cost2 = (children[1].split).split('|')[1]
-    
-    deletion_total = int(deletion_cost1) + int(deletion_cost2)
-    duplication_total = int(duplication_cost1) + int(duplication_cost2)
-    split_total = int(split_cost1)+int(split_cost2)
+    deletion_total = 0
+    duplication_total = 0
+    split_total = 0
+    for child in children:
+        deletion_total+= int(child.deletion.split('|')[1])
+        duplication_total+= int(child.duplication.split('|')[1])
+        split_total+= int(child.split.split('|')[1])
+        
     # modify tree style for better visualization
     tree_style = TreeStyle()
     tree_style.show_leaf_name = False

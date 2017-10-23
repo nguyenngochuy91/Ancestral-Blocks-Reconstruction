@@ -5,17 +5,26 @@
     End     : 09/18/2016
 '''
 from itertools import chain, combinations
-from ete3 import Tree
+from ete3 import Tree,TextFace,TreeStyle
 import argparse
 from findParent_local import setOfBlocks,setOfGene
 from findParent_global import set_inner_genes,minimize_del,initialize_block_number,minimize_split,find_dup,minimize_dup
+import os
 
-
+# traverse and get the file
+def traverseAll(path):
+    res=[]
+    for root,dirs,files in os.walk(path):
+        for f in files:
+            res.append(root+f)
+    return res
+    
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--Operon","-i", help="Operon file name")
+    parser.add_argument("--inputDir","-i", help="input directory name(reconstruction_global)")
     parser.add_argument("--outDir","-o", help="Output Directory for the bootstrap")
 #    parser.add_argument("--ref","-r", help="reference genome (ncbi accession number)")
+    parser.add_argument("--group","-g", help="Group by text file(result/group.txt)")
     args = parser.parse_args()
     return args
 
@@ -270,8 +279,17 @@ def reconstruct_global(tree,genes):
    @input   : tree in nwk format
    @output  : tree in nwk format
 '''
-def set_inner_genes(rooted_tree,genes):
-    for node in rooted_tree.iter_descendants("postorder"):
+
+def set_inner_genes_special(rooted_tree,genes,name,distance):
+    for node in rooted_tree.iter_descendants("levelorder"):
+        if node.name == name:
+            node.deletion = distance[0]
+            node.duplication = distance[1]
+            node.split = distance[2]
+        else:
+            node.deletion = [0,0]
+            node.duplication = [0,0]
+            node.split = [0,0]
         node.add_features(data={})
         node.add_features(genes=set())
         if node.is_leaf():    
@@ -281,66 +299,141 @@ def set_inner_genes(rooted_tree,genes):
                 else:
                     node.data[gene] = {0}
         else:
-            node.deletion = [0,0]
-            node.duplication = [0,0]
-            node.split = [0,0]
             for gene in genes:
                 node.data[gene] = {0}
     return rooted_tree
+    
+### quick function to sum all the cost
+def getTotalDistanceString(tree): 
+    children= []
+    for child in tree.get_children():
+        children.append(child)
+    deletion_total = 0
+    duplication_total = 0
+    split_total = 0
+    
+    for child in children:
+        deletion_total+= int(child.deletion.split('|')[1])
+        duplication_total+= int(child.duplication.split('|')[1])
+        split_total+= int(child.split.split('|')[1])
+    return (deletion_total,duplication_total,split_total)
+    
+### quick function to sum all the cost
+def getTotalDistanceList(tree): 
+    children= []
+    for child in tree.get_children():
+        children.append(child)
+    deletion_total = 0
+    duplication_total = 0
+    split_total = 0
+    
+    for child in children:
+        deletion_total+= (child.deletion[1])
+        duplication_total+= (child.duplication[1])
+        split_total+= (child.split[1])
+    return (deletion_total,duplication_total,split_total)
 if __name__ == "__main__":
 
-    args = get_arguments()
-    tree = Tree(args.Operon)
-    mapping = args.Operon+"_mapping"
-    genes = parsingMap(mapping)
-    # get the gene block in reference genomes, generate the sameple
-    tree = parseTree(tree) 
-    sampleTree = Tree(args.Operon)
-    # from the sample for each inner node, prune the tree and run the reconstruction, then generate the normal tree.
-    for node in tree.iter_descendants("postorder"):
-        if not node.is_leaf():
-            # tree that we will do the reconstruction by prunning subtree
-            copyTree = sampleTree.copy("deepcopy")
-            # sample at the node we want to experiment
-            name = node.name
-            print name
-            sample = node.sample
-            # get the node pointer in the sample tree            
-            nodeInSample = copyTree&name
-            print sample
-            nodeInSample.add_features(gene_block= None)
-            # detach the children of this nodeInSample
-            children = nodeInSample.get_children()
-            children[0].detach()
-            children[1].detach()
-            # the 2 child to append later on to the sampleTree come from our tree
-            children = node.get_children()
-            # for each candidate in sample, copy the part of copyTree that got detach
-            # pick out a sample from the sample list
-            for candidate in sample:
-                print ("new iteration")
-                # get the distance of this in the subtree
-                distance = sample[candidate]
-                deletion = distance[0]
-                duplication = distance[1]
-                split    = distance[2]
-                # subcopy of the copytree
-                subCopyTree = copyTree.copy("deepcopy")
-                nodeInSub   = subCopyTree&name
-                nodeInSub.gene_block = candidate
-                print nodeInSub.gene_block
-                nodeInSub.deletion = deletion
-                nodeInSub.duplication = duplication
-                nodeInSub.split = split
-                subCopyTree.show()
-                subCopyTree = set_inner_genes(subCopyTree,genes)
-                subCopyTree = reconstruct_global(subCopyTree,genes)
-                subCopyTree.show()
-            if len(sample) >5:
-                break
+    args     = get_arguments()
+    inputDir = args.inputDir
+    res      = traverseAll(inputDir)
+    outputsession= args.outDir
+    group    = args.group
+    # try to create the boostrap directory
+    try:
+        os.mkdir(outputsession)
+    except:
+        print ("outdir already created")
+    for operon in sorted(res):
+        if "mapping" in operon:
+            continue
+        else:
+            operonName = operon.split('/')[-1]
+            mapping    = operon+"_mapping"
+            # try to create a dir
+            operonDir = outputsession+"/"+operonName
+            try:
+                os.mkdir(operonDir)
+            except:
+                print ("This operon directory is already created")
+            data = operonDir +"/data"
+            try:
+                os.mkdir(data)
+            except:
+                print ("This data operon directory is already created")
+                
+            visualization = operonDir + "/visualization"
+            try:
+                os.mkdir(visualization)
+            except:
+                print ("This visualization operon directory is already created")
+            tree     = Tree(operon)
+            total1   = getTotalDistanceString(tree)
+            genes    = parsingMap(operon+"_mapping")
             
-    
+            # create an info file that generate the information from all the reconstruction
+            
+            # get the gene block in reference genomes, generate the sameple
+            tree = parseTree(tree) 
+            lower = 0
+            count =0 
+            outfile = open(data+"/info",'w')
+            outfile.write("Our reconstruction cost:"+str(total1))
+            # from the sample for each inner node, prune the tree and run the reconstruction, then generate the normal tree.
+            for node in tree.iter_descendants("postorder"):
+                if not node.is_leaf():
+                    # get the name
+                    name = node.name
+                    sample = node.sample
+                    if len(sample) == 0:
+                        continue
+        #            print ("Node to sample:",node.name)
+        #            print ("sample set:",sample)
+                    # pick out a sample from the sample list
+                    for candidate in sample:
+                        count+=1
+        #                print ("String to check:",candidate)
+                        sampleTree = Tree(operon)
+        #                print ("Sample tree before prunning")
+        #                sampleTree.show()                
+                        nodeInSample = sampleTree&name
+                        nodeInSample.add_features(gene_block= None)
+                        nodeInSample.gene_block = candidate
+                        # detach the children of this nodeInSample
+                        children = nodeInSample.get_children()
+                        child1   = children[0].detach()
+                        child2   = children[1].detach()
+        #                print ("Sample tree after prunning")
+        #                sampleTree.show()
+                        # get the distance of this in the sampleTree
+                        distance = sample[candidate]
+                        sampleTree = set_inner_genes_special(sampleTree,genes,name,distance)
+        #                print ("Sample Tree after set inner genes, check if node has the three distances")
+        #                sampleTree.show()
+                        sampleTree = reconstruct_global(sampleTree,genes)
+        #                print ("Sample Tree after reconstruction, check total three distances")
+        #                
+        #                print (sampleTree.deletion)
+        #                print (sampleTree.duplication)
+        #                print (sampleTree.split)
+                        nodeInSample.add_child(child1)
+                        nodeInSample.add_child(child2)
+        #                sampleTree.show()outfile.write("Sample recosntruction:"+str(total2))
+                        dataOutfile  = data+"/"+operonName+"_"+str(count)
+                        total2 = getTotalDistanceList(sampleTree)
+                        if sum(total1) <=sum(total2):
+                            lower+=1
+                        sampleTree.write(format=2, outfile=dataOutfile,features=['name',
+                'initial','gene_block','deletion','duplication','split'])
+                        visualOutfile = visualization+ "/"+operonName+"_"+str(count)
+                        cmd11 = './show_boostrap.py -i {} -g {} -o {} -m {}'.format(dataOutfile,group,visualOutfile,mapping)
+                        os.system(cmd11)
+            outfile.write("% that our reconstruction is better:"+str(lower/float(count+1)))
+            outfile.close()
+            
 
-
-
-
+            
+        
+        
+        
+        
