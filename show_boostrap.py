@@ -43,6 +43,8 @@ if __name__ == "__main__":
             # create face contain initial set info
             initial = TextFace(node.initial)
             node.add_face(initial, column=0, position = "branch-top")
+            if node.modified == "1":
+                node.add_face(TextFace("*"+node.gene_block), column=0, position = "branch-top")
             deletion_cost = (node.deletion).split('|')[1]
             dup_cost = (node.duplication).split('|')[1]
             split_cost = (node.split).split('|')[1]
@@ -61,7 +63,10 @@ if __name__ == "__main__":
         else:
             name = node.name.split('_')
             # modify name to be normal, and append the gene block info to it
-            node.name = name[0]+' '+ name[1]+':' +'   '+ node.gene_block
+            if node.modified == "1":
+                node.name = "*"+name[0]+' '+ name[1]+':' +'   '+ node.gene_block
+            else:
+                node.name = name[0]+' '+ name[1]+':' +'   '+ node.gene_block
             # get accesion number
             short = name[2]+'_'+name[3]
             # get the color
@@ -109,6 +114,7 @@ if __name__ == "__main__":
     # parse the mapping file
     mapping = args.Mapping
     infile = open(mapping,'r')
+
     dic={}
     for line in infile.readlines():
         line = line.strip()

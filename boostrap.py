@@ -179,7 +179,7 @@ def generateSample(node):
             temp = reformat(temp)
             distance1 = childrenBlock[0].calculateDistance(temp)
             distance2 = childrenBlock[1].calculateDistance(temp)
-                                  
+
             distance = []
             for i in range(3):
                 dist = []
@@ -263,7 +263,6 @@ def parseTree(tree):
    @output  : tree in nwk format,gene g and a string of the info
 '''
 def reconstruct_global(tree,genes):
-    tree             =  set_inner_genes(tree,genes) # set dictionary data value for each inner node, and the 3 events distances
     leaves           =  tree.get_leaves() # get leave data so dont have to keep on calling 
     tree             =  minimize_del(tree,genes) # globally minimize deletion events, provide gene set for each inner node
     tree             =  initialize_block_number(tree,leaves) # using the gene set to get relevant gene block for each leaf
@@ -281,17 +280,19 @@ def reconstruct_global(tree,genes):
 '''
 
 def set_inner_genes_special(rooted_tree,genes,name,distance):
-    for node in rooted_tree.iter_descendants("levelorder"):
+    for node in rooted_tree.traverse("levelorder"):
+        node.add_features(data={})
+        node.add_features(genes=set())
         if node.name == name:
+#            print (node.name)
             node.deletion = distance[0]
             node.duplication = distance[1]
             node.split = distance[2]
+#            print (node.deletion,node.duplication,node.split)
         else:
             node.deletion = [0,0]
             node.duplication = [0,0]
             node.split = [0,0]
-        node.add_features(data={})
-        node.add_features(genes=set())
         if node.is_leaf():    
             for gene in genes:
                 if gene in node.gene_block:
@@ -349,6 +350,7 @@ if __name__ == "__main__":
             continue
         else:
             operonName = operon.split('/')[-1]
+            print ("Boostraping operon:",operonName)
             mapping    = operon+"_mapping"
             # try to create a dir
             operonDir = outputsession+"/"+operonName
@@ -375,10 +377,11 @@ if __name__ == "__main__":
             
             # get the gene block in reference genomes, generate the sameple
             tree = parseTree(tree) 
-            lower = 0
-            count =0 
-            outfile = open(data+"/info",'w')
-            outfile.write("Our reconstruction cost:"+str(total1))
+            lower = 1
+            count =1
+            outfile = open(data+"/analysis",'w')
+            outfile.write("Our reconstruction cost:"+str(total1)+"\n")
+            better =[] 
             # from the sample for each inner node, prune the tree and run the reconstruction, then generate the normal tree.
             for node in tree.iter_descendants("postorder"):
                 if not node.is_leaf():
@@ -390,12 +393,14 @@ if __name__ == "__main__":
         #            print ("Node to sample:",node.name)
         #            print ("sample set:",sample)
                     # pick out a sample from the sample list
+#                    print (name,sample)
                     for candidate in sample:
+                        
                         count+=1
         #                print ("String to check:",candidate)
                         sampleTree = Tree(operon)
-        #                print ("Sample tree before prunning")
-        #                sampleTree.show()                
+
+#                        sampleTree.show()                
                         nodeInSample = sampleTree&name
                         nodeInSample.add_features(gene_block= None)
                         nodeInSample.gene_block = candidate
@@ -403,32 +408,40 @@ if __name__ == "__main__":
                         children = nodeInSample.get_children()
                         child1   = children[0].detach()
                         child2   = children[1].detach()
-        #                print ("Sample tree after prunning")
-        #                sampleTree.show()
+
+#                        sampleTree.show()
                         # get the distance of this in the sampleTree
                         distance = sample[candidate]
+#                        print ("new distance:",distance)
                         sampleTree = set_inner_genes_special(sampleTree,genes,name,distance)
-        #                print ("Sample Tree after set inner genes, check if node has the three distances")
-        #                sampleTree.show()
+#                        print (nodeInSample.name,nodeInSample.deletion,nodeInSample.duplication,nodeInSample.split)
                         sampleTree = reconstruct_global(sampleTree,genes)
-        #                print ("Sample Tree after reconstruction, check total three distances")
-        #                
-        #                print (sampleTree.deletion)
-        #                print (sampleTree.duplication)
-        #                print (sampleTree.split)
+
                         nodeInSample.add_child(child1)
                         nodeInSample.add_child(child2)
+                        for node in sampleTree.iter_descendants("postorder"): 
+                            if node.name == name:
+                                node.add_features(modified= 1)
+                            else:
+                                node.add_features(modified= 0)
         #                sampleTree.show()outfile.write("Sample recosntruction:"+str(total2))
                         dataOutfile  = data+"/"+operonName+"_"+str(count)
                         total2 = getTotalDistanceList(sampleTree)
                         if sum(total1) <=sum(total2):
                             lower+=1
+                        else:
+                            print (dataOutfile)
+                            better.append(operonName+"_"+str(count))
+#                        print (nodeInSample.name,nodeInSample.deletion,nodeInSample.duplication,nodeInSample.split)
                         sampleTree.write(format=2, outfile=dataOutfile,features=['name',
-                'initial','gene_block','deletion','duplication','split'])
+                'initial','gene_block','deletion','duplication','split','modified'])
                         visualOutfile = visualization+ "/"+operonName+"_"+str(count)
                         cmd11 = './show_boostrap.py -i {} -g {} -o {} -m {}'.format(dataOutfile,group,visualOutfile,mapping)
                         os.system(cmd11)
-            outfile.write("% that our reconstruction is better:"+str(lower/float(count+1)))
+            outfile.write("% that our reconstruction is better:"+str(lower/float(count)*100)+"\n")
+            outfile.write("Reconstruction files with candidate in sample that have lower cost: \n")
+            for item in better:
+                outfile.write(item +"\n")
             outfile.close()
             
 

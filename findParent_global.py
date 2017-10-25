@@ -119,8 +119,7 @@ def accumulate_del(rooted_tree):
         if not node.is_leaf():# and not node.is_root():
             node.deletion[1]+=node.deletion[0]
             for child in node.get_children():                
-                if not child.is_leaf():
-                    node.deletion[1]+=child.deletion[1]
+                node.deletion[1]+=child.deletion[1]
     return rooted_tree
     
     
@@ -133,6 +132,7 @@ def Fitch_del_dup(rooted_tree,genes):
     
     # traverse Tree in post-order
     for node in rooted_tree.traverse('postorder'):
+#        print (node.name)
         if not node.is_leaf():
             children = node.get_children()
             for gene in genes:
@@ -237,8 +237,7 @@ def accumulate_dup(rooted_tree):
         if not node.is_leaf():# and not node.is_root():
             node.duplication[1]+=node.duplication[0]
             for child in node.get_children():                
-                if not child.is_leaf():
-                    node.duplication[1]+=child.duplication[1]
+                node.duplication[1]+=child.duplication[1]
     return rooted_tree
     
     
@@ -304,8 +303,7 @@ def accumulate_split(rooted_tree):
         if not node.is_leaf():# and not node.is_root():
             node.split[1]+=node.split[0]
             for child in node.get_children():                
-                if not child.is_leaf():
-                    node.split[1]+=child.split[1]
+                node.split[1]+=child.split[1]
     return rooted_tree
                     
 ###############################################################################
