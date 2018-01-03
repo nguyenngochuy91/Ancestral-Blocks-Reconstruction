@@ -23,7 +23,7 @@ git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
 ```
 For the requirements, everything but ete3, PDA can be installed using the following command line:
 ```bash
-sudo apt-get install python-biopython blast2 ncbi-blast+ muscle
+sudo apt-get install python-biopython blast2 ncbi-blast+ muscle clustalw
 ```
 
 For ete3, check installation instructions on this website: [ETE3](http://etetoolkit.org/download/)
