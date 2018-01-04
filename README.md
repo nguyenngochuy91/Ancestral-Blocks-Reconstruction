@@ -31,7 +31,7 @@ export PATH=~/anaconda_ete/bin:$PATH;
 
 ```
 
-Install Biopython and ete3 using conda (recomended)
+Install Biopython and ete3 using conda (highly recommended install biopython with conda)
 ```bash
 conda install -c bioconda biopython ete3
 ```
@@ -39,7 +39,8 @@ Install ete_toolchain for visualization
 ```bash
 conda install -c etetoolkit ete_toolchain
 ```
-Install blast, clustalw, muscle 
+
+Install blast, clustalw, muscle (if you already have those programs, then skip this step)
 ```bash
 conda install -c bioconda blast clustalw muscle
 ```
@@ -48,7 +49,7 @@ For PDA, check installation instructions on this website: [PDA](http://www.cibiv
 
 ## Usage
 
-The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py). 
+The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) which is inside the directory [Ancestral-Blocks-Reconstruction]. 
 
 ### Run on example datasets
 The users can run this script on the example data sets provided in directory [E_Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E_Coli) and [B_Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B_Sub). The two following command lines will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `result/E_Coli/visualization` and `result/B_Sub/visualization` directory by default.
