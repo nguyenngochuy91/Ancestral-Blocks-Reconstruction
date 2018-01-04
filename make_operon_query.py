@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # TODO: remove the last of the operon references.  this has not been done yet due to a piece of untested code. 
 # until i get it teched out, i will not mess with teh variable names.
