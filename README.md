@@ -9,8 +9,10 @@ ROAGUE accepts a set of species and a gene block in a reference species. It then
 ancestral states.
 
 ## Requirements
+* [Conda](https://conda.io/miniconda.html) (package manager so we don't have to use sudo)
 * [Python 3+](https://www.python.org/download/releases/3.0/)
 * [Biopython 1.63+](http://biopython.org/wiki/Download)
+* [Clustalw](http://www.clustal.org/clustal2/#Download)
 * [Muscle Alignment](https://www.drive5.com/muscle/downloads.htm)
 * [BLAST+](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download)
 * [ETE3](http://etetoolkit.org/download/) (python framework for tree)
@@ -21,12 +23,26 @@ Users can either use github interface Download or type the following command in 
 ```bash
 git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
 ```
-For the requirements, everything but ete3, PDA can be installed using the following command line:
+Install Miniconda (you can either export path everytime you use roague, or add it the bashrc file)
 ```bash
-sudo apt-get install python-biopython blast2 ncbi-blast+ muscle clustalw
+wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O Miniconda-latest-Linux-x86_64.sh
+bash Miniconda-latest-Linux-x86_64.sh -b -p ~/anaconda_ete/
+export PATH=~/anaconda_ete/bin:$PATH;
+
 ```
 
-For ete3, check installation instructions on this website: [ETE3](http://etetoolkit.org/download/)
+Install Biopython and ete3 using conda (recomended)
+```bash
+conda install -c bioconda biopython ete3
+```
+Install ete_toolchain for visualization
+```bash
+conda install -c etetoolkit ete_toolchain
+```
+Install blast, clustalw, muscle 
+```bash
+conda install -c bioconda blast clustalw muscle
+```
 
 For PDA, check installation instructions on this website: [PDA](http://www.cibiv.at/software/pda/#download)
 
