@@ -1,5 +1,5 @@
 # Figures
-Enlarged figures from "Tracing the Ancestry of Operons in Bacteria" paper. You can download & zoom these figures using the Download button on the top right
+Enlarged figures from "Tracing the Ancestry of Operons in Bacteria" paper. After clicking on each link below, you can download & zoom these figures using the Download button on the top right
 
 [Fig 1](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/images/Fig1.pdf)
 
