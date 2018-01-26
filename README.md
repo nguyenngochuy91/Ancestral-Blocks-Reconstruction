@@ -165,12 +165,12 @@ Here are two gene blocks that were generated through our program.
 
 This gene block codes for genes involved in the catabolism of phenylacetate and it is not conserved between the group of studied bacteria.
 
-![paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/Fig9.pdf "Gene block paaABCDEFGHIJK")
+![paaABCDEFGHIJK](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/paa_global_edit.png "Gene block paaABCDEFGHIJK")
 2. Gene block atpIBEFHAGDC:
 
 This gene block catalyzes the synthesis of ATP from ADP and inorganic phosphate and it is very conserved between the group of studied bacteria.
 
-![atpIBEFHAGDC](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/Fig6.pdf "Gene block atpIBEFHAGDC")
+![atpIBEFHAGDC](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/image/atp_global_edit.png "Gene block atpIBEFHAGDC")
 ## Credits
 1. http://bioinformatics.oxfordjournals.org/content/early/2015/04/13/bioinformatics.btv128.full 
 
