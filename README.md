@@ -1,12 +1,9 @@
 # ROAGUE: **R**econstruction **o**f **A**ncestral **G**ene Blocks **U**sing **E**vents
 ## Purpose
 
-ROAGUE is a tool to reconstruct ancestors of gene blocks in prokaryotic genomes. Gene blocks are genes co-located on the chromosome. In many cases, gene blocks are
-conserved between bacterial species, sometimes as operons, when genes are co-transcribed. The conservation is rarely absolute: gene loss, gain, duplication, block
-splitting and block fusion are frequently observed. 
+ROAGUE is a tool to reconstruct ancestors of gene blocks in prokaryotic genomes. Gene blocks are genes co-located on the chromosome. In many cases, gene blocks are conserved between bacterial species, sometimes as operons, when genes are co-transcribed. The conservation is rarely absolute: gene loss, gain, duplication, block splitting and block fusion are frequently observed. 
 
-ROAGUE accepts a set of species and a gene block in a reference species. It then finds all gene blocks, orhtologous to the reference gene blocks, and reconsructs their
-ancestral states.
+ROAGUE accepts a set of species and a gene block in a reference species. It then finds all gene blocks, orhtologous to the reference gene blocks, and reconsructs their ancestral states.
 
 ## Requirements
 * [Conda](https://conda.io/miniconda.html) (package manager so we don't have to use sudo)
@@ -19,11 +16,11 @@ ancestral states.
 * [PDA](http://www.cibiv.at/software/pda/#download) (optional if you want to debias your tree base on Phylogenetic Diversity)
 
 ## Installation
-Users can either use github interface Download or type the following command in command line:
+Users can either use github interface Download button or type the following command in command line:
 ```bash
 git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
 ```
-Install Miniconda (you can either export path everytime you use roague, or add it the bashrc file)
+Install Miniconda (you can either export the path everytime you use ROAGUE, or add it to the .bashrc file)
 ```bash
 wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O Miniconda-latest-Linux-x86_64.sh
 bash Miniconda-latest-Linux-x86_64.sh -b -p ~/anaconda_ete/
@@ -40,7 +37,7 @@ Install ete_toolchain for visualization
 conda install -c etetoolkit ete_toolchain
 ```
 
-Install blast, clustalw, muscle (if you already have those programs, then skip this step)
+Install BLAST, ClustalW, MUSCLE 
 ```bash
 conda install -c bioconda blast clustalw muscle
 ```
@@ -49,7 +46,7 @@ For PDA, check installation instructions on this website: [PDA](http://www.cibiv
 
 ## Usage
 
-The easiest way to run the project is to execute the script [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) which is inside the directory [Ancestral-Blocks-Reconstruction]. 
+The easiest way to run the project is to execute the script [ROAGUE](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) which is inside the directory [Ancestral-Blocks-Reconstruction]. 
 
 ### Run on example datasets
 The users can run this script on the example data sets provided in directory [E_Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E_Coli) and [B_Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B_Sub). The two following command lines will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `result/E_Coli/visualization` and `result/B_Sub/visualization` directory by default.
