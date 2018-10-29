@@ -157,7 +157,7 @@ def return_genbank_dict(gb_file, key = 'annotation', seq_type = 'amino_acid'):
                     locus = feature.qualifiers['gene'][0]
                 except:
                     locus = ''
-                    print 'No locus associated. This should never be invoked meaning you are proper fracked. (The gbk file has an error).'
+                    print ('No locus associated. This should never be invoked meaning you are proper fracked. (The gbk file has an error).')
             try:
                 seq = feature.qualifiers['translation']
                 seq_type = 'Protein'
@@ -256,7 +256,7 @@ def make_gene_block_fasta2(gene_list, genbank_list, num_processors, folder, ref_
                         id=organism_dict_for_recovery[org][gene][0], description = '')
                         refrence_prot.append(outseq)
                 else:
-                    print "There was an error in function make_gene_block_fasta2, from script make_operon_query.py for", organism_dict_for_recovery[org][gene][0]
+                    print ("There was an error in function make_gene_block_fasta2, from script make_operon_query.py for", organism_dict_for_recovery[org][gene][0])
             else: # The gene is missing, we will look for it at a later stage in the program
                 item = '\t'.join([org, gene])
                 missing_list.append(item)
