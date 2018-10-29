@@ -6,7 +6,7 @@ ROAGUE is a tool to reconstruct ancestors of gene blocks in prokaryotic genomes.
 ROAGUE accepts a set of species and a gene block in a reference species. It then finds all gene blocks, orhtologous to the reference gene blocks, and reconsructs their ancestral states.
 
 ## Requirements
-*[Wget](https://www.gnu.org/software/wget/) 
+* [Wget](https://www.gnu.org/software/wget/) 
 * [Conda](https://conda.io/miniconda.html) (package manager so we don't have to use sudo)
 * [Python 3+](https://www.python.org/download/releases/3.0/)
 * [Biopython 1.63+](http://biopython.org/wiki/Download)
