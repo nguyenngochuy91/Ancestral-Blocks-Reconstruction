@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 from multiprocessing import Pool
 import time
@@ -33,7 +33,7 @@ def parser_code():
     parser.add_argument("-u", "--query", dest="query", default='gene_block_query.fa', metavar="FILE",
                 help="A file that contains the BLAST query for every gene of interest in the dataset.")
                 
-    parser.add_argument("-e", "--eval", dest="eval", default='1e-10', metavar="FLOAT", type=float,
+    parser.add_argument("-e", "--eval", dest="eval", default='1e-6', metavar="FLOAT", type=float,
                 help="eval for the BLAST search.")
     
     parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", default=False,
@@ -47,7 +47,7 @@ def check_options(parsed_args):
     if os.path.isdir(parsed_args.database_folder):
         database_folder = parsed_args.database_folder
     else:
-        print "The database directory %s does not exist." % parsed_args.database_folder
+        print("The database directory %s does not exist." % parsed_args.database_folder)
         sys.exit()
 
     # if the directory that the user specifies does not exist, then the program makes it for them. 
@@ -59,7 +59,7 @@ def check_options(parsed_args):
     if parsed_args.filter == 'NONE' or os.path.exists(parsed_args.filter):
         filter_file = parsed_args.filter
     else:
-        print "The filter file %s does not exist." % parsed_args.filter
+        print("The filter file %s does not exist." % parsed_args.filter)
         sys.exit()
     
     # section of code that deals determining the number of CPU cores that will be used by the program
@@ -74,7 +74,7 @@ def check_options(parsed_args):
     if os.path.exists(parsed_args.query):
         query_file = parsed_args.query
     else:
-        print "The query file %s does not exist." % parsed_args.query
+        print("The query file %s does not exist." % parsed_args.query)
         sys.exit()
     
     e_val = parsed_args.eval
@@ -105,7 +105,7 @@ def do_parallel_blast(arg_tuple):
     #cmd = "blastall -p tblastn -a %i -i %s -d %s -e %s -o %s -m 9" % (num_processors, query_file, db, eval_threshold, out_file)
     #cmd = "blastall -p tblastn -a %i -i %s -d %s -e %s -o %s -m 9" % (1, query_file, db, eval_threshold, out_file)
     #cmd = "blastall -p blastp -a %i -i %s -d %s -e %s -o %s -m 9" % (1, query_file, db, eval_threshold, out_file)
-    cmd = "blastall -p blastp -a %i -i %s -d %s -e %s -o %s -m 8" % (1, query_file, db, eval_threshold, out_file)
+    cmd ="blastp -num_threads %i -query %s -db %s -evalue %s -out %s -outfmt 6 -seg yes" % (1, query_file, db, eval_threshold, out_file)
     #print cmd
     os.system( cmd )
 
@@ -140,13 +140,13 @@ def main():
     database_folder, outfolder, filter_file, num_proc, query_file, e_val, quiet = check_options(parsed_args)
     
     if not quiet:
-        print database_folder, outfolder, filter_file, num_proc, query_file, e_val, quiet
+        print(database_folder, outfolder, filter_file, num_proc, query_file, e_val, quiet)
     
     #parallel_blast(infile, query, folder, num_proc, e_val)
     parallel_blast(database_folder, outfolder, filter_file, num_proc, query_file, e_val)
 
     if not quiet:
-        print time.time() - start
+        print(time.time() - start)
     
     # ./blast_script.py -d ./db/ -o ./blast_result/ -q ./gene_block_query.fa 
     
