@@ -22,7 +22,7 @@ Users can either use github interface Download button or type the following comm
 git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
 ```
 Install Miniconda (you can either export the path everytime you use ROAGUE, or add it to the .bashrc file). Before using
-the following command line, users will need to install [Wget](https://www.gnu.org/software/wget/)
+the following command line, users will need to install [Wget](https://www.gnu.org/software/wget/).
 ```bash
 wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O Miniconda-latest-Linux-x86_64.sh
 bash Miniconda-latest-Linux-x86_64.sh -b -p ~/anaconda_ete/

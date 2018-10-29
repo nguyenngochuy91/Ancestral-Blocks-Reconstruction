@@ -126,7 +126,7 @@ def toString(dic,map_code):
         if flag:
             string += substring[:-1] # only add if there is a gene block
             blocks = substring[:-1].split("|")
-            print ("blocks:",blocks)
+#            print ("blocks:",blocks)
             C = set()
             for block in blocks:
                 C.add(frozenset(block))

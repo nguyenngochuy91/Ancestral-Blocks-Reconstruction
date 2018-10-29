@@ -70,7 +70,7 @@ if __name__ == "__main__":
                     gene_face = TextFace(gene,fsize = font)
                     gene_face.background.color = gene_color_dic[gene]                   
                 else:
-                    gene_face = TextFace(" "*(font/5))
+                    gene_face = TextFace(" "*int(font/5))
                     gene_face.background.color = "white"
                 node.add_face(gene_face,col,"branch-top")
                 col+=1
@@ -100,7 +100,7 @@ if __name__ == "__main__":
             color = color_dic[short]
             node.add_features(node_color=color)
             # separate the node and the text
-            gene_face = TextFace(" "*(font/5))
+            gene_face = TextFace(" "*int(font/5))
             gene_face.background.color = "white"
             node.add_face(gene_face,0,"aligned")
             if "Bacillus_subtilis" in node.name or "Escherichia_coli" in node.name:
@@ -121,7 +121,7 @@ if __name__ == "__main__":
             genes = list(node.gene_block)
             # add a white column so it separate from the block
             col = 2
-            gene_face = TextFace(" "*(font/5))
+            gene_face = TextFace(" "*int(font/5))
             gene_face.background.color = "white"
             node.add_face(gene_face,col,"aligned")
             col = 3
@@ -130,7 +130,7 @@ if __name__ == "__main__":
                     gene_face = TextFace(gene,fsize= font)
                     gene_face.background.color = gene_color_dic[gene]                   
                 else:
-                    gene_face = TextFace(" "*(font/5))
+                    gene_face = TextFace(" "*int(font/5))
                     gene_face.background.color = "white"
                 node.add_face(gene_face,col,"aligned")
                 col+=1
