@@ -6,6 +6,7 @@ ROAGUE is a tool to reconstruct ancestors of gene blocks in prokaryotic genomes.
 ROAGUE accepts a set of species and a gene block in a reference species. It then finds all gene blocks, orhtologous to the reference gene blocks, and reconsructs their ancestral states.
 
 ## Requirements
+*[Wget](https://www.gnu.org/software/wget/) 
 * [Conda](https://conda.io/miniconda.html) (package manager so we don't have to use sudo)
 * [Python 3+](https://www.python.org/download/releases/3.0/)
 * [Biopython 1.63+](http://biopython.org/wiki/Download)
@@ -20,7 +21,8 @@ Users can either use github interface Download button or type the following comm
 ```bash
 git clone https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction
 ```
-Install Miniconda (you can either export the path everytime you use ROAGUE, or add it to the .bashrc file)
+Install Miniconda (you can either export the path everytime you use ROAGUE, or add it to the .bashrc file). Before using
+the following command line, users will need to install [Wget](https://www.gnu.org/software/wget/)
 ```bash
 wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O Miniconda-latest-Linux-x86_64.sh
 bash Miniconda-latest-Linux-x86_64.sh -b -p ~/anaconda_ete/
