@@ -1,1 +1,0 @@
-NC_000913|Escherichia_coli_str._K-12_substr._MG1655|b2542|hcaD|2672046|2673249|1|Protein|ECK2539:hcaA4:JW2526:phdA:yfhY|54.0	NC_003384.1|Salmonella_enterica_subsp._enterica_serovar_Typhi_str._CT18|HCM1.158|merA|116205|117891|1|65.12	33.094	139	82	7	143	275	270	403	5.10e-08	47.4
