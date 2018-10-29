@@ -1,0 +1,16 @@
+(
+(
+(
+Escherichia_coli_NC_000913:0.05978,
+Salmonella_enterica_NC_003198:0.05704)
+:0.22298,
+(
+Vibrio_vulnificus_NC_004459:0.24325,
+Vibrio_parahaemolyticus_NC_004603:0.25570)
+:0.14230)
+:0.06030,
+(
+Salmonella_enterica_NC_003197:0.14456,
+Yersinia_pestis_NC_003143:0.19987)
+:0.03722,
+Shigella_flexneri_NC_004741:0.21562);

@@ -78,7 +78,7 @@ def toDict(file):
             genes_string = line.split(':')[1]
             # to deal with each genes, they are in tuple, where first is the name of the gene, follow by the position, and the strand it is on
             # should consider 2 type of strand (so i can put a gap correctly
-            genes_string = genes_string .split('\t')[:-1] # ['(astA,634700,635744,1)', '(astD,635730,637149,1)', '(astB,637145,638426,1)', '(astC,638435,639614,1)']
+            genes_string = genes_string.split('\t')[:-1] # ['(astA,634700,635744,1)', '(astD,635730,637149,1)', '(astB,637145,638426,1)', '(astC,638435,639614,1)']
             genes_string = list(set(genes_string))
             for item in genes_string:
                 info= item.split(',') #['dppA', '402362', '400796', '+1']
@@ -89,9 +89,20 @@ def toDict(file):
 
 # from dic, create string
 def toString(dic,map_code):
+    mapping = map_code.split('\t')[:-1] 
+ 
+    reference = ""
+    for item in mapping:
+        item_split = item.split(',')
+        key = item_split[0]
+        value = item_split[1]
+        reference+=value # {'astA': 'a'}
+    S = set(reference)
     wholestring=''
     wholestring+=map_code
+    newWhole   = map_code 
     for genome in dic:
+        whole = genome + ':'
         string= genome + ':' # the string to be written
         substring = ''
         flag = False # check if it has a gene block
@@ -114,12 +125,74 @@ def toString(dic,map_code):
                 substring += '|' # changing strand
         if flag:
             string += substring[:-1] # only add if there is a gene block
-                
+            blocks = substring[:-1].split("|")
+            print ("blocks:",blocks)
+            C = set()
+            for block in blocks:
+                C.add(frozenset(block))
+            d = approxSolve(S,C)
+            minCost = min(d)
+            potential = d[minCost][0]
+            block =[]
+            for b in blocks:
+                local = ""
+                for item in b:
+                    if item in potential:
+                        local+=item
+                if local:
+                    block.append(local)
+            whole+="|".join(block)
         string += '\n'
         wholestring += string
-    return wholestring
+        whole+='\n'
+        newWhole+=whole
+    return wholestring,newWhole
 
-        
+# solve using approx
+def approxSolve(S,C):
+    geneCount = {}
+    for g in S:
+        geneCount[g] = 0
+    for c in C: 
+        for g in c:
+            if g in geneCount:
+                geneCount[g]+=1
+            else:
+                geneCount[g]=1
+    copyC = set()
+    for item in C:
+        copyC.add(item)
+    newS = set()
+    cost = len(S)
+    d    = {cost:[set()]}
+    while len(newS)!=len(S):
+        current_min = len(copyC)
+#        print ("geneCount",geneCount)
+        for g in geneCount:
+            if geneCount[g]<=current_min:
+                current_min = geneCount[g]
+                element     = g
+        newS.add(element)
+        geneCount.pop(element)
+#        print ("element",element)
+#        print ("newS",newS)
+        subset  = set([c for c in copyC if element in c])
+#        print ("subset",subset)
+        for s in subset:
+            for e in s:
+                if e!= element:
+                    geneCount[e]-=1
+        cost = cost -1 + len(subset)
+        # remove subset has elemet 
+        copyC.difference_update(subset)
+        copySet = set()
+        for item in newS:
+            copySet.add(item)
+        if cost in d:
+            d[cost].append(copySet)
+        else:
+            d[cost] = [copySet]
+    return d        
 if __name__ == "__main__":
 
     start = time.time()
@@ -131,12 +204,21 @@ if __name__ == "__main__":
         os.mkdir(outputsession)
     except:
         print ("new_result is already created")
+    try:
+        os.mkdir(outputsession[:-1]+"_approx/")
+    except:
+        print ("new_result_approx is already created")
     res = traverseAll(args.OperonDataDirectory)
     for r in res:
         root,f = os.path.split(r)
         result= toDict(r)
-        wholestring = toString(result[0],result[1])
+        wholestring,whole = toString(result[0],result[1])
         outfile = open(outputsession+'/'+f,'w')
         outfile.write(wholestring)
         outfile.close()
+        
+        outfile = open(outputsession[:-1]+"_approx"+'/'+f,'w')
+        outfile.write(whole)
+        outfile.close()
+        
     print (time.time() - start)

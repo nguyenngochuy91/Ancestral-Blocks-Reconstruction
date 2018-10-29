@@ -1,0 +1,1 @@
+NC_000913|Escherichia_coli_str._K-12_substr._MG1655|b0184|dnaE|205125|208608|1|Protein|ECK0183:JW0179:polC:sdgC|55.0	NC_003385|Salmonella_enterica_subsp._enterica_serovar_Typhi_str._CT18|HCM2.0015c|unknown|8083|11602|-1|54.79	30.27	991	547	26	9	893	4	956	1e-101	 343

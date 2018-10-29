@@ -46,11 +46,12 @@ if __name__ == "__main__":
     outfile.close()
     cmd1 = "pda -k {} {} {} -if keep.txt".format(size,input_tree,pda_out)
     os.system(cmd1)
-    tree = parse_pda(open(pda_out,"r"))
-    t = Tree(tree,format = 1)
-    leaves_partial = t.get_leaf_names()
-    outfile = open("phylo_order.txt","w")
-    
-    for name in leaves_partial:
-        name = '_'.join(name.split('_')[-2:])+'\n'
-        outfile.write(name)
+#    tree = parse_pda(open(pda_out,"r"))
+#    t = Tree(tree,format = 1)
+#    leaves_partial = t.get_leaf_names()
+#    outfile = open("phylo_order.txt","w")
+#    
+#    for name in leaves_partial:
+#        name = '_'.join(name.split('_')[-2:])+'\n'
+#        outfile.write(name)
+#    outfile.close()

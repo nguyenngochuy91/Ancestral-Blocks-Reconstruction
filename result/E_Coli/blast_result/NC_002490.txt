@@ -1,0 +1,1 @@
+NC_000913|Escherichia_coli_str._K-12_substr._MG1655|b1299|puuR|1361910|1362468|1|Protein|ECK1294:JW1292:ycjC|50.9	NC_002490.1|Xylella_fastidiosa_9a5c|XFa0001|unknown|40|301|1|41.76	32.836	67	45	0	4	70	19	85	9.45e-08	39.7

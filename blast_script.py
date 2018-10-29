@@ -33,7 +33,7 @@ def parser_code():
     parser.add_argument("-u", "--query", dest="query", default='gene_block_query.fa', metavar="FILE",
                 help="A file that contains the BLAST query for every gene of interest in the dataset.")
                 
-    parser.add_argument("-e", "--eval", dest="eval", default='1e-10', metavar="FLOAT", type=float,
+    parser.add_argument("-e", "--eval", dest="eval", default='1e-6', metavar="FLOAT", type=float,
                 help="eval for the BLAST search.")
     
     parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", default=False,

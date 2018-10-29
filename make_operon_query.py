@@ -57,7 +57,7 @@ def check_options(parsed_args):
     if os.path.isdir(parsed_args.infolder):
         infolder = parsed_args.infolder
     else:
-        print "The infolder %s does not exist." % parsed_args.infolder
+        print ("The infolder %s does not exist.") % parsed_args.infolder
         sys.exit()
     
     outfile = parsed_args.outfile
@@ -66,7 +66,7 @@ def check_options(parsed_args):
     if os.path.exists(parsed_args.gene_block_file):
         gene_block_file = parsed_args.gene_block_file
     else:
-        print "The gene_block file %s does not exist." % parsed_args.gene_block_file
+        print ("The gene_block file %s does not exist.") % parsed_args.gene_block_file
         sys.exit()
     
     # section of code that deals determining the number of CPU cores that will be used by the program
@@ -349,7 +349,7 @@ def make_gene_block_fasta2(gene_list, genbank_list, num_processors, outfile, ref
                         id=organism_dict_for_recovery[org][gene][0], description = '')
                         refrence_prot.append(outseq)
                 else:
-                    print "There was an error in function make_gene_block_fasta2 from script make_operon_query.py in",  organism_dict_for_recovery[org][gene][0]
+                    print ("There was an error in function make_gene_block_fasta2 from script make_operon_query.py in",  organism_dict_for_recovery[org][gene][0])
             else: # The gene is missing, we will look for it at a later stage in the program
                 item = '\t'.join([org, gene])
                 missing_list.append(item)
@@ -400,8 +400,8 @@ def make_gene_block_fasta2(gene_list, genbank_list, num_processors, outfile, ref
 # type of product produced
 def categorize_gene_blocks(ref_org, genbank_list, gene_block_dict):
     ref_path = [i for i in genbank_list if i.split('/')[-1].split('.')[0] in ref_org]
-    print "ref_org",ref_org
-    print "ref_path",ref_path
+    print ("ref_org",ref_org)
+    print ("ref_path",ref_path)
     # dict of the gene_blocks that are validated (could cind all the constituent genes in the reference)
     result = {}
     # dict of the gene_blocks that are validated (could cind all the constituent genes in the reference) and the type of product
@@ -430,7 +430,7 @@ def categorize_gene_blocks(ref_org, genbank_list, gene_block_dict):
                     #print "RNA", gene, gene_type
 
             except:
-                print "gene_block", gene_block, "is not usable as an gene_block, I should remove it. The gene in error is in", gene
+                print ("gene_block", gene_block, "is not usable as an gene_block, I should remove it. The gene in error is in", gene)
                 gene_block_error = True
 
         # no errors
@@ -611,7 +611,7 @@ def main():
     infolder, outfile, gene_block_file, num_proc, refrence_list, quiet = check_options(parsed_args)
     
     if not quiet:
-        print infolder, outfile, gene_block_file, num_proc, refrence_list, quiet
+        print (infolder, outfile, gene_block_file, num_proc, refrence_list, quiet)
     
     # This section of code will return a parsed gene block file as a dictionary keyed by gene block name
     #parsed_gene_block_file = './regulonDB/gene_block_names_and_genes_unfiltered.txt'
@@ -660,7 +660,7 @@ def main():
     # ./make_operon_query.py -i ./genomes/ 
 
     if not quiet:
-        print time.time() - start
+        print (time.time() - start)
     
 if __name__ == '__main__':
     main()

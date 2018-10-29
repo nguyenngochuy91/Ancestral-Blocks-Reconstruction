@@ -61,7 +61,7 @@ class Homolog:
             a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb = line.strip().split('\t')
             return Homolog(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb)
         except:
-            print "Error in classmethod from_file in the Homolog class. Number of arguments does not match."
+            print("Error in classmethod from_file in the Homolog class. Number of arguments does not match.")
 
     @classmethod
     def from_blast(cls, line):
@@ -86,8 +86,8 @@ class Homolog:
             k,l,m,n,o,p,q,r = subject_line.split('|')
             return Homolog(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,percent_ident, aligned_length, number_mismatched, number_gaps, align_query_start, align_query_stop, align_subject_start, align_subject_stop, Eval, bits_score)
         except:
-            print "Error in classmethod from_blast in the Homolog class."
-            print line
+            print("Error in classmethod from_blast in the Homolog class.")
+            print(line)
 
 
 
@@ -195,7 +195,7 @@ class Homolog:
 
     # TO DO: overload the print function, so it is not Print.  see http://stackoverflow.com/questions/550470/overload-print-python for details here. 
     def Print(self):
-        print self.ret_str()
+        print(self.ret_str())
     
     ######################################################
     # Marked for removal. I don't this it has a purpose. #
