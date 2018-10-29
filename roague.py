@@ -58,57 +58,57 @@ if __name__ == '__main__':
     else:
         parent_dir = outdir
     ##########################################################################
-#    # finding gene blocks 
-#        
-#    ### format a database for faster blasting. output in db
-#    db = parent_dir+ 'db'
-#    cmd1 ='./format_db.py -i {} -o {}'.format(genomes_directory,db)
-#    os.system(cmd1)
-#    print ('cmd1:',cmd1)
-#    
-#    ### Given the gene_block_names_and_genes.txt, create a gene_block_query.fa using the reference gene bank file. output in file gene_block_query.fa
-#    gene_block_names_and_genes = dirs[0]+"/"+'gene_block_names_and_genes.txt'
-#    gene_block_query           = parent_dir +'gene_block_query.fa'
-#    cmd2 ='./make_operon_query.py -i {} -b {} -r {} -o {}'.format(genomes_directory,gene_block_names_and_genes,reference,gene_block_query)
-#    os.system(cmd2)
-#    print ('cmd2:',cmd2)
-#    
-#    ### blasting using db vs the gene_block_query.fa above. output in blast_result
-#    blast_result = parent_dir+'blast_result/'
-#    cmd3 ='./blast_script.py -u {} -d {} -o {}'.format(gene_block_query,db,blast_result)
-#    os.system(cmd3)
-#    print ('cmd3:',cmd3)
-#    
-#    ### parsing the blast result directory into files that group by operon names, output in blast_parse
-#    blast_parse = parent_dir+'blast_parse/'
-#    cmd4 ='./blast_parse.py -b {} -i {} -o {}'.format(gene_block_names_and_genes,blast_result,blast_parse)
-#    os.system(cmd4)
-#    print ('cmd4:',cmd4)    
+    # finding gene blocks 
+        
+    ### format a database for faster blasting. output in db
+    db = parent_dir+ 'db'
+    cmd1 ='./format_db.py -i {} -o {}'.format(genomes_directory,db)
+    os.system(cmd1)
+    print ('cmd1:',cmd1)
+    
+    ### Given the gene_block_names_and_genes.txt, create a gene_block_query.fa using the reference gene bank file. output in file gene_block_query.fa
+    gene_block_names_and_genes = dirs[0]+"/"+'gene_block_names_and_genes.txt'
+    gene_block_query           = parent_dir +'gene_block_query.fa'
+    cmd2 ='./make_operon_query.py -i {} -b {} -r {} -o {}'.format(genomes_directory,gene_block_names_and_genes,reference,gene_block_query)
+    os.system(cmd2)
+    print ('cmd2:',cmd2)
+    
+    ### blasting using db vs the gene_block_query.fa above. output in blast_result
+    blast_result = parent_dir+'blast_result/'
+    cmd3 ='./blast_script.py -u {} -d {} -o {}'.format(gene_block_query,db,blast_result)
+    os.system(cmd3)
+    print ('cmd3:',cmd3)
+    
+    ### parsing the blast result directory into files that group by operon names, output in blast_parse
+    blast_parse = parent_dir+'blast_parse/'
+    cmd4 ='./blast_parse.py -b {} -i {} -o {}'.format(gene_block_names_and_genes,blast_result,blast_parse)
+    os.system(cmd4)
+    print ('cmd4:',cmd4)    
 #    
 #    ### filtering the gene blocks so that we have the most optimal gene blocks given the blast parse directory, ouput to optimized_gene_block
-#    optimized_gene_block = parent_dir+'optimized_gene_block/'
-#    cmd5 ='./filter_operon_blast_results.py -i {} -o {}'.format(blast_parse,optimized_gene_block)
-#    os.system(cmd5)
-#    print ('cmd5:',cmd5)
+    optimized_gene_block = parent_dir+'optimized_gene_block/'
+    cmd5 ='./filter_operon_blast_results.py -i {} -o {}'.format(blast_parse,optimized_gene_block)
+    os.system(cmd5)
+    print ('cmd5:',cmd5)
 #
 #    ### create newick tree file. output in tree directory
     tree_dir = parent_dir+'tree/'
-#    cmd6 ='./create_newick_tree.py -G {} -f {} -r {} -o {}'.format(genomes_directory,filter_file,reference,tree_dir)
-#    os.system(cmd6)
-#    print ('cmd6:',cmd6)    
+    cmd6 ='./create_newick_tree.py -G {} -f {} -r {} -o {}'.format(genomes_directory,filter_file,reference,tree_dir)
+    os.system(cmd6)
+    print ('cmd6:',cmd6)    
 #    
 #    ### from the filter_operon_blast_results, create a result directory. output in result directory
-#    accession = tree_dir + 'accession_to_common.csv'
+    accession = tree_dir + 'accession_to_common.csv'
     result    = parent_dir + 'result/'
-#    cmd7      = './get_result.py -g {} -a {} -o {} -i {}'.format(gene_block_names_and_genes,accession,result,optimized_gene_block)
-#    os.system(cmd7)
-#    print ('cmd7:',cmd7)
+    cmd7      = './get_result.py -g {} -a {} -o {} -i {}'.format(gene_block_names_and_genes,accession,result,optimized_gene_block)
+    os.system(cmd7)
+    print ('cmd7:',cmd7)
 #    
 #    ### generate group.txt file to color taxa based on class
     group    = parent_dir+'group.txt'
-#    cmd8     ='./group.py -i {} -o {} -a {}'.format(genomes_directory,group,filter_file) 
-#    os.system(cmd8)
-#    print ('cmd8:',cmd8)    
+    cmd8     ='./group.py -i {} -o {} -a {}'.format(genomes_directory,group,filter_file) 
+    os.system(cmd8)
+    print ('cmd8:',cmd8)    
     ###########################################################################
     ## reconstruction of ancestral gene blocks
 
