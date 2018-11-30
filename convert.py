@@ -56,35 +56,32 @@ def toDict(file):
     mapping =''
     dic_map ={}
     main_dic={}
-    dic_distance={}
     # create 3 main key
+    line = infile.readline()
+    map_code = line
+    mapping = line.split('\t')[:-1] # 
+    for item in mapping:
+        item_split = item.split(',')
+        key = item_split[0]
+        value = item_split[1]
+        dic_map[key]=value # {'astA': 'a'}
     for line in infile.readlines():
-        if line[0] != 'N':
-            map_code = line
-            mapping = line.split('\t')[:-1] # 
-            for item in mapping:
-                item_split = item.split(',')
-                key = item_split[0]
-                value = item_split[1]
-                dic_map[key]=value # {'astA': 'a'}
-        else:
-
-            genome = line.split(':')[0] # (line.split(':')= ['NC_002696', '(astA,634700,635744,1)\t(astD,635730,637149,1)\t(astB,637145,638426,1)\t(astC,638435,639614,1)\t']
-            main_dic[genome]={}
-            # 3 distance sub dictionary
-            main_dic[genome]['+1']={}
-            main_dic[genome]['-1']={}
-            main_dic[genome]['1']={}
-            genes_string = line.split(':')[1]
-            # to deal with each genes, they are in tuple, where first is the name of the gene, follow by the position, and the strand it is on
-            # should consider 2 type of strand (so i can put a gap correctly
-            genes_string = genes_string.split('\t')[:-1] # ['(astA,634700,635744,1)', '(astD,635730,637149,1)', '(astB,637145,638426,1)', '(astC,638435,639614,1)']
-            genes_string = list(set(genes_string))
-            for item in genes_string:
-                info= item.split(',') #['dppA', '402362', '400796', '+1']
-                position=(int(info[1]),int(info[2]))
-                position=(min(position),max(position))
-                main_dic[genome][info[3]][position]=dic_map[info[0]]
+        genome = line.split(':')[0] # (line.split(':')= ['NC_002696', '(astA,634700,635744,1)\t(astD,635730,637149,1)\t(astB,637145,638426,1)\t(astC,638435,639614,1)\t']
+        main_dic[genome]={}
+        # 3 distance sub dictionary
+        main_dic[genome]['+1']={}
+        main_dic[genome]['-1']={}
+        main_dic[genome]['1']={}
+        genes_string = line.split(':')[1]
+        # to deal with each genes, they are in tuple, where first is the name of the gene, follow by the position, and the strand it is on
+        # should consider 2 type of strand (so i can put a gap correctly
+        genes_string = genes_string.split('\t')[:-1] # ['(astA,634700,635744,1)', '(astD,635730,637149,1)', '(astB,637145,638426,1)', '(astC,638435,639614,1)']
+        genes_string = list(set(genes_string))
+        for item in genes_string:
+            info= item.split(',') #['dppA', '402362', '400796', '+1']
+            position=(int(info[1]),int(info[2]))
+            position=(min(position),max(position))
+            main_dic[genome][info[3]][position]=dic_map[info[0]]
     return (main_dic,map_code)
 
 # from dic, create string
@@ -97,6 +94,7 @@ def toString(dic,map_code):
         key = item_split[0]
         value = item_split[1]
         reference+=value # {'astA': 'a'}
+    print (dic)
     S = set(reference)
     wholestring=''
     wholestring+=map_code
