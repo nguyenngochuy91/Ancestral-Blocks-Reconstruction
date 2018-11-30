@@ -40,13 +40,13 @@ def parser_code():
     parser.add_argument("-o", "--outfolder", dest="outfolder", metavar="DIRECTORY", default='./tree/',
                 help="Directory where the results of this program will be stored.")
                 
-    parser.add_argument("-f", "--filter", dest="filter", metavar="FILE", default='NONE',
+    parser.add_argument("-f", "--filter", dest="filter", metavar="FILE", default='None',
                 help="File restrictiong which accession numbers this script will process. If no file is provided, filtering is not performed.")
                 
     parser.add_argument("-m", "--marker_gene", dest="marker_gene", metavar="STRING", default='rpob',
                 help="This is a single marker gene that will be used to construct phylogenetic trees.")
                 
-    parser.add_argument("-t", "--tree", dest="tree_file", metavar="FILE", default='NONE',
+    parser.add_argument("-t", "--tree", dest="tree_file", metavar="FILE", default='None',
                 help="Newick format tree file which will be used to bypass tree creation.")
     parser.add_argument("-r","--ref",default='NC_000913',help = 'The reference genome')
     parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", default=False,
@@ -64,9 +64,9 @@ def check_options(parsed_args):
         print("The folder %s does not exist." % parsed_args.genbank_directory)
         sys.exit()
     
-    if parsed_args.filter == 'NONE' or os.path.exists(parsed_args.filter):
+    if parsed_args.filter == 'None' or os.path.exists(parsed_args.filter):
         filter_file = parsed_args.filter
-    else:
+    else:   
         print("The file %s does not exist." % parsed_args.filter)
         sys.exit()
     
@@ -83,7 +83,7 @@ def check_options(parsed_args):
     marker_gene = parsed_args.marker_gene
     
     # check some information about the tree file
-    if parsed_args.tree_file == 'NONE' or os.path.exists(parsed_args.tree_file):
+    if parsed_args.tree_file == 'None' or os.path.exists(parsed_args.tree_file):
         tree_file = parsed_args.tree_file
     else:
         print("The file %s does not exist." % parsed_args.tree_file)
@@ -105,7 +105,7 @@ def return_recursive_dir_files(root_dir):
     return result
 
 def return_file_list(infolder, filter_file):
-    if filter_file == '' or filter_file == 'NONE':
+    if filter_file == '' or filter_file == 'None':
         return return_recursive_dir_files(infolder)   
     else:
         filter_list = [i.strip() for i in open(filter_file)]
@@ -375,7 +375,7 @@ def main():
     phylo_order_new_outfile = outfolder + 'phylo_order_new.txt'
     
     # Execute code fork that builds a tree from scratch
-    if tree_file == 'NONE':
+    if tree_file == 'None':
         #print "got here"
         # set the distmat file that is created in "make_target_fasta()" for i have no idea why
         marker_fasta = tmp_directory + "distmat_marker.fa"
