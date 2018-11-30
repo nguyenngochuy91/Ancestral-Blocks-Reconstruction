@@ -9,6 +9,7 @@ import os
 import argparse
 import uuid
 from Bio import SeqIO
+import sys
 # traverse and get the file
 def traverseAll(path):
     res=[]
@@ -45,7 +46,7 @@ def chk_output_directory_path(OutputDirectory,sessionID):
            #os.mkdir(OutputDirectory + "_" + str(sessionID))
            return True
         except OSError:
-           print(("Unable to create file:", OutputFile))
+           print(("Unable to create file:", OutputDirectory))
            sys.exit()
            
 def parse_accession(myFile):
@@ -70,7 +71,10 @@ if __name__ == "__main__":
                'green','mediumblue','silver']
     color_dic={}
     if condition:
-        accession = parse_accession(args.AccessionNumber)
+        if args.AccessionNumber=="None":
+            accession = None
+        else:
+            accession = parse_accession(args.AccessionNumber)
         outputsession = args.OutputFile
         res = traverseAll(args.InputGenBackDirectory)
 
@@ -80,14 +84,16 @@ if __name__ == "__main__":
             first_rec = next(input_seq_iterator)
             accession_num= first_rec.annotations['accessions'][0]
             # check if the file name is in our ancession file
-            if accession_num in accession: # NC_000964.gbk
-                print (accession_num)
-                taxonomy = first_rec.annotations['taxonomy']
-                index = 0
-                for item in taxonomy:
-                    myclass[index].add(item)
-                    index+=1
-                class_dic[accession_num]=taxonomy
+            if accession:
+                if accession_num not in accession: # NC_000964.gbk
+                    continue
+            print (accession_num)
+            taxonomy = first_rec.annotations['taxonomy']
+            index = 0
+            for item in taxonomy:
+                myclass[index].add(item)
+                index+=1
+            class_dic[accession_num]=taxonomy
         # assign the collor to the class
         for group in sorted(myclass):
             if len(myclass[group])>=4:
