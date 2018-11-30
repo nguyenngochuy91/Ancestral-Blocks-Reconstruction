@@ -184,10 +184,12 @@ def convert_genbank(genbank_tuple):
                             seq_rec_to_store = SeqRecord(prot_seq, id = '|'.join([accession, organism, locus, 'unknown', str(start), str(stop), str(strand), gc]).replace(' ', ''),description = '')
                             #print prot_seq
                     else:
-                        pass
+                        print ("This was not a protein sequence")
+                        error_in_field = True
                         #print "This was not a protein sequence"
                 except:
                     print("Error in function convert_genbank(genbank_tuple) from the format_db.py script, unhandled error in the genbank parse.")
+                    error_in_field = True
             else:
                 # put something in here that will deal with RNA later, if we plan to go that route.
                 pass
@@ -259,7 +261,7 @@ def parallel_convert_genbank(file_list, outfolder, num_proc, do_protein, error_f
     
     pool = Pool(processes = num_proc)
     result = dict(pool.map(convert_genbank, tuple_list))
-
+    
 
 def main():
     
