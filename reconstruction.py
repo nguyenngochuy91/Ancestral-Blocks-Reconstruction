@@ -42,9 +42,16 @@ def set_initial_value(genomes, tree):
                     node.add_features(node_type= 'GG')
         else:
             mylist= node.name.split('_')
-            name = mylist[2]+'_'+mylist[3]
+            print (mylist)
+            try:
+                name = mylist[2]+'_'+mylist[3]
+            except:
+                name = mylist[-1]
             # print(genomes[name])
-            node.add_features(gene_block=genomes[name]) 
+            if name in genomes:
+                node.add_features(gene_block=genomes[name]) 
+            else:
+                node.add_features(gene_block="")
     return tree
 
 ###############################################################################
