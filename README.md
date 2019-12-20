@@ -50,7 +50,7 @@ For PDA, check installation instructions on this website: [PDA](http://www.cibiv
 
 The easiest way to run the project is to execute the script [ROAGUE](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) which is inside the directory [Ancestral-Blocks-Reconstruction]. 
 
-### Run on example datasets
+### Run on example datasets for Tracing the ancestry of operons in bacteria 
 The users can run this script on the example data sets provided in directory [E_Coli](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/E_Coli) and [B_Sub](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/tree/master/B_Sub). The two following command lines will run [roague](https://github.com/nguyenngochuy91/Ancestral-Blocks-Reconstruction/blob/master/roague.py) on our 2 directories. The final results (pdf files of our ancestral reconstructions) are stored in `result/E_Coli/visualization` and `result/B_Sub/visualization` directory by default.
 #### E_Coli
 ```bash
@@ -61,6 +61,10 @@ The users can run this script on the example data sets provided in directory [E_
 ```bash
 ./roague.py -g B_Sub/genomes/ -b B_Sub/gene_block_names_and_genes.txt -r NC_000964 -f B_Sub/phylo_order.txt -m global
 ```
+
+### Run on example datasets for Evolutionary analysis of the bacterial gibberellin 
+The users can go to this [Gibberellin](https://github.com/nguyenngochuy91/Gibberellin-Operon) and follow the instruction in the README
+
 ### Run on users' specific datasets
 If the users wants to run the program on their own datasets, then they have to provide the following inputs:
   1. Directory that stores all the genomes file to study in genbank format 
